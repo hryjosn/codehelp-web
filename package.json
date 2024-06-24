@@ -17,11 +17,9 @@
         "react-intl": "^6.6.8"
     },
     "devDependencies": {
-        "@formatjs/cli": "^6.2.12",
         "@types/node": "^20",
         "@types/react": "^18",
         "@types/react-dom": "^18",
-        "babel-plugin-formatjs": "^10.5.16",
         "eslint": "^8",
         "eslint-config-next": "14.2.4",
         "eslint-config-prettier": "^9.1.0",
