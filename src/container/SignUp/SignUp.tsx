@@ -4,6 +4,7 @@ import Image from 'next/image'
 import Input from '~/components/Input'
 import { useForm, Controller } from 'react-hook-form'
 import { rule } from '~/constant/regex'
+import Link from 'next/link'
 const SignUp = () => {
     const {
         handleSubmit,
@@ -42,7 +43,17 @@ const SignUp = () => {
                         <div>
                             <FormattedMessage
                                 id="signup.tips"
-                                defaultMessage="You have account? Click here to login"
+                                defaultMessage="You have account? <code>Click here to login</code>"
+                                values={{
+                                    code: (word) => (
+                                        <Link
+                                            href={'/login'}
+                                            className="underline font-bold"
+                                        >
+                                            {word}
+                                        </Link>
+                                    ),
+                                }}
                             />
                         </div>
                         <div className="flex flex-col gap-2">
