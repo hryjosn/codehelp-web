@@ -5,6 +5,7 @@ import Input from '~/components/Input'
 import { Controller, useForm } from 'react-hook-form'
 import { rule } from '~/constant/regex'
 import Link from 'next/link'
+import classNames from 'classnames'
 
 const Login = () => {
     const {
@@ -12,7 +13,6 @@ const Login = () => {
         control,
         formState: { errors },
     } = useForm({
-        mode: 'onChange',
         defaultValues: {
             email: '',
             password: '',
@@ -30,7 +30,7 @@ const Login = () => {
                             <div>
                                 <FormattedMessage
                                     id="login.title1"
-                                    defaultMessage="Welcome to the CodeHelp"
+                                    defaultMessage="Welcome to the Codehelp"
                                 />
                             </div>
                             <div>
@@ -109,7 +109,17 @@ const Login = () => {
                             />
                         </div>
                         <button
-                            className={`${Object.keys(errors).length === 0 ? 'bg-slate-800' : 'bg-gray-400'} text-white p-3 rounded-full mt-5`}
+                            className={classNames(
+                                {
+                                    'bg-slate-800':
+                                        Object.keys(errors).length === 0,
+                                },
+                                {
+                                    'bg-gray-400':
+                                        Object.keys(errors).length !== 0,
+                                },
+                                ' text-white p-3 rounded-full mt-5'
+                            )}
                             disabled={Object.keys(errors).length !== 0}
                         >
                             <FormattedMessage

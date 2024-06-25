@@ -29,7 +29,7 @@ const SignUp = () => {
                             <div>
                                 <FormattedMessage
                                     id="signup.title1"
-                                    defaultMessage="Welcome to the codeHelp"
+                                    defaultMessage="Welcome to the Codehelp"
                                 />
                             </div>
                             <div>
