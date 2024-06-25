@@ -1,3 +1,10 @@
 {
-    "page.home.head.title": "Next.js i18n example"
+    "page.home.head.title": "Next.js i18n example",
+    "signup.title1": "Welcome to the codeHelp",
+    "signup.title2": "Create a new account",
+    "signup.tips": "You have account? Click here to login",
+    "signup.username": "UserName",
+    "signup.email": "E-mail",
+    "signup.password": "Password",
+    "signup.signup": "Sign Up"
 }
