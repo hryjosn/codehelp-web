@@ -6,5 +6,9 @@
     "signup.username": "UserName",
     "signup.email": "E-mail",
     "signup.password": "Password",
-    "signup.signup": "Sign Up"
+    "signup.signup": "Sign Up",
+    "login.title1": "Welcome to the Codehelp",
+    "login.title2": "Log in to continue",
+    "login.tips": "Don't have an account? <code>Create a new account.</code>",
+    "login.login": "Login"
 }

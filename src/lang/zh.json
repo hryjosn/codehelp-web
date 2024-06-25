@@ -6,5 +6,9 @@
     "signup.username": "使用者名稱",
     "signup.email": "電子郵件",
     "signup.password": "密碼",
-    "signup.signup": "註冊"
+    "signup.signup": "註冊",
+    "login.title1": "歡迎使用Codehelp",
+    "login.title2": "登入才能繼續",
+    "login.tips": "沒有帳戶？<code>建立一個新帳戶</code>",
+    "login.login": "登入"
 }
