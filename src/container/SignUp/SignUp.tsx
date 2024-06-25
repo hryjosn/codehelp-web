@@ -3,8 +3,9 @@ import { FormattedMessage } from 'react-intl'
 import Image from 'next/image'
 import Input from '~/components/Input'
 import { useForm, Controller } from 'react-hook-form'
-import { rule } from '~/constant/regex'
+import { validateRule } from '~/constant/regex'
 import Link from 'next/link'
+import classNames from 'classnames'
 const SignUp = () => {
     const {
         handleSubmit,
@@ -30,7 +31,7 @@ const SignUp = () => {
                             <div>
                                 <FormattedMessage
                                     id="signup.title1"
-                                    defaultMessage="Welcome to the codeHelp"
+                                    defaultMessage="Welcome to the Codehelp"
                                 />
                             </div>
                             <div>
@@ -95,7 +96,7 @@ const SignUp = () => {
                                         message: '必填選項',
                                     },
                                     pattern: {
-                                        value: rule.email,
+                                        value: validateRule.email,
                                         message: '電子郵件格式錯誤',
                                     },
                                 }}
@@ -122,14 +123,24 @@ const SignUp = () => {
                                         message: '必填選項',
                                     },
                                     pattern: {
-                                        value: rule.password,
+                                        value: validateRule.password,
                                         message: '密碼格式錯誤',
                                     },
                                 }}
                             />
                         </div>
                         <button
-                            className={`${Object.keys(errors).length === 0 ? 'bg-slate-800' : 'bg-gray-400'} text-white p-3 rounded-full mt-5`}
+                            className={classNames(
+                                {
+                                    'bg-slate-800':
+                                        Object.keys(errors).length === 0,
+                                },
+                                {
+                                    'bg-gray-400':
+                                        Object.keys(errors).length !== 0,
+                                },
+                                ' text-white p-3 rounded-full mt-5'
+                            )}
                             disabled={Object.keys(errors).length !== 0}
                         >
                             <FormattedMessage

@@ -1,4 +1,5 @@
 import TextField, { StandardTextFieldProps } from '@mui/material/TextField'
+import classNames from 'classnames'
 import React from 'react'
 
 const CustomInput = ({ className, ...props }: StandardTextFieldProps) => {
@@ -10,7 +11,7 @@ const CustomInput = ({ className, ...props }: StandardTextFieldProps) => {
                     height: '48px',
                 },
             }}
-            className={'w-full' + className}
+            className={classNames('w-full', className)}
             {...props}
         />
     )

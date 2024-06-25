@@ -1,4 +1,4 @@
-export const rule = {
+export const validateRule = {
     email: /^[A-Z0-9._%-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
     password: /^[A-Za-z0-9]{8,64}$/,
     emailVerifyCode: /^\d{6}$/,
