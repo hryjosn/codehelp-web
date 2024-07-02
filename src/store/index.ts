@@ -1,7 +1,9 @@
 import { makeObservable } from 'mobx'
+import SetUpStore from '~/container/SetUp/store/SetUpStore'
 import SignUpStore from '~/container/SignUp/store/SignUpStore'
 class RootStore {
-    SignUp = new SignUpStore()
+    signUpStore = new SignUpStore()
+    setUpStore = new SetUpStore()
     constructor() {
         makeObservable(this)
     }
