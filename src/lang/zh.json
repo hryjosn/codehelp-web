@@ -1,3 +1,10 @@
 {
-    "page.home.head.title": "Next.js i18n 範例"
+    "page.home.head.title": "Next.js i18n 範例",
+    "signup.title1": "歡迎使用Codehelp",
+    "signup.title2": "建立一個新帳戶",
+    "signup.tips": "您已有帳號？<code>點選登入</code>",
+    "signup.username": "使用者名稱",
+    "signup.email": "電子郵件",
+    "signup.password": "密碼",
+    "signup.signup": "註冊"
 }
