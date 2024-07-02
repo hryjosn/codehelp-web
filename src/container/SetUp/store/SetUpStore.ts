@@ -1,4 +1,3 @@
-import { SelectChangeEvent } from '@mui/material'
 import { makeAutoObservable } from 'mobx'
 
 class SetUpStore {
