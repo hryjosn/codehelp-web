@@ -13,8 +13,6 @@ const SignUp = () => {
         formState: { errors },
     } = useForm({
         defaultValues: {
-            avatar: '',
-            userName: '',
             email: '',
             password: '',
         },
@@ -58,26 +56,6 @@ const SignUp = () => {
                             />
                         </div>
                         <div className="flex flex-col gap-2">
-                            <Image
-                                alt="userAvatar"
-                                src={'/Login/UserAvatar.png'}
-                                width={120}
-                                height={120}
-                                className="self-center cursor-pointer"
-                            />
-                            <p>
-                                <FormattedMessage
-                                    id="signup.username"
-                                    defaultMessage="UserName"
-                                />
-                            </p>
-                            <Controller
-                                name="userName"
-                                control={control}
-                                render={({ field }) => (
-                                    <Input label={'userName'} {...field} />
-                                )}
-                            />
                             <p>
                                 <FormattedMessage
                                     id="signup.email"
