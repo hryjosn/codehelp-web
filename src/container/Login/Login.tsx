@@ -3,7 +3,7 @@ import { FormattedMessage } from 'react-intl'
 import Image from 'next/image'
 import Input from '~/components/Input'
 import { Controller, useForm } from 'react-hook-form'
-import { rule } from '~/constant/regex'
+import { validateRule } from '~/constant/regex'
 import Link from 'next/link'
 import classNames from 'classnames'
 
@@ -75,7 +75,7 @@ const Login = () => {
                                         message: '必填選項',
                                     },
                                     pattern: {
-                                        value: rule.email,
+                                        value: validateRule.email,
                                         message: '電子郵件格式錯誤',
                                     },
                                 }}
@@ -102,7 +102,7 @@ const Login = () => {
                                         message: '必填選項',
                                     },
                                     pattern: {
-                                        value: rule.password,
+                                        value: validateRule.password,
                                         message: '密碼格式錯誤',
                                     },
                                 }}
