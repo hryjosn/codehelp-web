@@ -1,11 +1,11 @@
-import { observer } from 'mobx-react-lite'
-import { FormattedMessage } from 'react-intl'
-import Image from 'next/image'
-import Input from '~/components/Input'
-import { useForm, Controller } from 'react-hook-form'
-import { validateRule } from '~/constant/regex'
-import Link from 'next/link'
+'use client'
 import classNames from 'classnames'
+import { observer } from 'mobx-react-lite'
+import Image from 'next/image'
+import Link from 'next/link'
+import { Controller, useForm } from 'react-hook-form'
+import Input from '~/components/Input'
+import { validateRule } from '~/constant/regex'
 const SignUp = () => {
     const {
         handleSubmit,
@@ -28,34 +28,17 @@ const SignUp = () => {
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <div className="w-full flex flex-col justify-center px-40 gap-5">
                         <div className="text-3xl font-bold">
-                            <div>
-                                <FormattedMessage
-                                    id="signup.title1"
-                                    defaultMessage="Welcome to the Codehelp"
-                                />
-                            </div>
-                            <div>
-                                <FormattedMessage
-                                    id="signup.title2"
-                                    defaultMessage="Create a new account"
-                                />
-                            </div>
+                            <div>Welcome to the Codehelp</div>
+                            <div>Create a new account</div>
                         </div>
                         <div>
-                            <FormattedMessage
-                                id="signup.tips"
-                                defaultMessage="You have account? <code>Click here to login</code>"
-                                values={{
-                                    code: (word) => (
-                                        <Link
-                                            href={'/login'}
-                                            className="underline font-bold"
-                                        >
-                                            {word}
-                                        </Link>
-                                    ),
-                                }}
-                            />
+                            <Link
+                                href={'/login'}
+                                className="underline font-bold"
+                            >
+                                You have account?{' '}
+                                <code>Click here to login</code>
+                            </Link>
                         </div>
                         <div className="flex flex-col gap-2">
                             <Image
@@ -63,14 +46,8 @@ const SignUp = () => {
                                 src={'/Login/UserAvatar.png'}
                                 width={120}
                                 height={120}
-                                className="self-center cursor-pointer"
                             />
-                            <p>
-                                <FormattedMessage
-                                    id="signup.username"
-                                    defaultMessage="UserName"
-                                />
-                            </p>
+                            <p>User Name</p>
                             <Controller
                                 name="userName"
                                 control={control}
@@ -78,12 +55,7 @@ const SignUp = () => {
                                     <Input label={'userName'} {...field} />
                                 )}
                             />
-                            <p>
-                                <FormattedMessage
-                                    id="signup.email"
-                                    defaultMessage="E-mail"
-                                />
-                            </p>
+                            <p>E-mail</p>
                             <Controller
                                 name="email"
                                 control={control}
@@ -101,12 +73,7 @@ const SignUp = () => {
                                     },
                                 }}
                             />
-                            <p>
-                                <FormattedMessage
-                                    id="signup.password"
-                                    defaultMessage="Password"
-                                />
-                            </p>
+                            <p>Password</p>
                             <Controller
                                 name="password"
                                 control={control}
@@ -143,10 +110,7 @@ const SignUp = () => {
                             )}
                             disabled={Object.keys(errors).length !== 0}
                         >
-                            <FormattedMessage
-                                id="signup.signup"
-                                defaultMessage="Sign Up"
-                            />
+                            Sign Up
                         </button>
                     </div>
                 </form>
