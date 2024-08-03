@@ -22,7 +22,7 @@ const Experience = ({ experiences }: ExperienceListProps) => {
                                 width="46"
                                 height="46"
                             />
-                            <div className="">
+                            <div>
                                 <p className="text-xl break-all">
                                     {experience.title}
                                 </p>

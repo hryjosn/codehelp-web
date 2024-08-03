@@ -29,7 +29,7 @@ const MentorProfile = () => {
                 title={currentMentor.title}
             />
             <div className="mt-6 pt-6 flex flex-col gap-6 border-t border-solid border-gray-200 md:flex-row md:gap-32">
-                <div className="p-2 flex flex-col flex-1 gap-4 border-solid border border-sky-500">
+                <div className="p-6 flex flex-col flex-1 gap-4">
                     <p className="line-clamp-3">{currentMentor.bio}</p>
                     <Experience experiences={currentMentor.experience} />
                     <Education education={currentMentor.education} />
