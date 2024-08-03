@@ -1,3 +1,8 @@
+export type Education = {
+    degree: string
+    major: string
+}
+
 export type Experience = {
     title: string
     company: string
@@ -17,4 +22,5 @@ export type Mentor = {
     totalReviews: number
     avatar: string
     experience: Experience[]
+    education: Education
 }

@@ -26,6 +26,10 @@ export const MOCK_MENTOR_LIST: Mentor[] = [
                 description: '',
             },
         ],
+        education: {
+            major: 'Computer Science',
+            degree: 'Engineer’s Degree',
+        },
     },
     {
         id: 2,
@@ -52,6 +56,10 @@ export const MOCK_MENTOR_LIST: Mentor[] = [
                 description: '',
             },
         ],
+        education: {
+            major: 'Computer Science',
+            degree: 'Engineer’s Degree',
+        },
     },
     {
         id: 3,
@@ -78,6 +86,10 @@ export const MOCK_MENTOR_LIST: Mentor[] = [
                 description: '',
             },
         ],
+        education: {
+            major: 'Computer Science',
+            degree: 'Engineer’s Degree',
+        },
     },
     {
         id: 4,
@@ -104,6 +116,10 @@ export const MOCK_MENTOR_LIST: Mentor[] = [
                 description: '',
             },
         ],
+        education: {
+            major: 'Computer Science',
+            degree: 'Engineer’s Degree',
+        },
     },
     {
         id: 5,
@@ -130,5 +146,9 @@ export const MOCK_MENTOR_LIST: Mentor[] = [
                 description: '',
             },
         ],
+        education: {
+            major: 'Computer Science',
+            degree: 'Engineer’s Degree',
+        },
     },
 ]

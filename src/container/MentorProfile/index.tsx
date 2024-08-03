@@ -5,6 +5,7 @@ import { MOCK_MENTOR_LIST } from '~/container/MentorList/constant'
 import Booking from '~/components/Booking'
 import Bio from '~/components/mentor/Bio'
 import Experience from '~/components/mentor/Experience'
+import Education from '~/components/mentor/Education'
 
 const MentorProfile = () => {
     const pathname = usePathname()
@@ -31,6 +32,7 @@ const MentorProfile = () => {
                 <div className="p-2 flex flex-col flex-1 gap-4 border-solid border border-sky-500">
                     <p className="line-clamp-3">{currentMentor.bio}</p>
                     <Experience experiences={currentMentor.experience} />
+                    <Education education={currentMentor.education} />
                 </div>
                 <Booking />
             </div>
