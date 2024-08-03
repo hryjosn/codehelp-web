@@ -1,8 +1,24 @@
+'use client'
+import { usePathname, useRouter } from 'next/navigation'
+import type { Mentor } from '~/container/MentorList/types'
+import { MOCK_MENTOR_LIST } from '~/container/MentorList/constant'
 import Booking from '~/components/Booking'
 import Bio from '~/components/mentor/Bio'
 import Experience from '~/components/mentor/Experience'
 
 const MentorProfile = () => {
+    const pathname = usePathname()
+    const splitPathname = pathname.split('/')
+    const currentMentor: Mentor | undefined = MOCK_MENTOR_LIST.find(
+        (mentor) => mentor.slug === splitPathname[splitPathname.length - 1]
+    )
+
+    const router = useRouter()
+    if (!currentMentor) {
+        router.push('/mentor-list')
+        return
+    }
+
     return (
         <div className="p-6 md:p-16">
             <Bio />
