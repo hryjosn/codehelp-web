@@ -1,3 +1,4 @@
+'use client'
 import React, { useState, useMemo } from 'react'
 import Calendar from 'react-calendar'
 import 'react-calendar/dist/Calendar.css'
@@ -42,10 +43,7 @@ const Booking = () => {
     }
 
     return (
-        <div
-            style={{ width: '480px' }}
-            className="p-6 rounded-xl border border-solid border-gray-200 relative"
-        >
+        <div className="max-w-[480px] p-6 rounded-xl border border-solid border-gray-200 relative">
             <p className="mb-1 tracking-wider text-lg text-blue-950 font-bold">
                 Available sessions
             </p>

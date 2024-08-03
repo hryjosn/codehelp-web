@@ -18,7 +18,7 @@ const MentorCard = ({ mentor }: Props) => {
     } = mentor
 
     return (
-        <div className="flex flex-col p-2 border border-solid border-stone-200 rounded-2xl cursor-pointer">
+        <div className="h-full flex flex-col p-2 border border-solid border-stone-200 rounded-2xl cursor-pointer">
             <div className="overflow-hidden h-64 w-full rounded-xl mb-2">
                 <Image
                     src={avatar}
