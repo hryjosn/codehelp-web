@@ -13,10 +13,9 @@ const SignUp = () => {
         formState: { errors },
     } = useForm({
         defaultValues: {
-            avatar: '',
-            userName: '',
             email: '',
             password: '',
+            userName: '',
         },
     })
     const onSubmit = (data: any) => {
