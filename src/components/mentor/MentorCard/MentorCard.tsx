@@ -62,4 +62,4 @@ const MentorCard = ({ mentor }: Props) => {
     )
 }
 
-export default MentorCard
+export { MentorCard }

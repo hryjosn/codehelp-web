@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import MentorCard from '~/components/mentor/MentorCard'
+import { MentorCard } from '~/components/mentor/MentorCard/MentorCard'
 import { MOCK_MENTOR_LIST } from '~/container/MentorList/constant'
 
 const MentorList = () => {
