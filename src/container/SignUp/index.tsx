@@ -1,12 +1,16 @@
 'use client'
-import classNames from 'classnames'
+
 import { observer } from 'mobx-react-lite'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Controller, useForm } from 'react-hook-form'
 import Input from '~/components/Input'
 import { validateRule } from '~/constant/regex'
+import Button from './components/Button/Button'
+import { useRouter } from 'next/navigation'
+import InputController from './components/InputController/InputController'
 const SignUp = () => {
+    const route = useRouter()
     const {
         handleSubmit,
         control,
@@ -21,6 +25,7 @@ const SignUp = () => {
     const onSubmit = (data: any) => {
         console.log(data)
     }
+
     return (
         <div className="flex h-screen">
             <div className="flex flex-col flex-1 justify-center items-center">
@@ -35,8 +40,7 @@ const SignUp = () => {
                                 href={'/login'}
                                 className="underline font-bold"
                             >
-                                You have account?{' '}
-                                <code>Click here to login</code>
+                                You have account? Click here to login
                             </Link>
                         </div>
                         <div className="flex flex-col gap-2">
@@ -46,13 +50,11 @@ const SignUp = () => {
                                 width={120}
                                 height={120}
                             />
-                            <p>User Name</p>
-                            <Controller
-                                name="userName"
+                            <InputController
+                                placeholder="UserName"
+                                label="User Name"
                                 control={control}
-                                render={({ field }) => (
-                                    <Input label={'userName'} {...field} />
-                                )}
+                                errors={errors}
                             />
                             <p>E-mail</p>
                             <Controller
@@ -95,22 +97,13 @@ const SignUp = () => {
                                 }}
                             />
                         </div>
-                        <button
-                            className={classNames(
-                                {
-                                    'bg-slate-800':
-                                        Object.keys(errors).length === 0,
-                                },
-                                {
-                                    'bg-gray-400':
-                                        Object.keys(errors).length !== 0,
-                                },
-                                ' text-white p-3 rounded-full mt-5'
-                            )}
-                            disabled={Object.keys(errors).length !== 0}
-                        >
-                            Sign Up
-                        </button>
+                        <Button
+                            text={'Sign Up'}
+                            validation
+                            onClick={() => {
+                                route.push('/')
+                            }}
+                        />
                     </div>
                 </form>
             </div>
