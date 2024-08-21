@@ -8,12 +8,33 @@ const meta = {
         layout: 'centered',
     },
     tags: ['autodocs'],
-    args: { children: '' },
+    argTypes: {
+        size: { control: 'select', options: ['default'] },
+        fontWeight: { control: 'select', options: ['default', 'bold'] },
+        mode: { control: 'select', options: ['white', 'dark'] },
+        hover: { control: 'select', options: ['white', 'dark', 'teal'] },
+    },
 } satisfies Meta<typeof Button>
 
 export default meta
 type Story = StoryObj<typeof meta>
 
-export const LogIn: Story = {
-    args: { children: 'Log in', variant: 'default' },
+export const Login: Story = {
+    args: {
+        children: 'Log in',
+        fontWeight: 'bold',
+        size: 'default',
+        mode: 'white',
+        hover: 'dark',
+    },
+}
+
+export const SignUp: Story = {
+    args: {
+        children: 'Sign up',
+        fontWeight: 'bold',
+        size: 'default',
+        mode: 'dark',
+        hover: 'teal',
+    },
 }
