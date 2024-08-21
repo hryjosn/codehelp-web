@@ -9,7 +9,7 @@ import Education from '~/components/mentor/Education'
 
 const MentorProfile = () => {
     const pathname = usePathname()
-    const splitPathname = pathname.split('/')
+    const splitPathname = pathname!.split('/')
     const currentMentor: Mentor | undefined = MOCK_MENTOR_LIST.find(
         (mentor) => mentor.slug === splitPathname[splitPathname.length - 1]
     )

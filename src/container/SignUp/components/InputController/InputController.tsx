@@ -16,7 +16,7 @@ const InputController = ({
         register,
         formState: { errors },
     } = useFormContext()
-
+    const errorMessage = errors[label]?.message
     return (
         <div className="flex flex-col gap-1">
             <p className="text-sm">{label}</p>
@@ -28,10 +28,8 @@ const InputController = ({
                 type={type}
             />
 
-            {typeof errors[label]?.message === 'string' && (
-                <p className="text-red-400 text-base">
-                    {errors[label].message}
-                </p>
+            {errorMessage && typeof errorMessage === 'string' && (
+                <p className="text-red-400 text-base">{errorMessage}</p>
             )}
         </div>
     )
