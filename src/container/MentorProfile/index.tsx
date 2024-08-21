@@ -1,17 +1,15 @@
 'use client'
-import { usePathname, useRouter } from 'next/navigation'
-import type { Mentor } from '~/container/MentorList/types'
-import { MOCK_MENTOR_LIST } from '~/container/MentorList/constant'
+import { useRouter } from 'next/navigation'
 import Booking from '~/components/Booking'
 import Bio from '~/components/mentor/Bio'
-import Experience from '~/components/mentor/Experience'
 import Education from '~/components/mentor/Education'
+import Experience from '~/components/mentor/Experience'
+import { MOCK_MENTOR_LIST } from '~/container/MentorList/constant'
+import type { Mentor } from '~/container/MentorList/types'
 
-const MentorProfile = () => {
-    const pathname = usePathname()
-    const splitPathname = pathname.split('/')
+const MentorProfile = ({ params }: { params: { slug: string } }) => {
     const currentMentor: Mentor | undefined = MOCK_MENTOR_LIST.find(
-        (mentor) => mentor.slug === splitPathname[splitPathname.length - 1]
+        (mentor) => mentor.slug === params.slug
     )
 
     const router = useRouter()
