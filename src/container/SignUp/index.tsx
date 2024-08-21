@@ -4,7 +4,7 @@ import { observer } from 'mobx-react-lite'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Controller, useForm } from 'react-hook-form'
-import Input from '~/components/Input'
+import Input from '~/components/Input/Input'
 import { validateRule } from '~/constant/regex'
 const SignUp = () => {
     const {
