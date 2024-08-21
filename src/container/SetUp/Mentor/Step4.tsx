@@ -2,7 +2,7 @@ import { runInAction } from 'mobx'
 import { observer } from 'mobx-react-lite'
 import { useRouter } from 'next/router'
 import { Controller, useForm } from 'react-hook-form'
-import Input from '~/components/Input'
+import Input from '~/components/Input/Input'
 import rootStore from '~/store'
 
 const Step4 = () => {
