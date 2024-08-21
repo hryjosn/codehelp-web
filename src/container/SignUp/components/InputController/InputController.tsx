@@ -1,35 +1,37 @@
 import React from 'react'
-import { Control, Controller, FieldErrors, FieldValues } from 'react-hook-form'
+import { useFormContext } from 'react-hook-form'
 import Input from '../Input/Input'
 interface InputControllerProps {
     placeholder: string
     label: string
-    name: string
-    control: Control<FieldValues>
-    errors?: FieldErrors<FieldValues>
-    props?: any
+    type?: string
 }
+
 const InputController = ({
     placeholder,
     label,
-    name,
-    control,
-    errors,
-    props,
+    type,
 }: InputControllerProps) => {
+    const {
+        register,
+        formState: { errors },
+    } = useFormContext()
+
     return (
-        <div>
-            <p>{label}</p>
-            <Controller
-                name={name}
-                control={control}
-                render={({ field }) => (
-                    <Input placeholder={placeholder} {...field} />
-                )}
-                {...props}
+        <div className="flex flex-col gap-1">
+            <p className="text-sm">{label}</p>
+
+            <Input
+                placeholder={placeholder}
+                register={register}
+                label={label}
+                type={type}
             />
-            {errors && errors.name && errors.name.type === 'maxLength' && (
-                <span>Max length exceeded</span>
+
+            {typeof errors[label]?.message === 'string' && (
+                <p className="text-red-400 text-base">
+                    {errors[label].message}
+                </p>
             )}
         </div>
     )

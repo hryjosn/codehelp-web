@@ -1,8 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import InputController from './InputController'
-import { FormProvider, useForm } from 'react-hook-form'
+import { StorybookFormProvider } from './withRHF'
+import Joi from 'joi'
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
+
 const meta = {
     title: 'SignUp/InputController',
     component: InputController,
@@ -14,13 +16,17 @@ const meta = {
     tags: ['autodocs'],
     decorators: [
         (Story) => (
-            <FormProvider {...useForm()}>
+            <StorybookFormProvider
+                onSubmit={() => {}}
+                schema={Joi.object({
+                    UserName: Joi.string().required(),
+                })}
+            >
                 <Story />
-            </FormProvider>
+            </StorybookFormProvider>
         ),
     ],
     // Use `fn` to spy on the onClick arg, which will appear in the actions panel once invoked: https://storybook.js.org/docs/essentials/actions#action-args
-    args: { placeholder: '' },
 } satisfies Meta<typeof InputController>
 
 export default meta
@@ -30,9 +36,13 @@ type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
     args: {
-        placeholder: '',
-        label: '',
-        name: '',
-        control: {},
+        placeholder: 'UserName',
+        label: 'UserName',
+    },
+}
+export const ValidationError: Story = {
+    args: {
+        placeholder: 'Please click button',
+        label: 'UserName',
     },
 }
