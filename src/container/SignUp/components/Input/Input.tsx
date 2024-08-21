@@ -12,35 +12,33 @@ export interface InputProps {
     required?: boolean
 }
 
-const Input = React.forwardRef(
-    ({
-        placeholder,
-        className,
-        register,
-        type,
-        label,
-        required,
-        ...props
-    }: InputProps) => {
-        const { ref: inputRef, ...inputProps } = register(label)
-        return (
-            <TextField
-                InputProps={{
-                    style: {
-                        borderRadius: '8px',
-                        height: '48px',
-                    },
-                }}
-                label={label}
-                placeholder={placeholder}
-                className={classNames('w-full', className)}
-                inputRef={inputRef}
-                type={type}
-                {...inputProps}
-                {...props}
-            />
-        )
-    }
-)
+const Input = ({
+    placeholder,
+    className,
+    register,
+    type,
+    label,
+    required,
+    ...props
+}: InputProps) => {
+    const { ref: inputRef, ...inputProps } = register(label)
+    return (
+        <TextField
+            InputProps={{
+                style: {
+                    borderRadius: '8px',
+                    height: '48px',
+                },
+            }}
+            label={label}
+            placeholder={placeholder}
+            className={classNames('w-full', className)}
+            inputRef={inputRef}
+            type={type}
+            {...inputProps}
+            {...props}
+        />
+    )
+}
 
 export default Input
