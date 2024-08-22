@@ -1,12 +1,10 @@
 import classNames from 'classnames'
-import React from 'react'
 
-export interface ButtonProps {
+export interface ButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
     text: string
     errors: object
-    props?: any
 }
-const Button = ({ text, errors, props }: ButtonProps) => {
+const Button = ({ text, errors, ...props }: ButtonProps) => {
     return (
         <button
             type="submit"
