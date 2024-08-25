@@ -1,27 +1,23 @@
 import TextField from '@mui/material/TextField'
-import classNames from 'classnames'
 import React from 'react'
 import { UseFormRegister } from 'react-hook-form'
 
-export interface InputProps {
-    placeholder: string
-    className?: string
-    register: UseFormRegister<any>
+export interface FormInputProps {
+    placeholder?: string
     type?: string
-    label: string
-    required?: boolean
+    defaultValue?: string
+    register: UseFormRegister<any>
+    registerLabel: string
 }
 
-const Input = ({
+const FormInput = ({
     placeholder,
-    className,
     register,
     type,
-    label,
-    required,
-    ...props
-}: InputProps) => {
-    const { ref: inputRef, ...inputProps } = register(label)
+    registerLabel,
+    defaultValue,
+}: FormInputProps) => {
+    const { ref: inputRef, ...inputProps } = register(registerLabel)
     return (
         <TextField
             InputProps={{
@@ -30,15 +26,14 @@ const Input = ({
                     height: '48px',
                 },
             }}
-            label={label}
+            className="w-60"
             placeholder={placeholder}
-            className={classNames('w-full', className)}
             inputRef={inputRef}
+            defaultValue={defaultValue}
             type={type}
             {...inputProps}
-            {...props}
         />
     )
 }
 
-export default Input
+export default FormInput

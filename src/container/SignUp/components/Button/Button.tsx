@@ -1,25 +1,32 @@
-import classNames from 'classnames'
-
-export interface ButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
+import { cva } from 'class-variance-authority'
+import { cn } from '~/lib/utils'
+export interface ButtonProps {
     text: string
     errors: object
 }
-const Button = ({ text, errors, ...props }: ButtonProps) => {
+
+const Button = ({ text, errors }: ButtonProps) => {
+    const hasError = Object.keys(errors).length !== 0
+
+    const buttonVariants = cva('text-white p-3 rounded-full w-40', {
+        variants: {
+            state: {
+                default: 'bg-slate-800 hover:bg-slate-700',
+                hasError: 'bg-gray-400',
+            },
+        },
+        defaultVariants: {
+            state: 'default',
+        },
+    })
+
     return (
         <button
             type="submit"
-            className={classNames(
-                {
-                    'bg-slate-800 hover:bg-slate-700':
-                        Object.keys(errors).length === 0,
-                },
-                {
-                    'bg-gray-400': Object.keys(errors).length !== 0,
-                },
-                'text-white p-3 rounded-full w-40'
+            className={cn(
+                buttonVariants({ state: hasError ? 'hasError' : 'default' })
             )}
-            disabled={Object.keys(errors).length !== 0}
-            {...props}
+            disabled={hasError}
         >
             {text}
         </button>

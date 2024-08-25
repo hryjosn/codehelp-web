@@ -3,10 +3,10 @@
 import { observer } from 'mobx-react-lite'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
-import InputController from './components/InputController/InputController'
-import { StorybookFormProvider } from './components/InputController/withRHF'
+import FormController from './components/FormController/FormController'
+import { StorybookFormProvider } from './components/FormController/withRHF'
 import Joi from 'joi'
-import LinkText from './components/Link/LinkText'
+import LinkText from './components/LinkText/LinkText'
 const SignUp = () => {
     const route = useRouter()
 
@@ -38,7 +38,6 @@ const SignUp = () => {
                         <div>
                             <LinkText
                                 href={'/login'}
-                                className="underline font-bold"
                                 text={'You have account? Click here to login'}
                             />
                         </div>
@@ -54,15 +53,15 @@ const SignUp = () => {
                                 schema={schema}
                             >
                                 <div className="flex flex-col gap-3">
-                                    <InputController
+                                    <FormController
                                         placeholder="Enter 6 to 20 characters"
                                         label="UserName"
                                     />
-                                    <InputController
+                                    <FormController
                                         placeholder="Email"
                                         label="Email"
                                     />
-                                    <InputController
+                                    <FormController
                                         placeholder="Password"
                                         label="Password"
                                         type={'password'}
