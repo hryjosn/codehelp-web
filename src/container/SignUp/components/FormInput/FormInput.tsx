@@ -5,7 +5,7 @@ import { UseFormRegister } from 'react-hook-form'
 export interface FormInputProps {
     placeholder?: string
     type?: string
-    defaultValue?: string
+    value?: string
     register: UseFormRegister<any>
     registerLabel: string
 }
@@ -15,7 +15,7 @@ const FormInput = ({
     register,
     type,
     registerLabel,
-    defaultValue,
+    value,
 }: FormInputProps) => {
     const { ref: inputRef, ...inputProps } = register(registerLabel)
     return (
@@ -29,7 +29,7 @@ const FormInput = ({
             }}
             placeholder={placeholder}
             inputRef={inputRef}
-            defaultValue={defaultValue}
+            value={value}
             type={type}
             {...inputProps}
         />

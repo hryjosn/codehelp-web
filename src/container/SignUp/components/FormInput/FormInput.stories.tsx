@@ -29,7 +29,7 @@ const Template = (args: FormInputProps) => {
 export const Default: StoryObj<FormInputProps> = {
     render: Template,
     args: {
-        defaultValue: 'Default text',
+        value: 'Default text',
         placeholder: 'UserName',
         registerLabel: 'UserName',
     },
@@ -37,7 +37,7 @@ export const Default: StoryObj<FormInputProps> = {
 export const Password: StoryObj<FormInputProps> = {
     render: Template,
     args: {
-        defaultValue: 'Default text',
+        value: 'Default text',
         placeholder: 'UserName',
         registerLabel: 'UserName',
         type: 'password',
