@@ -54,15 +54,15 @@ const SignUp = () => {
                             >
                                 <div className="flex flex-col gap-3">
                                     <FormController
-                                        placeholder="Enter 6 to 20 characters"
+                                        placeholder="Enter 3 to 30 characters"
                                         label="UserName"
                                     />
                                     <FormController
-                                        placeholder="Email"
+                                        placeholder="Enter your email"
                                         label="Email"
                                     />
                                     <FormController
-                                        placeholder="Password"
+                                        placeholder="Enter 8 to 30 characters"
                                         label="Password"
                                         type={'password'}
                                     />
