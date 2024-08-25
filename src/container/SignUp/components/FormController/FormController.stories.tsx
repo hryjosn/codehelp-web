@@ -54,7 +54,7 @@ export const ValidationError: Story = {
                     type: 'manual',
                     message: 'This field is required',
                 })
-            }, [])
+            }, [methods])
 
             return (
                 <FormProvider {...methods}>

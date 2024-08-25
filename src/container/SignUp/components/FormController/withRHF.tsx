@@ -1,15 +1,16 @@
 import { joiResolver } from '@hookform/resolvers/joi'
 import Joi from 'joi'
 import { ReactNode, FC } from 'react'
-import { FormProvider, useForm } from 'react-hook-form'
+import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'
 import Button from '../Button/Button'
+import { DataProps } from '../../store/types'
 
 export const StorybookFormProvider: FC<{
-    onSubmit: (data: any) => void
+    onSubmit: SubmitHandler<DataProps>
     schema: Joi.Schema
     children: ReactNode
 }> = ({ children, schema, onSubmit }) => {
-    const methods = useForm({
+    const methods = useForm<DataProps>({
         resolver: joiResolver(schema),
     })
     const {

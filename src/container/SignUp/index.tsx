@@ -7,10 +7,11 @@ import FormController from './components/FormController/FormController'
 import { StorybookFormProvider } from './components/FormController/withRHF'
 import Joi from 'joi'
 import LinkText from './components/LinkText/LinkText'
+import { DataProps } from './store/types'
 const SignUp = () => {
     const route = useRouter()
 
-    const onSubmit = (data: any) => {
+    const onSubmit = (data: DataProps) => {
         if (data) {
             route.push('/')
         }

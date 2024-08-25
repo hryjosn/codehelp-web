@@ -24,9 +24,9 @@ const FormInput = ({
                 style: {
                     borderRadius: '8px',
                     height: '48px',
+                    width: '240px',
                 },
             }}
-            className="w-60"
             placeholder={placeholder}
             inputRef={inputRef}
             defaultValue={defaultValue}
