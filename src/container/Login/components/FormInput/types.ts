@@ -2,7 +2,7 @@ import { UseFormRegister, ValidationRule } from 'react-hook-form'
 
 export interface LoginInputT {
     title: string
-    label: 'email' | 'password'
+    valueName: 'email' | 'password'
     errors?: string
     register: UseFormRegister<{
         email: string

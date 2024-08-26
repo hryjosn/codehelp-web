@@ -2,10 +2,10 @@ import Link from 'next/link'
 import React from 'react'
 import { LinkTextT } from './types'
 
-const LinkText = ({ children, href }: LinkTextT) => {
+const LinkText = ({ value, href }: LinkTextT) => {
     return (
         <Link href={href} className="underline font-bold">
-            {children}
+            <span>{value}</span>
         </Link>
     )
 }

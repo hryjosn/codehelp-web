@@ -17,7 +17,7 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-export const HasError: Story = {
+export const Disable: Story = {
     args: {
         title: 'Login',
         errors: {
@@ -29,7 +29,7 @@ export const HasError: Story = {
     },
 }
 
-export const NoError: Story = {
+export const Enable: Story = {
     args: {
         title: 'Login',
         errors: {},

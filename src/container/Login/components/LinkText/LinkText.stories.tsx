@@ -16,14 +16,9 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-export const PasswordError: Story = {
+export const Primary: Story = {
     args: {
         href: '/signup',
-        children: (
-            <span>
-                {`Don\'t have an account? `}
-                <code>Create a new account.</code>
-            </span>
-        ),
+        value: `Don\'t have an account? Create a new account.`,
     },
 }

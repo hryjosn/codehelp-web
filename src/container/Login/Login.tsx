@@ -33,17 +33,15 @@ const Login = () => {
                             <div>Log in to continue</div>
                         </div>
                         <div>
-                            <LinkText href="/signup">
-                                <span>
-                                    {`Don\'t have an account? `}
-                                    <code>Create a new account.</code>
-                                </span>
-                            </LinkText>
+                            <LinkText
+                                href="/signup"
+                                value={`Don\'t have an account? Create a new account.`}
+                            />
                         </div>
                         <div className="flex flex-col gap-2">
                             <FormInput
                                 title="E-mail"
-                                label="email"
+                                valueName="email"
                                 register={register}
                                 required={{
                                     value: true,
@@ -57,7 +55,7 @@ const Login = () => {
                             />
                             <FormInput
                                 title="Password"
-                                label="password"
+                                valueName="password"
                                 register={register}
                                 required={{
                                     value: true,

@@ -1,7 +1,7 @@
 import type { Meta, StoryFn } from '@storybook/react'
 import FormInput from './FormInput'
 import { validateRule } from '~/constant/regex'
-import { useForm } from 'react-hook-form'
+import { FormProvider, useForm } from 'react-hook-form'
 import { LoginInputT } from './types'
 
 const meta = {
@@ -16,16 +16,31 @@ const meta = {
 
 export default meta
 
-const Input: StoryFn<typeof FormInput> = (args: LoginInputT) => {
-    const { register } = useForm<{ email: string; password: string }>()
-    return <FormInput {...args} register={register} />
+const Input: StoryFn<typeof FormInput> = (args) => {
+    const {
+        register,
+        formState: { errors },
+    } = useForm<{ email: string; password: string }>({
+        mode: 'onChange',
+        defaultValues: {
+            email: '',
+            password: '',
+        },
+    })
+    return (
+        <FormInput
+            {...args}
+            errors={args.errors || errors.email?.message}
+            register={register}
+        />
+    )
 }
 
 export const EmailInput = Input.bind({})
 EmailInput.args = {
     title: 'E-mail',
-    label: 'email',
-    errors: '必填選項',
+    valueName: 'email',
+    errors: '',
     required: { value: true, message: '必填選項' },
     pattern: {
         value: validateRule.email,
