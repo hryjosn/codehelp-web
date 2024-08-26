@@ -24,6 +24,9 @@ const meta = {
             </StorybookFormProvider>
         ),
     ],
+    argTypes: {
+        type: { control: 'select', options: ['text', 'password'] },
+    },
 } satisfies Meta<typeof FormController>
 
 export default meta

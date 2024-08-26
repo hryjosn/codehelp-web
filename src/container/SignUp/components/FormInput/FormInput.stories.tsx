@@ -16,6 +16,9 @@ const meta = {
 
     // Use `fn` to spy on the onClick arg, which will appear in the actions panel once invoked: https://storybook.js.org/docs/essentials/actions#action-args
     args: { type: 'text' },
+    argTypes: {
+        type: { control: 'select', options: ['text', 'password'] },
+    },
 } satisfies Meta<typeof FormInput>
 
 export default meta
