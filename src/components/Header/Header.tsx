@@ -1,79 +1,51 @@
-import { cva, VariantProps } from 'class-variance-authority'
 import { DetailsHTMLAttributes, FC } from 'react'
-import { cn } from '~/lib/utils'
 import { Button } from '../Button/Button'
+import { NavButton } from '../NavButton/NavButton'
 
-const buttonVariants = cva(
-    'flex flex-1 items-center shadow-md justify-between py-2 px-6 border-b border-gray-100',
-    {
-        variants: {
-            bg: {
-                default: 'bg-white',
-                gray: 'bg-gray-100',
-            },
-        },
-        defaultVariants: {},
-    }
-)
-
-interface HeaderProps
-    extends DetailsHTMLAttributes<HTMLDivElement>,
-        VariantProps<typeof buttonVariants> {
-    token?: string
-    login: () => void
-    logout: () => void
-    signUp: () => void
+interface HeaderProps extends DetailsHTMLAttributes<HTMLDivElement> {
+    isAuth: boolean
 }
 
-const Header: FC<HeaderProps> = ({
-    className,
-    token,
-    login,
-    logout,
-    signUp,
-    bg,
-    ...props
-}) => {
+const Header: FC<HeaderProps> = ({ isAuth, ...props }) => {
     return (
-        <div className={cn(buttonVariants({ className, bg }))} {...props}>
+        <div
+            className="flex items-center g-white shadow-md justify-between py-2 px-6 border-b border-gray-100"
+            {...props}
+        >
             <div className="border py-2 px-3 border rounded-lg">
                 <text>Code Help Icon</text>
             </div>
-            {token ? (
+            {isAuth ? (
                 <div>
                     <Button
-                        fontWeight={'bold'}
+                        onClick={() => {
+                            localStorage.removeItem('token')
+                        }}
+                        variants={'secondary'}
                         size={'default'}
-                        mode={'dark'}
-                        hover={'teal'}
-                        onClick={logout}
                     >
                         Logout
                     </Button>
                 </div>
             ) : (
                 <div className="flex gap-2">
-                    <Button
-                        fontWeight={'bold'}
+                    <NavButton
+                        path="/login"
+                        variants={'primary'}
                         size={'default'}
-                        mode={'white'}
-                        hover={'dark'}
-                        onClick={login}
                     >
                         Login
-                    </Button>
-                    <Button
-                        fontWeight={'bold'}
+                    </NavButton>
+                    <NavButton
+                        path="/signup"
+                        variants={'secondary'}
                         size={'default'}
-                        mode={'dark'}
-                        hover={'teal'}
-                        onClick={signUp}
                     >
                         Sign up
-                    </Button>
+                    </NavButton>
                 </div>
             )}
         </div>
     )
 }
-export { Header, buttonVariants }
+export { Header }

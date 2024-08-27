@@ -1,5 +1,6 @@
 import { cva, VariantProps } from 'class-variance-authority'
-import { ButtonHTMLAttributes, FC } from 'react'
+import Link from 'next/link'
+import { AnchorHTMLAttributes, FC } from 'react'
 import { cn } from '~/lib/utils'
 
 const buttonVariants = cva('border rounded-lg border-black font-bold', {
@@ -21,25 +22,27 @@ const buttonVariants = cva('border rounded-lg border-black font-bold', {
 })
 
 interface ButtonProps
-    extends ButtonHTMLAttributes<HTMLButtonElement>,
-        VariantProps<typeof buttonVariants> {}
+    extends AnchorHTMLAttributes<HTMLAnchorElement>,
+        VariantProps<typeof buttonVariants> {
+    path: string
+}
 
-const Button: FC<ButtonProps> = ({
+const NavButton: FC<ButtonProps> = ({
     className,
     variants,
     size,
     children,
-    onClick,
+    path,
     ...props
 }) => {
     return (
-        <button
+        <Link
             className={cn(buttonVariants({ size, className, variants }))}
-            onClick={onClick}
+            href={path}
             {...props}
         >
             {children}
-        </button>
+        </Link>
     )
 }
-export { Button, buttonVariants }
+export { NavButton, buttonVariants }

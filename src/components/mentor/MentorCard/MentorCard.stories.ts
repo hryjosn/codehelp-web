@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { MentorCard } from './MentorCard'
-import { MOCK_MENTOR_LIST } from '~/container/MentorList/constant'
+import { MOCK_MENTOR_LIST } from '~/container/Home/components/MentorList/constant'
 const meta = {
     title: 'MentorProfile/MentorCard',
     component: MentorCard,

@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import type { Mentor } from '~/container/MentorList/types'
+import type { Mentor } from '~/container/Home/components/MentorList/types'
 
 type Props = {
     mentor: Mentor

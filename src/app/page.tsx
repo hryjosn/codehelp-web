@@ -1,1 +1,1 @@
-export { default } from '~/container/MentorList'
+export { default } from '~/container/Home'

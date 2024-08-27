@@ -1,10 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { Button } from './Button'
-import { fn } from '@storybook/test'
+import { NavButton } from './NavButton'
 
 const meta = {
-    title: 'Components/Button',
-    component: Button,
+    title: 'Header/NavButton',
+    component: NavButton,
     parameters: {
         layout: 'centered',
     },
@@ -13,10 +12,7 @@ const meta = {
         variants: { control: 'select', options: ['primary', 'secondary'] },
         size: { control: 'select', options: ['default'] },
     },
-    args: {
-        onClick: fn(),
-    },
-} satisfies Meta<typeof Button>
+} satisfies Meta<typeof NavButton>
 
 export default meta
 type Story = StoryObj<typeof meta>
@@ -26,6 +22,7 @@ export const Login: Story = {
         children: 'Log in',
         variants: 'primary',
         size: 'default',
+        path: '/login',
     },
 }
 
@@ -34,5 +31,6 @@ export const SignUp: Story = {
         children: 'Sign up',
         variants: 'secondary',
         size: 'default',
+        path: '/signup',
     },
 }

@@ -10,14 +10,9 @@ const meta = {
     },
     tags: ['autodocs'],
     argTypes: {
-        bg: { control: 'select', options: ['default', 'gray'] },
+        isAuth: { control: 'boolean' },
     },
-    args: {
-        bg: 'default',
-        login: fn(),
-        logout: fn(),
-        signUp: fn(),
-    },
+    args: {},
 } satisfies Meta<typeof Header>
 
 export default meta
@@ -25,12 +20,12 @@ type Story = StoryObj<typeof meta>
 
 export const LoggedOut: Story = {
     args: {
-        token: '',
+        isAuth: false,
     },
 }
 
 export const LoggedIn: Story = {
     args: {
-        token: 'token',
+        isAuth: true,
     },
 }
