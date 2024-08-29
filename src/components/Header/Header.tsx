@@ -9,10 +9,10 @@ interface HeaderProps extends DetailsHTMLAttributes<HTMLDivElement> {
 const Header: FC<HeaderProps> = ({ isAuth, ...props }) => {
     return (
         <div
-            className="flex items-center g-white shadow-md justify-between py-2 px-6 border-b border-gray-100"
+            className="g-white flex items-center justify-between border-b border-gray-100 px-6 py-2 shadow-md"
             {...props}
         >
-            <div className="border py-2 px-3 border rounded-lg">
+            <div className="rounded-lg border px-3 py-2">
                 <text>Code Help Icon</text>
             </div>
             {isAuth ? (
@@ -21,7 +21,7 @@ const Header: FC<HeaderProps> = ({ isAuth, ...props }) => {
                         onClick={() => {
                             localStorage.removeItem('token')
                         }}
-                        variants={'secondary'}
+                        variant={'secondary'}
                         size={'default'}
                     >
                         Logout
@@ -31,14 +31,14 @@ const Header: FC<HeaderProps> = ({ isAuth, ...props }) => {
                 <div className="flex gap-2">
                     <NavButton
                         path="/login"
-                        variants={'primary'}
+                        variant={'primary'}
                         size={'default'}
                     >
                         Login
                     </NavButton>
                     <NavButton
                         path="/signup"
-                        variants={'secondary'}
+                        variant={'secondary'}
                         size={'default'}
                     >
                         Sign up

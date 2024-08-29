@@ -5,7 +5,7 @@ import { cn } from '~/lib/utils'
 
 const buttonVariants = cva('border rounded-lg border-black font-bold', {
     variants: {
-        variants: {
+        variant: {
             primary:
                 'bg-white text-black transition duration-500 hover:bg-gray-900 hover:text-white',
             secondary:
@@ -16,7 +16,7 @@ const buttonVariants = cva('border rounded-lg border-black font-bold', {
         },
     },
     defaultVariants: {
-        variants: 'primary',
+        variant: 'primary',
         size: 'default',
     },
 })
@@ -29,7 +29,7 @@ interface ButtonProps
 
 const NavButton: FC<ButtonProps> = ({
     className,
-    variants,
+    variant,
     size,
     children,
     path,
@@ -37,7 +37,7 @@ const NavButton: FC<ButtonProps> = ({
 }) => {
     return (
         <Link
-            className={cn(buttonVariants({ size, className, variants }))}
+            className={cn(buttonVariants({ size, className, variant }))}
             href={path}
             {...props}
         >

@@ -10,7 +10,7 @@ const meta = {
     },
     tags: ['autodocs'],
     argTypes: {
-        variants: { control: 'select', options: ['primary', 'secondary'] },
+        variant: { control: 'select', options: ['primary', 'secondary'] },
         size: { control: 'select', options: ['default'] },
     },
     args: {
@@ -24,7 +24,7 @@ type Story = StoryObj<typeof meta>
 export const Login: Story = {
     args: {
         children: 'Log in',
-        variants: 'primary',
+        variant: 'primary',
         size: 'default',
     },
 }
@@ -32,7 +32,7 @@ export const Login: Story = {
 export const SignUp: Story = {
     args: {
         children: 'Sign up',
-        variants: 'secondary',
+        variant: 'secondary',
         size: 'default',
     },
 }

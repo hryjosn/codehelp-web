@@ -4,7 +4,7 @@ import { cn } from '~/lib/utils'
 
 const buttonVariants = cva('border rounded-lg border-black font-bold', {
     variants: {
-        variants: {
+        variant: {
             primary:
                 'bg-white text-black transition duration-500 hover:bg-gray-900 hover:text-white',
             secondary:
@@ -15,7 +15,7 @@ const buttonVariants = cva('border rounded-lg border-black font-bold', {
         },
     },
     defaultVariants: {
-        variants: 'primary',
+        variant: 'primary',
         size: 'default',
     },
 })
@@ -26,7 +26,7 @@ interface ButtonProps
 
 const Button: FC<ButtonProps> = ({
     className,
-    variants,
+    variant,
     size,
     children,
     onClick,
@@ -34,7 +34,7 @@ const Button: FC<ButtonProps> = ({
 }) => {
     return (
         <button
-            className={cn(buttonVariants({ size, className, variants }))}
+            className={cn(buttonVariants({ size, className, variant }))}
             onClick={onClick}
             {...props}
         >
