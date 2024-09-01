@@ -1,23 +1,18 @@
-import TextField from '@mui/material/TextField'
-import React from 'react'
-import { UseFormRegister } from 'react-hook-form'
+import TextField, { TextFieldProps } from '@mui/material/TextField';
+import { UseFormRegister } from 'react-hook-form';
 
-export interface FormInputProps {
-    placeholder?: string
-    type?: string
-    value?: string
-    register: UseFormRegister<any>
-    registerName: string
-}
+import { DataProps } from '~/container/SignUp/store/types';
 
+
+export type FormInputProps = {
+    register: UseFormRegister<DataProps>
+    registerName: "email" | "password" | "userName"
+  } & TextFieldProps;
 const FormInput = ({
-    placeholder,
     register,
-    type,
     registerName,
-    value,
 }: FormInputProps) => {
-    const { ref: inputRef, ...inputProps } = register(registerName)
+    const { ref: inputRef, ...inputProps } = register(registerName);
     return (
         <TextField
             InputProps={{
@@ -27,10 +22,7 @@ const FormInput = ({
                     width: '240px',
                 },
             }}
-            placeholder={placeholder}
             inputRef={inputRef}
-            value={value}
-            type={type}
             {...inputProps}
         />
     )
