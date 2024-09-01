@@ -1,12 +1,13 @@
 import React, { InputHTMLAttributes } from 'react'
 import { useFormContext } from 'react-hook-form'
-import Input from '../FormInput/FormInput'
-export interface FormControllerProps
-    extends InputHTMLAttributes<HTMLInputElement> {
+import FormInput from '../FormInput/FormInput'
+export interface FormControllerProps {
+    placeholder: string
     label: string
+    type?: string
 }
 
-const FormController = ({ label, type, ...props }: FormControllerProps) => {
+const FormController = ({ placeholder, label, type }: FormControllerProps) => {
     const {
         register,
         formState: { errors },
@@ -18,7 +19,12 @@ const FormController = ({ label, type, ...props }: FormControllerProps) => {
         <div className="flex flex-col items-center gap-1">
             <div>
                 <p className="text-sm">{label}</p>
-                <Input register={register} registerName={label} {...props} />
+                <FormInput
+                    placeholder={placeholder}
+                    register={register}
+                    registerName={label}
+                    type={type}
+                />
             </div>
             {errorMessage && typeof errorMessage === 'string' && (
                 <p className="text-red-400 text-base">{errorMessage}</p>
