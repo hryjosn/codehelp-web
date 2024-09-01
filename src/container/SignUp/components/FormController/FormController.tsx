@@ -1,9 +1,9 @@
-import React, { InputHTMLAttributes } from 'react'
 import { useFormContext } from 'react-hook-form'
+import { DataProps } from '../../store/types'
 import FormInput from '../FormInput/FormInput'
 export interface FormControllerProps {
     placeholder: string
-    label: string
+    label: "email" | "password" | "userName"
     type?: string
 }
 
@@ -11,7 +11,7 @@ const FormController = ({ placeholder, label, type }: FormControllerProps) => {
     const {
         register,
         formState: { errors },
-    } = useFormContext()
+    } = useFormContext<DataProps>()
 
     const errorMessage = errors[label]?.message
 
@@ -20,10 +20,8 @@ const FormController = ({ placeholder, label, type }: FormControllerProps) => {
             <div>
                 <p className="text-sm">{label}</p>
                 <FormInput
-                    placeholder={placeholder}
                     register={register}
                     registerName={label}
-                    type={type}
                 />
             </div>
             {errorMessage && typeof errorMessage === 'string' && (
