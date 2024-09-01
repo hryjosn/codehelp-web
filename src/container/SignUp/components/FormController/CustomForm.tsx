@@ -5,13 +5,15 @@ import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'
 import Button from '../Button/Button'
 import { DataProps } from '../../store/types'
 
-export const StorybookFormProvider: FC<{
+export const CustomForm: FC<{
     onSubmit: SubmitHandler<DataProps>
     schema: Joi.Schema
+    buttonText: string
     children: ReactNode
-}> = ({ children, schema, onSubmit }) => {
+}> = ({ children, buttonText, schema, onSubmit }) => {
     const methods = useForm<DataProps>({
         resolver: joiResolver(schema),
+        mode: 'onChange',
     })
     const {
         formState: { errors },
@@ -23,7 +25,7 @@ export const StorybookFormProvider: FC<{
                 className="flex flex-col items-center gap-3"
             >
                 {children}
-                <Button text={'Sign Up'} errors={errors} />
+                <Button errors={errors}>{buttonText}</Button>
             </form>
         </FormProvider>
     )

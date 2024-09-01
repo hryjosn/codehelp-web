@@ -1,9 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import FormController from './FormController'
-import { StorybookFormProvider } from './withRHF'
+import { CustomForm } from './CustomForm'
 import Joi from 'joi'
-import { useEffect } from 'react'
-import { useForm, FormProvider } from 'react-hook-form'
 
 const meta = {
     title: 'SignUp/FormController',
@@ -14,14 +12,15 @@ const meta = {
     tags: ['autodocs'],
     decorators: [
         (Story) => (
-            <StorybookFormProvider
+            <CustomForm
                 onSubmit={() => {}}
+                buttonText={'Sign Up'}
                 schema={Joi.object({
                     UserName: Joi.string().required(),
                 })}
             >
                 <Story />
-            </StorybookFormProvider>
+            </CustomForm>
         ),
     ],
     argTypes: {
@@ -34,36 +33,14 @@ type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
     args: {
-        placeholder: 'UserName',
         label: 'UserName',
+        placeholder: 'UserName',
     },
 }
 
 export const ValidationError: Story = {
     args: {
-        placeholder: 'Please click button',
         label: 'UserName',
+        placeholder: 'Please click button',
     },
-    decorators: [
-        (Story) => {
-            const methods = useForm({
-                defaultValues: {
-                    UserName: '',
-                },
-            })
-
-            useEffect(() => {
-                methods.setError('UserName', {
-                    type: 'manual',
-                    message: 'This field is required',
-                })
-            }, [methods])
-
-            return (
-                <FormProvider {...methods}>
-                    <Story />
-                </FormProvider>
-            )
-        },
-    ],
 }

@@ -34,7 +34,7 @@ export const Default: StoryObj<FormInputProps> = {
     args: {
         value: 'Default text',
         placeholder: 'UserName',
-        registerLabel: 'UserName',
+        registerName: 'UserName',
     },
 }
 export const Password: StoryObj<FormInputProps> = {
@@ -42,7 +42,7 @@ export const Password: StoryObj<FormInputProps> = {
     args: {
         value: 'Default text',
         placeholder: 'UserName',
-        registerLabel: 'UserName',
+        registerName: 'UserName',
         type: 'password',
     },
 }

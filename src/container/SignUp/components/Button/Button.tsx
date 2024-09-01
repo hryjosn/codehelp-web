@@ -1,35 +1,35 @@
-import { cva } from 'class-variance-authority'
+import { cva, VariantProps } from 'class-variance-authority'
+import { ButtonHTMLAttributes } from 'react'
 import { cn } from '~/lib/utils'
-export interface ButtonProps {
-    text: string
+
+const buttonVariants = cva('text-white p-3 rounded-full w-40', {
+    variants: {
+        variant: {
+            default: 'bg-slate-800 hover:bg-slate-700',
+            hasError: 'bg-gray-400',
+        },
+    },
+    defaultVariants: {
+        variant: 'default',
+    },
+})
+
+interface ButtonProps
+    extends ButtonHTMLAttributes<HTMLButtonElement>,
+        VariantProps<typeof buttonVariants> {
     errors: object
 }
 
-const Button = ({ text, errors }: ButtonProps) => {
+const Button = ({ errors, ...props }: ButtonProps) => {
     const hasError = Object.keys(errors).length !== 0
-
-    const buttonVariants = cva('text-white p-3 rounded-full w-40', {
-        variants: {
-            state: {
-                default: 'bg-slate-800 hover:bg-slate-700',
-                hasError: 'bg-gray-400',
-            },
-        },
-        defaultVariants: {
-            state: 'default',
-        },
-    })
-
     return (
         <button
-            type="submit"
             className={cn(
-                buttonVariants({ state: hasError ? 'hasError' : 'default' })
+                buttonVariants({ variant: hasError ? 'hasError' : 'default' })
             )}
             disabled={hasError}
-        >
-            {text}
-        </button>
+            {...props}
+        />
     )
 }
 

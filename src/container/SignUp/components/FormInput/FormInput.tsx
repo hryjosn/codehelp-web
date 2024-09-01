@@ -7,17 +7,17 @@ export interface FormInputProps {
     type?: string
     value?: string
     register: UseFormRegister<any>
-    registerLabel: string
+    registerName: string
 }
 
 const FormInput = ({
     placeholder,
     register,
     type,
-    registerLabel,
+    registerName,
     value,
 }: FormInputProps) => {
-    const { ref: inputRef, ...inputProps } = register(registerLabel)
+    const { ref: inputRef, ...inputProps } = register(registerName)
     return (
         <TextField
             InputProps={{

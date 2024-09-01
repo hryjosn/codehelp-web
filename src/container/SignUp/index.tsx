@@ -4,7 +4,7 @@ import { observer } from 'mobx-react-lite'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import FormController from './components/FormController/FormController'
-import { StorybookFormProvider } from './components/FormController/withRHF'
+import { CustomForm } from './components/FormController/CustomForm'
 import Joi from 'joi'
 import LinkText from './components/LinkText/LinkText'
 import { DataProps } from './store/types'
@@ -49,14 +49,15 @@ const SignUp = () => {
                                 width={120}
                                 height={120}
                             />
-                            <StorybookFormProvider
+                            <CustomForm
                                 onSubmit={onSubmit}
                                 schema={schema}
+                                buttonText={'Sign Up'}
                             >
                                 <div className="flex flex-col gap-3">
                                     <FormController
                                         placeholder="Enter 3 to 30 characters"
-                                        label="UserName"
+                                        label="Username"
                                     />
                                     <FormController
                                         placeholder="Enter your email"
@@ -68,7 +69,7 @@ const SignUp = () => {
                                         type={'password'}
                                     />
                                 </div>
-                            </StorybookFormProvider>
+                            </CustomForm>
                         </div>
                     </div>
                 </div>
