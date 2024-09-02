@@ -3,15 +3,15 @@ import Joi from 'joi'
 import { ReactNode, FC } from 'react'
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'
 import Button from '../Button/Button'
-import { DataProps } from '../../store/types'
+import { SignUpInputT } from '../../store/types'
 
-export const CustomForm: FC<{
-    onSubmit: SubmitHandler<DataProps>
+export const Form: FC<{
+    onSubmit: SubmitHandler<SignUpInputT>
     schema: Joi.Schema
     buttonText: string
     children: ReactNode
 }> = ({ children, buttonText, schema, onSubmit }) => {
-    const methods = useForm<DataProps>({
+    const methods = useForm<SignUpInputT>({
         resolver: joiResolver(schema),
         mode: 'onChange',
     })

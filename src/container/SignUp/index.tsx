@@ -4,7 +4,7 @@ import { observer } from 'mobx-react-lite'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import FormController from './components/FormController/FormController'
-import { CustomForm } from './components/FormController/CustomForm'
+import { Form } from './components/FormController/Form'
 import Joi from 'joi'
 import LinkText from './components/LinkText/LinkText'
 import { SignUpInputT } from './store/types'
@@ -49,7 +49,7 @@ const SignUp = () => {
                                 width={120}
                                 height={120}
                             />
-                            <CustomForm
+                            <Form
                                 onSubmit={onSubmit}
                                 schema={schema}
                                 buttonText={'Sign Up'}
@@ -69,7 +69,7 @@ const SignUp = () => {
                                         type={'password'}
                                     />
                                 </div>
-                            </CustomForm>
+                            </Form>
                         </div>
                     </div>
                 </div>

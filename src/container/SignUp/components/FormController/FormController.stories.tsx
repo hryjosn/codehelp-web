@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import FormController from './FormController'
-import { CustomForm } from './CustomForm'
+import { Form } from './Form'
 import Joi from 'joi'
 
 const meta = {
@@ -12,7 +12,7 @@ const meta = {
     tags: ['autodocs'],
     decorators: [
         (Story) => (
-            <CustomForm
+            <Form
                 onSubmit={() => {}}
                 buttonText={'Sign Up'}
                 schema={Joi.object({
@@ -20,7 +20,7 @@ const meta = {
                 })}
             >
                 <Story />
-            </CustomForm>
+            </Form>
         ),
     ],
     argTypes: {
