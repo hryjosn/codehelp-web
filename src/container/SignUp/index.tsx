@@ -7,22 +7,22 @@ import FormController from './components/FormController/FormController'
 import { CustomForm } from './components/FormController/CustomForm'
 import Joi from 'joi'
 import LinkText from './components/LinkText/LinkText'
-import { DataProps } from './store/types'
+import { SignUpInputT } from './store/types'
 const SignUp = () => {
     const route = useRouter()
 
-    const onSubmit = (data: DataProps) => {
+    const onSubmit = (data: SignUpInputT) => {
         if (data) {
             route.push('/')
         }
     }
 
     const schema = Joi.object({
-        UserName: Joi.string().min(3).max(30).required(),
-        Email: Joi.string()
+        userName: Joi.string().min(3).max(30).required(),
+        email: Joi.string()
             .email({ tlds: { allow: false } })
             .required(),
-        Password: Joi.string().min(8).max(30).required(),
+        password: Joi.string().min(8).max(30).required(),
     }).messages({
         'any.required': 'is a required field',
     })
@@ -57,15 +57,15 @@ const SignUp = () => {
                                 <div className="flex flex-col gap-3">
                                     <FormController
                                         placeholder="Enter 3 to 30 characters"
-                                        label="Username"
+                                        label="userName"
                                     />
                                     <FormController
                                         placeholder="Enter your email"
-                                        label="Email"
+                                        label="email"
                                     />
                                     <FormController
                                         placeholder="Enter 8 to 30 characters"
-                                        label="Password"
+                                        label="password"
                                         type={'password'}
                                     />
                                 </div>

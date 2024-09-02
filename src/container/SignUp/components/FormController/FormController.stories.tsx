@@ -33,14 +33,14 @@ type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
     args: {
-        label: 'UserName',
+        label: 'userName',
         placeholder: 'UserName',
     },
 }
 
 export const ValidationError: Story = {
     args: {
-        label: 'UserName',
+        label: 'userName',
         placeholder: 'Please click button',
     },
 }

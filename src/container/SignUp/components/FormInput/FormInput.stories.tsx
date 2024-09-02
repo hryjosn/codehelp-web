@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import FormInput, { FormInputProps } from './FormInput'
 import { useForm } from 'react-hook-form'
+import { SignUpInputT } from '../../store/types'
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
 
@@ -24,9 +25,11 @@ const meta = {
 export default meta
 
 // More on writing stories with args: https://storybook.js.org/docs/writing-stories/args
-const Template = (args: FormInputProps) => {
-    const { register } = useForm()
-    return <FormInput {...args} register={register} />
+
+const Template = (args: { [x: string]: any }) => {
+    const { register } = useForm<SignUpInputT>()
+    const formInputProps = args as FormInputProps
+    return <FormInput {...formInputProps} register={register} />
 }
 
 export const Default: StoryObj<FormInputProps> = {
@@ -34,15 +37,16 @@ export const Default: StoryObj<FormInputProps> = {
     args: {
         value: 'Default text',
         placeholder: 'UserName',
-        registerName: 'UserName',
+        registerName: 'userName',
     },
 }
+
 export const Password: StoryObj<FormInputProps> = {
     render: Template,
     args: {
         value: 'Default text',
         placeholder: 'UserName',
-        registerName: 'UserName',
+        registerName: 'userName',
         type: 'password',
     },
 }

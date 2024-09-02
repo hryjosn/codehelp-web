@@ -1,9 +1,10 @@
-import React, { InputHTMLAttributes } from 'react'
+import React from 'react'
 import { useFormContext } from 'react-hook-form'
 import FormInput from '../FormInput/FormInput'
+import { SignUpInputT } from '../../store/types'
 export interface FormControllerProps {
     placeholder: string
-    label: string
+    label: keyof SignUpInputT
     type?: string
 }
 
@@ -11,7 +12,7 @@ const FormController = ({ placeholder, label, type }: FormControllerProps) => {
     const {
         register,
         formState: { errors },
-    } = useFormContext()
+    } = useFormContext<SignUpInputT>()
 
     const errorMessage = errors[label]?.message
 
