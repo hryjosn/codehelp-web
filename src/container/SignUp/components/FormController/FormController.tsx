@@ -20,12 +20,7 @@ const FormController = ({ placeholder, label, type }: FormControllerProps) => {
         <div className="flex flex-col items-center gap-1">
             <div>
                 <p className="text-sm">{label}</p>
-                <FormInput
-                    placeholder={placeholder}
-                    register={register}
-                    registerName={label}
-                    type={type}
-                />
+                <FormInput register={register} registerName={label} />
             </div>
             {errorMessage && typeof errorMessage === 'string' && (
                 <p className="text-red-400 text-base">{errorMessage}</p>
