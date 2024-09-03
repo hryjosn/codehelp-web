@@ -29,9 +29,4 @@ export const Disable: Story = {
     },
 }
 
-export const Enable: Story = {
-    args: {
-        title: 'Login',
-        errors: {},
-    },
-}
+export const Enable: Story = {}

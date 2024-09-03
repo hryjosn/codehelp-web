@@ -56,6 +56,7 @@ const Login = () => {
                             <FormInput
                                 title="Password"
                                 valueName="password"
+                                type="password"
                                 register={register}
                                 required={{
                                     value: true,

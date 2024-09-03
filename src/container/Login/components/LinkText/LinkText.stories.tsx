@@ -7,7 +7,6 @@ const meta = {
     parameters: {
         layout: 'centered',
     },
-    tags: ['autodocs'],
     args: {
         href: '/signup',
     },
@@ -18,7 +17,6 @@ type Story = StoryObj<typeof meta>
 
 export const Primary: Story = {
     args: {
-        href: '/signup',
         value: `Don\'t have an account? Create a new account.`,
     },
 }

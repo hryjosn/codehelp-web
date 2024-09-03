@@ -3,7 +3,8 @@ import TextField from '@mui/material/TextField'
 import { LoginInputT } from './types'
 
 const FormInput = (props: LoginInputT) => {
-    const { title, valueName, errors, required, pattern, register } = props
+    const { title, valueName, type, errors, required, pattern, register } =
+        props
 
     return (
         <>
@@ -15,6 +16,7 @@ const FormInput = (props: LoginInputT) => {
                         height: '48px',
                     },
                 }}
+                type={type}
                 {...register(valueName, { required, pattern })}
             />
             {errors && <p className="text-red-500">{errors}</p>}

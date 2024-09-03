@@ -47,3 +47,16 @@ EmailInput.args = {
         message: '信箱格式錯誤',
     },
 }
+
+export const PasswordInput = Input.bind({})
+PasswordInput.args = {
+    title: 'Password',
+    valueName: 'password',
+    type: 'password',
+    errors: '',
+    required: { value: true, message: '必填選項' },
+    pattern: {
+        value: validateRule.password,
+        message: '密碼格式錯誤',
+    },
+}
