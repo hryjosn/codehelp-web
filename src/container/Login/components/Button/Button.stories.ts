@@ -9,7 +9,7 @@ const meta = {
     },
     tags: ['autodocs'],
     args: {
-        title: 'Login',
+        children: 'Login',
         errors: {},
     },
 } satisfies Meta<typeof Button>
@@ -19,7 +19,7 @@ type Story = StoryObj<typeof meta>
 
 export const Disable: Story = {
     args: {
-        title: 'Login',
+        children: 'Login',
         errors: {
             password: {
                 type: 'pattern',

@@ -69,7 +69,7 @@ const Login = () => {
                                 errors={errors.password?.message}
                             />
                         </div>
-                        <Button title="Login" errors={errors} />
+                        <Button errors={errors}>Login</Button>
                     </div>
                 </form>
             </div>

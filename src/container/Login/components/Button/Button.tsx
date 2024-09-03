@@ -1,23 +1,39 @@
-import classNames from 'classnames'
-import React from 'react'
-import { ButtonT } from './types'
+import { cva, VariantProps } from 'class-variance-authority'
+import { ButtonHTMLAttributes } from 'react'
+import { cn } from '~/lib/utils'
+import { FieldErrors } from 'react-hook-form'
 
-const Button = (props: ButtonT) => {
-    const { title, errors } = props
+const buttonVariants = cva('text-white p-3 rounded-full mt-5 min-w-40', {
+    variants: {
+        variant: {
+            default: 'bg-slate-800 hover:bg-slate-700',
+            hasError: 'bg-gray-400',
+        },
+    },
+    defaultVariants: {
+        variant: 'default',
+    },
+})
 
+interface ButtonT
+    extends ButtonHTMLAttributes<HTMLButtonElement>,
+        VariantProps<typeof buttonVariants> {
+    errors: FieldErrors<{
+        email: string
+        password: string
+    }>
+}
+
+const Button = ({ errors, ...props }: ButtonT) => {
+    const hasError = Object.keys(errors).length !== 0
     return (
         <button
-            className={classNames(
-                'text-white p-3 rounded-full mt-5 bg-gray-400 min-w-40',
-                {
-                    'bg-slate-800 hover:bg-slate-700':
-                        Object.keys(errors).length === 0,
-                }
+            className={cn(
+                buttonVariants({ variant: hasError ? 'hasError' : 'default' })
             )}
-            disabled={Object.keys(errors).length !== 0}
-        >
-            {title}
-        </button>
+            disabled={hasError}
+            {...props}
+        />
     )
 }
 
