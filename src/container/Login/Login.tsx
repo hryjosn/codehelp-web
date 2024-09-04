@@ -7,8 +7,15 @@ import Button from './components/Button/Button'
 import FormInput from './components/FormInput/FormInput'
 import LinkText from './components/LinkText/LinkText'
 import { validateRule } from '~/constant/regex'
+import { LoginDataT, RESPONSE_CODE } from './store/type'
+import { callMemberLogin } from '~/api/user'
+import { useRouter } from 'next/navigation'
+import { isAxiosError } from 'axios'
+import { useState } from 'react'
 
 const Login = () => {
+    const [errorText, setErrorText] = useState('')
+    const router = useRouter()
     const {
         handleSubmit,
         register,
@@ -20,8 +27,27 @@ const Login = () => {
             password: '',
         },
     })
-    const onSubmit = (data: any) => {
-        console.log(data)
+
+    const onSubmit = async (data: LoginDataT) => {
+        try {
+            const res = await callMemberLogin(data)
+            if (res.data.msg === 'Login successful') {
+                router.push('/')
+            }
+        } catch (error) {
+            if (isAxiosError(error)) {
+                switch (error.response?.data.code) {
+                    case RESPONSE_CODE.VALIDATE_ERROR:
+                        setErrorText('Validate error')
+                        break
+                    case RESPONSE_CODE.USER_DATA_ERROR:
+                        setErrorText('Email or password is wrong')
+                        break
+                    default:
+                        setErrorText('Unknown error')
+                }
+            }
+        }
     }
     return (
         <div className="flex h-screen">
@@ -70,6 +96,9 @@ const Login = () => {
                             />
                         </div>
                         <Button errors={errors}>Login</Button>
+                        <div className="text-center text-red-500">
+                            {errorText}
+                        </div>
                     </div>
                 </form>
             </div>
