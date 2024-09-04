@@ -1,4 +1,4 @@
-import { LoginDataT } from '~/container/Login/store/type'
+import { LoginDataT } from '~/container/Login/store/types'
 import apiHandler from './api'
 
 export const callMemberLogin = (data: LoginDataT) => {
