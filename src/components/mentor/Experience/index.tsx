@@ -1,4 +1,4 @@
-import type { Experience } from '~/container/MentorList/types'
+import type { Experience } from '~/container/Home/components/MentorList/types'
 import Image from 'next/image'
 
 type ExperienceListProps = {

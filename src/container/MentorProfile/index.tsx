@@ -4,8 +4,8 @@ import Booking from '~/components/Booking'
 import Bio from '~/components/mentor/Bio'
 import Education from '~/components/mentor/Education'
 import Experience from '~/components/mentor/Experience'
-import { MOCK_MENTOR_LIST } from '~/container/MentorList/constant'
-import type { Mentor } from '~/container/MentorList/types'
+import { MOCK_MENTOR_LIST } from '~/container/Home/components/MentorList/constant'
+import type { Mentor } from '~/container/Home/components/MentorList/types'
 
 const MentorProfile = ({ params }: { params: { slug: string } }) => {
     const currentMentor: Mentor | undefined = MOCK_MENTOR_LIST.find(
