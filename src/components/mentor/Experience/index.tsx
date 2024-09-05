@@ -7,15 +7,15 @@ type ExperienceListProps = {
 
 const Experience = ({ experiences }: ExperienceListProps) => {
     return (
-        <div className="p-6 rounded-xl border border-solid border-gray-200 text-slate-800">
-            <div className="text-base font-bold mb-2">Experience</div>
+        <div className="rounded-xl border border-solid border-gray-200 p-6 text-slate-800">
+            <div className="mb-2 text-base font-bold">Experience</div>
             <ul>
                 {experiences.map((experience, index) => (
                     <li
-                        className="py-2 [&:not(:last-child)]:border-b border-solid border-gray-200"
+                        className="border-solid border-gray-200 py-2 [&:not(:last-child)]:border-b"
                         key={index}
                     >
-                        <div className="flex gap-2 mb-2">
+                        <div className="mb-2 flex gap-2">
                             <Image
                                 src="/industry.svg"
                                 alt="industry"
@@ -23,13 +23,13 @@ const Experience = ({ experiences }: ExperienceListProps) => {
                                 height="46"
                             />
                             <div>
-                                <p className="text-xl break-all">
+                                <p className="break-all text-xl">
                                     {experience.title}
                                 </p>
                                 <p className="text-sm">{experience.company}</p>
                             </div>
                         </div>
-                        <p className="text-stone-500 text-sm">
+                        <p className="text-sm text-stone-500">
                             {experience.description}
                         </p>
                     </li>
