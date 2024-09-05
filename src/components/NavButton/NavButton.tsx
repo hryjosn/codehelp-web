@@ -31,7 +31,6 @@ const NavButton: FC<ButtonProps> = ({
     className,
     variant,
     size,
-    children,
     path,
     ...props
 }) => {
@@ -40,9 +39,7 @@ const NavButton: FC<ButtonProps> = ({
             className={cn(buttonVariants({ size, className, variant }))}
             href={path}
             {...props}
-        >
-            {children}
-        </Link>
+        />
     )
 }
 export { NavButton, buttonVariants }

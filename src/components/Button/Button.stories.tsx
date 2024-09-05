@@ -21,18 +21,10 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-export const Login: Story = {
+export const Default: Story = {
     args: {
-        children: 'Log in',
+        children: 'Button',
         variant: 'primary',
-        size: 'default',
-    },
-}
-
-export const SignUp: Story = {
-    args: {
-        children: 'Sign up',
-        variant: 'secondary',
         size: 'default',
     },
 }

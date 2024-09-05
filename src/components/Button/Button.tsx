@@ -28,7 +28,6 @@ const Button: FC<ButtonProps> = ({
     className,
     variant,
     size,
-    children,
     onClick,
     ...props
 }) => {
@@ -37,9 +36,7 @@ const Button: FC<ButtonProps> = ({
             className={cn(buttonVariants({ size, className, variant }))}
             onClick={onClick}
             {...props}
-        >
-            {children}
-        </button>
+        />
     )
 }
 export { Button, buttonVariants }

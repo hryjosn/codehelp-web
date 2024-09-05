@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { Header } from './Header'
-import { fn } from '@storybook/test'
 
 const meta = {
     title: 'Header/Header',
@@ -12,7 +11,6 @@ const meta = {
     argTypes: {
         isAuth: { control: 'boolean' },
     },
-    args: {},
 } satisfies Meta<typeof Header>
 
 export default meta
