@@ -1,12 +1,11 @@
 'use client'
 import { useEffect } from 'react'
-import { Header } from '~/components/Header/Header'
 import rootStore from '~/store'
 import MentorList from './components/MentorList'
 
 const Home = () => {
     const {
-        homeStore: { isAuth, checkIsAuth },
+        homeStore: { checkIsAuth },
     } = rootStore
     useEffect(() => {
         checkIsAuth()
@@ -14,7 +13,6 @@ const Home = () => {
 
     return (
         <div>
-            <Header isAuth={isAuth} />
             <MentorList />
         </div>
     )
