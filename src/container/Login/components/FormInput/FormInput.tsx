@@ -1,26 +1,43 @@
 import React from 'react'
-import TextField from '@mui/material/TextField'
-import { LoginInputT } from './types'
+import TextField, { TextFieldProps } from '@mui/material/TextField'
+import { Controller, useFormContext } from 'react-hook-form'
 
-const FormInput = (props: LoginInputT) => {
-    const { title, valueName, type, errors, required, pattern, register } =
-        props
+export type FormInputProps = {
+    title: string
+    valueName: string
+} & TextFieldProps
 
+const FormInput = ({ title, valueName, ...restProps }: FormInputProps) => {
+    const {
+        control,
+        formState: { errors },
+    } = useFormContext()
+
+    const errorMessage = errors[valueName]?.message as string
     return (
-        <>
-            <p>{title}</p>
-            <TextField
-                InputProps={{
-                    style: {
-                        borderRadius: '8px',
-                        height: '48px',
-                    },
-                }}
-                type={type}
-                {...register(valueName, { required, pattern })}
-            />
-            {errors && <p className="text-red-500">{errors}</p>}
-        </>
+        <div className="flex flex-col items-center gap-1">
+            <div>
+                <p>{title}</p>
+                <Controller
+                    name={valueName}
+                    control={control}
+                    render={({ field }) => (
+                        <TextField
+                            InputProps={{
+                                style: {
+                                    borderRadius: '8px',
+                                    height: '48px',
+                                    width: '300px',
+                                },
+                            }}
+                            {...field}
+                            {...restProps}
+                        />
+                    )}
+                />
+            </div>
+            <div className="text-red-500 min-h-6">{errorMessage}</div>
+        </div>
     )
 }
 

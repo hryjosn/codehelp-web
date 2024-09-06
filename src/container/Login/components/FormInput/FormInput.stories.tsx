@@ -1,62 +1,63 @@
-import type { Meta, StoryFn } from '@storybook/react'
-import FormInput from './FormInput'
-import { validateRule } from '~/constant/regex'
+import type { Meta, StoryObj } from '@storybook/react'
+import FormInput, { FormInputProps } from './FormInput'
 import { FormProvider, useForm } from 'react-hook-form'
-import { LoginInputT } from './types'
+import Joi from 'joi'
+import { joiResolver } from '@hookform/resolvers/joi'
 
-const meta = {
+const meta: Meta<FormInputProps> = {
     title: 'Login/FormInput',
     component: FormInput,
     parameters: {
         layout: 'centered',
     },
-    tags: ['autodocs'],
-    args: {},
-} satisfies Meta<typeof FormInput>
+    decorators: [
+        (Story) => {
+            const schema = Joi.object({
+                email: Joi.string()
+                    .email({ tlds: { allow: false } })
+                    .required(),
+                password: Joi.string().min(8).max(30).required(),
+            }).messages({
+                'any.required': 'is a required field',
+            })
+            const methods = useForm({
+                mode: 'onChange',
+                resolver: joiResolver(schema),
+                defaultValues: {
+                    email: '',
+                    password: '',
+                },
+            })
 
-export default meta
-
-const Input: StoryFn<typeof FormInput> = (args) => {
-    const {
-        register,
-        formState: { errors },
-    } = useForm<{ email: string; password: string }>({
-        mode: 'onChange',
-        defaultValues: {
-            email: '',
-            password: '',
+            return (
+                <FormProvider {...methods}>
+                    <Story />
+                </FormProvider>
+            )
         },
-    })
-    return (
-        <FormInput
-            {...args}
-            errors={args.errors || errors.email?.message}
-            register={register}
-        />
-    )
-}
-
-export const EmailInput = Input.bind({})
-EmailInput.args = {
-    title: 'E-mail',
-    valueName: 'email',
-    errors: '',
-    required: { value: true, message: '必填選項' },
-    pattern: {
-        value: validateRule.email,
-        message: '信箱格式錯誤',
+    ],
+    tags: ['autodocs'],
+    args: {
+        title: 'E-mail',
+        valueName: 'email',
     },
 }
 
-export const PasswordInput = Input.bind({})
-PasswordInput.args = {
-    title: 'Password',
-    valueName: 'password',
-    type: 'password',
-    errors: '',
-    required: { value: true, message: '必填選項' },
-    pattern: {
-        value: validateRule.password,
-        message: '密碼格式錯誤',
+export default meta
+
+type Story = StoryObj<FormInputProps>
+
+export const Default: Story = {
+    args: {
+        title: 'E-mail',
+        valueName: 'email',
+    },
+}
+
+export const Password: Story = {
+    args: {
+        title: 'Password',
+        valueName: 'password',
+        type: 'password',
     },
 }

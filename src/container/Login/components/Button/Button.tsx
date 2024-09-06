@@ -3,7 +3,7 @@ import { ButtonHTMLAttributes } from 'react'
 import { cn } from '~/lib/utils'
 import { FieldErrors } from 'react-hook-form'
 
-const buttonVariants = cva('text-white p-3 rounded-full mt-5 min-w-40', {
+const buttonVariants = cva('text-white p-3 rounded-full min-w-40', {
     variants: {
         variant: {
             default: 'bg-slate-800 hover:bg-slate-700',
