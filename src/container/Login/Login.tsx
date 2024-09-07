@@ -19,6 +19,7 @@ const Login = () => {
     const {
         handleSubmit,
         register,
+        reset,
         formState: { errors },
     } = useForm({
         mode: 'onChange',
@@ -36,6 +37,7 @@ const Login = () => {
             }
         } catch (error) {
             if (isAxiosError(error)) {
+                reset()
                 switch (error.response?.data.code) {
                     case RESPONSE_CODE.VALIDATE_ERROR:
                         setErrorText('Validate error')
