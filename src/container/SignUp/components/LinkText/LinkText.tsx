@@ -1,13 +1,29 @@
-import React from 'react'
+import React, { LinkHTMLAttributes } from 'react'
 import Link from 'next/link'
-interface LinkProps {
-    text: string
+import { cva, VariantProps } from 'class-variance-authority'
+import { cn } from '~/lib/utils'
+
+const linkVariants = cva('font-bold', {
+    variants: {
+        variant: {
+            default: '',
+            underline: 'underline',
+        },
+    },
+    defaultVariants: {
+        variant: 'default',
+    },
+})
+interface LinkProps
+    extends LinkHTMLAttributes<HTMLLinkElement>,
+        VariantProps<typeof linkVariants> {
     href: string
 }
-const LinkText = ({ text, href }: LinkProps) => {
+
+const LinkText = ({ href, variant, children }: LinkProps) => {
     return (
-        <Link href={href} className={'underline font-bold'}>
-            {text}
+        <Link href={href} className={cn(linkVariants({ variant }))}>
+            {children}
         </Link>
     )
 }

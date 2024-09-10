@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import FormInput, { FormInputProps } from './FormInput'
-import { useForm } from 'react-hook-form'
-import { SignUpInputT } from '../../store/types'
+import { FormProvider, useForm } from 'react-hook-form'
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
 
@@ -14,7 +13,16 @@ const meta = {
     },
     // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/writing-docs/autodocs
     tags: ['autodocs'],
-
+    decorators: [
+        (Story) => {
+            const methods = useForm<SignUpInputT>()
+            return (
+                <FormProvider {...methods}>
+                    <Story />
+                </FormProvider>
+            )
+        },
+    ],
     // Use `fn` to spy on the onClick arg, which will appear in the actions panel once invoked: https://storybook.js.org/docs/essentials/actions#action-args
     args: { type: 'text' },
     argTypes: {
@@ -26,25 +34,17 @@ export default meta
 
 // More on writing stories with args: https://storybook.js.org/docs/writing-stories/args
 
-const Template = (args: { [x: string]: any }) => {
-    const { register } = useForm<SignUpInputT>()
-    const formInputProps = args as FormInputProps
-    return <FormInput {...formInputProps} register={register} />
-}
-
 export const Default: StoryObj<FormInputProps> = {
-    render: Template,
     args: {
-        value: 'Default text',
+        defaultValue: 'Default text',
         placeholder: 'UserName',
         registerName: 'userName',
     },
 }
 
 export const Password: StoryObj<FormInputProps> = {
-    render: Template,
     args: {
-        value: 'Default text',
+        defaultValue: 'Default text',
         placeholder: 'UserName',
         registerName: 'userName',
         type: 'password',
