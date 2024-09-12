@@ -1,6 +1,6 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios'
 
-export const baseURL = 'https://codehelp-backend-production.up.railway.app/'
+export const baseURL = process.env.NEXT_PUBLIC_API_URL
 // Create a new Axios instance
 const instance: AxiosInstance = axios.create({
     baseURL,
