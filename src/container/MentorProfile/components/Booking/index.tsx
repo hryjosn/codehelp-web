@@ -43,11 +43,11 @@ const Booking = () => {
     }
 
     return (
-        <div className="max-w-[480px] p-6 rounded-xl border border-solid border-gray-200 relative">
-            <p className="mb-1 tracking-wider text-lg text-blue-950 font-bold">
+        <div className="relative max-w-[480px] rounded-xl border border-solid border-gray-200 p-6">
+            <p className="mb-1 text-lg font-bold tracking-wider text-blue-950">
                 Available sessions
             </p>
-            <small className="tracking-wide text-slate-500 font-light">
+            <small className="font-light tracking-wide text-slate-500">
                 Book 1:1 sessions from the options based on your needs
             </small>
             <ul className="my-6 grid grid-cols-5 gap-4">
@@ -55,10 +55,10 @@ const Booking = () => {
                     <li
                         key={index}
                         style={{ height: '70px' }}
-                        className={`flex flex-col justify-center	gap-2 font-bold rounded-lg border border-solid border-gray-200 text-center cursor-pointer hover:border-sky-900 ${selectedDate === day ? 'border-sky-900' : ''}`}
+                        className={`flex cursor-pointer flex-col justify-center gap-2 rounded-lg border border-solid border-gray-200 text-center font-bold hover:border-sky-900 ${selectedDate === day ? 'border-sky-900' : ''}`}
                         onClick={() => onSelectDate(day)}
                     >
-                        <small className="text-gray-500 text-xs uppercase">
+                        <small className="text-xs uppercase text-gray-500">
                             {day
                                 .toLocaleDateString('en-US', {
                                     weekday: 'short',
@@ -77,17 +77,17 @@ const Booking = () => {
                 ))}
                 <div
                     style={{ height: '70px' }}
-                    className="flex justify-center items-center cursor-pointer text-green-800 font-bold"
+                    className="flex cursor-pointer items-center justify-center font-bold text-green-800"
                     onClick={() => setIsCalendarOpen(true)}
                 >
                     <span>View all</span>
                 </div>
             </ul>
-            <div className="mb-3 pb-3 flex justify-between tracking-wider border-b border-solid border-gray-200">
+            <div className="mb-3 flex justify-between border-b border-solid border-gray-200 pb-3 tracking-wider">
                 <span className="text-sm text-blue-950">
                     Available time slots
                 </span>
-                <div className="flex gap-5 cursor-pointer text-gray-200">
+                <div className="flex cursor-pointer gap-5 text-gray-200">
                     <span
                         className="hover:text-blue-950"
                         onClick={() => onPrevTimes()}
@@ -106,7 +106,7 @@ const Booking = () => {
                 {visibleTimes.map((time) => (
                     <li
                         key={time}
-                        className={`flex items-center justify-center h-10 font-bold rounded-lg border border-solid border-gray-200 text-center cursor-pointer hover:border-sky-900 ${selectedTime === time ? 'border-sky-900' : ''}`}
+                        className={`flex h-10 cursor-pointer items-center justify-center rounded-lg border border-solid border-gray-200 text-center font-bold hover:border-sky-900 ${selectedTime === time ? 'border-sky-900' : ''}`}
                         onClick={() => onSelectTime(time)}
                     >
                         {new Date(time).toLocaleTimeString('en-US', {
@@ -117,16 +117,16 @@ const Booking = () => {
                     </li>
                 ))}
             </ul>
-            <button className="my-6 w-full h-10 bg-teal-700 text-white font-bold rounded-md">
+            <button className="my-6 h-10 w-full rounded-md bg-teal-700 font-bold text-white">
                 BOOK
             </button>
             {isCalendarOpen && (
                 <div
                     style={{ width: '300px' }}
-                    className="absolute m-auto left-0 right-0 top-0 bottom-0"
+                    className="absolute bottom-0 left-0 right-0 top-0 m-auto"
                 >
                     <div
-                        className="flex justify-end cursor-pointer text-green-800 font-bold"
+                        className="flex cursor-pointer justify-end font-bold text-green-800"
                         onClick={() => setIsCalendarOpen(false)}
                     >
                         X
