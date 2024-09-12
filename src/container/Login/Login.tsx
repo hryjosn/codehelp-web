@@ -6,7 +6,7 @@ import Button from './components/Button/Button'
 import FormInput from './components/FormInput/FormInput'
 import LinkText from './components/LinkText/LinkText'
 import { LoginDataT, RESPONSE_CODE } from './store/types'
-import { callMemberLogin } from '~/api/user'
+import { callLogin } from '~/api/user'
 import { useRouter } from 'next/navigation'
 import { isAxiosError } from 'axios'
 import { useState } from 'react'
@@ -37,8 +37,8 @@ const Login = () => {
     } = methods
     const onSubmit = async (data: LoginDataT) => {
         try {
-            const res = await callMemberLogin(data)
-            if (res.data.msg === 'Login successful') {
+            const res = await callLogin(data)
+            if (res.data.token) {
                 router.push('/')
             }
         } catch (error) {
