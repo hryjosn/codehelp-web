@@ -11,9 +11,9 @@ import Joi from 'joi/lib'
 const Step4 = () => {
     const router = useRouter()
     const schema = Joi.object({
-        introduction: Joi.string().required(),
-    }).messages({
-        'any.required': 'is a required field',
+        introduction: Joi.string().required().messages({
+            'string.empty': 'Introduction is a required field',
+        }),
     })
     const onSubmit = ({ introduction }: { introduction: string }) => {
         runInAction(() => {

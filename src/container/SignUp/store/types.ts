@@ -1,4 +1,5 @@
 interface mentorStep1T {
+    phoneNumber: string
     gender: string
     country: string
 }

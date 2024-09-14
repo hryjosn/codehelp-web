@@ -15,6 +15,7 @@ const FormSelect = ({
     registerName,
     dataList,
     multiple,
+    ...props
 }: FormSelectProps) => {
     const {
         control,
@@ -47,6 +48,7 @@ const FormSelect = ({
                             className="min-h-10 rounded-lg w-full"
                             multiple={multiple}
                             {...restField}
+                            {...props}
                         >
                             {dataList.map((data, index) =>
                                 typeof data === 'string' ? (

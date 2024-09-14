@@ -48,7 +48,7 @@ const SignUp = () => {
                         />
                         <Form onSubmit={onSubmit} schema={schema}>
                             <FormInput
-                                label="UserName"
+                                label="Username"
                                 placeholder="Enter 3 to 30 characters"
                                 registerName="userName"
                             />
