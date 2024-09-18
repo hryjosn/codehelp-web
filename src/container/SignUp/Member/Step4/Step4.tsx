@@ -10,6 +10,9 @@ import Joi from 'joi/lib'
 
 const Step4 = () => {
     const router = useRouter()
+    const {
+        signUpStore: { memberSignUp },
+    } = rootStore
     const schema = Joi.object({
         introduction: Joi.string()
             .required()
@@ -18,13 +21,12 @@ const Step4 = () => {
     const onSubmit = ({ introduction }: { introduction: string }) => {
         runInAction(() => {
             rootStore.signUpStore.introduction = introduction
-            rootStore.signUpStore.role = 'member'
         })
-        router.push('/')
+        memberSignUp()
     }
     return (
-        <div className="flex justify-center items-center h-full">
-            <div className="flex justify-center items-center shadow-lg p-10 rounded-xl w-150">
+        <div className="flex h-full items-center justify-center">
+            <div className="w-150 flex items-center justify-center rounded-xl p-10 shadow-lg">
                 <div className="flex flex-col gap-10">
                     <div className="text-3xl font-bold">
                         {"Lastly, what's your introduction?"}
@@ -37,7 +39,7 @@ const Step4 = () => {
                             rows={10}
                         />
 
-                        <div className="w-full flex justify-between">
+                        <div className="flex w-full justify-between">
                             <button
                                 type="button"
                                 className="font-bold"

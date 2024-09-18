@@ -1,4 +1,4 @@
-interface mentorStep1T {
+interface step1T {
     phoneNumber: string
     gender: string
     country: string
@@ -15,16 +15,12 @@ interface mentorStep3T {
     skills: string[]
     tools: string[]
 }
-interface studentStep1T {
-    phoneNumber: string
-    country: string
-}
 interface studentStep2T {
     title: string
     company: string
 }
 interface studentStep3T {
-    work: string
+    work: string[]
     level: string
 }
 type SignUpInputT = {

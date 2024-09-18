@@ -26,7 +26,7 @@ const Step1 = () => {
     }).messages({
         'any.required': 'is a required field',
     })
-    const onSubmit = ({ phoneNumber, gender, country }: mentorStep1T) => {
+    const onSubmit = ({ phoneNumber, gender, country }: step1T) => {
         runInAction(() => {
             rootStore.signUpStore.phoneNumber = phoneNumber
             rootStore.signUpStore.gender = gender
@@ -35,8 +35,8 @@ const Step1 = () => {
         router.push('/signup/mentor/step2')
     }
     return (
-        <div className="flex justify-center items-center h-full">
-            <div className="flex justify-center items-center shadow-lg p-10 rounded-xl w-150">
+        <div className="flex h-full items-center justify-center">
+            <div className="w-150 flex items-center justify-center rounded-xl p-10 shadow-lg">
                 <div className="flex flex-col gap-10">
                     <div className="text-3xl font-bold">
                         {"Hello! What's your origin story?"}
@@ -56,7 +56,7 @@ const Step1 = () => {
                             registerName={'country'}
                             dataList={countryList}
                         />
-                        <div className="w-full flex justify-between">
+                        <div className="flex w-full justify-between">
                             <button
                                 type="button"
                                 className="font-bold"

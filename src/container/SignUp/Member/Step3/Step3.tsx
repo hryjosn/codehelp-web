@@ -16,7 +16,7 @@ const Step3 = () => {
         work: Joi.array().required().messages({
             'any.required': 'Work is required',
         }),
-        level: Joi.array().required().messages({
+        level: Joi.string().required().messages({
             'any.required': 'Level is required',
         }),
     })
@@ -28,8 +28,8 @@ const Step3 = () => {
         router.push('/signup/member/step4')
     }
     return (
-        <div className="flex justify-center items-center h-full">
-            <div className="flex justify-center items-center shadow-lg p-10 rounded-xl w-150">
+        <div className="flex h-full items-center justify-center">
+            <div className="w-150 flex items-center justify-center rounded-xl p-10 shadow-lg">
                 <div className="flex flex-col gap-10">
                     <div className="text-3xl font-bold">
                         {"What's your super power like?"}
@@ -59,11 +59,10 @@ const Step3 = () => {
                         />
                         <FormSelect
                             label="Level"
-                            multiple
                             registerName={'level'}
                             dataList={levelList}
                         />
-                        <div className="w-full flex justify-between">
+                        <div className="flex w-full justify-between">
                             <button
                                 type="button"
                                 className="font-bold"

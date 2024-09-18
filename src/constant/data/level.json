@@ -1,1 +1,9 @@
-["Intern", "Junior", "Mid-Level", "Senior", "Lead", "Manager"]
+[
+    { "name": "Intermediate ", "code": "0" },
+    { "name": "Senior", "code": "1" },
+    { "name": "Manager", "code": "2" },
+    { "name": "Director", "code": "3" },
+    { "name": "Lead", "code": "4" },
+    { "name": "Executive", "code": "5" },
+    { "name": "Founder", "code": "6" }
+]

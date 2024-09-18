@@ -8,14 +8,21 @@ import Joi from 'joi/lib'
 import LinkText from './components/LinkText/LinkText'
 import FormButton from './components/FormButton/FormButton'
 import FormInput from './components/FormInput/FormInput'
+import rootStore from '~/store'
+import { runInAction } from 'mobx'
+import AvatarSelect from './components/AvatarSelect/AvatarSelect'
 
 const SignUp = () => {
     const route = useRouter()
 
-    const onSubmit = (data: SignUpInputT) => {
-        if (data) {
-            route.push('/signup/select-role')
-        }
+    const onSubmit = ({ userName, email, password }: SignUpInputT) => {
+        runInAction(() => {
+            rootStore.signUpStore.userName = userName
+            rootStore.signUpStore.email = email
+            rootStore.signUpStore.password = password
+        })
+
+        route.push('/signup/select-role')
     }
 
     const schema = Joi.object({
@@ -28,7 +35,7 @@ const SignUp = () => {
 
     return (
         <div className="flex h-screen">
-            <div className="flex flex-col flex-1 justify-center items-center">
+            <div className="flex flex-1 flex-col items-center justify-center">
                 <div className="flex flex-col gap-5">
                     <div className="text-3xl font-bold">
                         <div>Welcome to the Codehelp</div>
@@ -40,12 +47,7 @@ const SignUp = () => {
                         </LinkText>
                     </div>
                     <div className="flex flex-col items-center">
-                        <Image
-                            alt="userAvatar"
-                            src={'/Login/UserAvatar.png'}
-                            width={120}
-                            height={120}
-                        />
+                        <AvatarSelect />
                         <Form onSubmit={onSubmit} schema={schema}>
                             <FormInput
                                 label="Username"
