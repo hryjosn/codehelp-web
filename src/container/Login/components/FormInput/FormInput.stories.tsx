@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import FormInput, { FormInputProps } from './FormInput'
 import { FormProvider, useForm } from 'react-hook-form'
-import Joi from 'joi'
 import { joiResolver } from '@hookform/resolvers/joi'
+import Joi from 'joi/lib'
 
 const meta: Meta<FormInputProps> = {
     title: 'Login/FormInput',

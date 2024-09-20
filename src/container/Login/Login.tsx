@@ -5,14 +5,19 @@ import { FormProvider, useForm } from 'react-hook-form'
 import Button from './components/Button/Button'
 import FormInput from './components/FormInput/FormInput'
 import LinkText from './components/LinkText/LinkText'
-import Joi from 'joi'
+import { LoginDataT, RESPONSE_CODE } from './store/types'
+import { callLogin } from '~/api/user'
+import { useRouter } from 'next/navigation'
+import { isAxiosError } from 'axios'
+import { useState } from 'react'
 import { joiResolver } from '@hookform/resolvers/joi'
+import Joi from 'joi/lib'
 
 const Login = () => {
+    const [errorText, setErrorText] = useState('')
+    const router = useRouter()
     const schema = Joi.object({
-        email: Joi.string()
-            .email({ tlds: { allow: false } })
-            .required(),
+        email: Joi.string().email().required(),
         password: Joi.string().min(8).max(30).required(),
     }).messages({
         'any.required': 'is a required field',
@@ -27,12 +32,32 @@ const Login = () => {
     })
     const {
         handleSubmit,
+        reset,
         formState: { errors },
     } = methods
-
-    const onSubmit = (data: any) => {
-        console.log(data)
+    const onSubmit = async (data: LoginDataT) => {
+        try {
+            const res = await callLogin(data)
+            if (res.data.token) {
+                router.push('/')
+            }
+        } catch (error) {
+            if (isAxiosError(error)) {
+                reset()
+                switch (error.response?.data.code) {
+                    case RESPONSE_CODE.VALIDATE_ERROR:
+                        setErrorText('Validate error')
+                        break
+                    case RESPONSE_CODE.USER_DATA_ERROR:
+                        setErrorText('Email or password is wrong')
+                        break
+                    default:
+                        setErrorText('Unknown error')
+                }
+            }
+        }
     }
+
     return (
         <div className="flex h-screen">
             <div className="flex flex-col flex-1 justify-center items-center">
@@ -54,8 +79,11 @@ const Login = () => {
                                     valueName="password"
                                     type="password"
                                 />
+                                <Button errors={errors}>Login</Button>
+                                <p className="text-red-500 min-h-6">
+                                    {errorText}
+                                </p>
                             </div>
-                            <Button errors={errors}>Login</Button>
                         </div>
                     </form>
                 </FormProvider>
