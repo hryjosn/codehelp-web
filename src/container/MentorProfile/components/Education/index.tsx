@@ -1,4 +1,4 @@
-import type { Education } from '~/container/MentorList/types'
+import type { Education } from '~/container/Home/components/MentorList/types'
 import Image from 'next/image'
 
 type EducationProps = {

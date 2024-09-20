@@ -1,4 +1,4 @@
-import type { Mentor } from '~/container/MentorList/types'
+import type { Mentor } from '~/container/Home/components/MentorList/types'
 
 export const MOCK_MENTOR_LIST: Mentor[] = [
     {
