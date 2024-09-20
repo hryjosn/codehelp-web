@@ -2,7 +2,7 @@ import TextField, { StandardTextFieldProps } from '@mui/material/TextField'
 import classNames from 'classnames'
 import React from 'react'
 
-const CustomInput = ({ className, ...props }: StandardTextFieldProps) => {
+const Input = ({ className, ...props }: StandardTextFieldProps) => {
     return (
         <TextField
             InputProps={{
@@ -17,4 +17,4 @@ const CustomInput = ({ className, ...props }: StandardTextFieldProps) => {
     )
 }
 
-export default CustomInput
+export default Input
