@@ -51,7 +51,7 @@ const VideoConference = () => {
                     </video>
                 </div>
                 {isChatOpen && (
-                    <div className="mr-5 mt-5 flex w-96 flex-col justify-between gap-2 rounded-lg bg-white p-5">
+                    <div className="mr-5 mt-5 flex w-96 flex-col justify-between gap-2 rounded-lg bg-white p-5 pt-2">
                         <button
                             className="text-end font-bold"
                             onClick={() => setIsChatOpen(!isChatOpen)}
