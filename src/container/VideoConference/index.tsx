@@ -53,12 +53,12 @@ const VideoConference = () => {
                 {isChatOpen && (
                     <div className="mr-5 mt-5 flex w-96 flex-col justify-between gap-2 rounded-lg bg-white p-5">
                         <button
-                            className="text-end"
+                            className="text-end font-bold"
                             onClick={() => setIsChatOpen(!isChatOpen)}
                         >
                             X
                         </button>
-                        <div className="custom-scrollbar flex flex-1 flex-col gap-2 overflow-y-scroll">
+                        <div className="custom-scrollbar flex shrink grow basis-0 flex-col gap-2 overflow-y-scroll">
                             {MOCK_MESSAGE_LIST.map((data, index) => (
                                 <MessageBox
                                     name={data.name}
@@ -70,10 +70,10 @@ const VideoConference = () => {
                         </div>
                         <div className="flex gap-2 rounded-full border-2 bg-slate-50 px-3">
                             <textarea
-                                className="custom-scrollbar max-h-40 flex-1 resize-none break-words border-0 bg-slate-50 py-2 outline-none"
-                                rows={2}
+                                className="custom-scrollbar flex-1 resize-none break-words border-0 bg-slate-50 py-2 outline-none"
+                                rows={1}
                             />
-                            <p className="cursor-pointer self-center py-2">→</p>
+                            <Button src={'/VideoConference/send.png'} />
                         </div>
                     </div>
                 )}
@@ -85,15 +85,22 @@ const VideoConference = () => {
                             ? '/VideoConference/microphone.png'
                             : '/VideoConference/mute.png'
                     }
-                    variant={isMicOpen ? 'default' : 'red'}
+                    variant={isMicOpen ? 'grayRound' : 'redRound'}
                     onClick={() => setIsMicOpen(!isMicOpen)}
                 />
-                <Button src={'/VideoConference/share_screen.png'} />
+                <Button
+                    src={'/VideoConference/share_screen.png'}
+                    variant={'grayRound'}
+                />
                 <Button
                     src={'/VideoConference/chat.png'}
+                    variant={'grayRound'}
                     onClick={() => setIsChatOpen(!isChatOpen)}
                 />
-                <Button src={'/VideoConference/hang_up.png'} variant={'red'} />
+                <Button
+                    src={'/VideoConference/hang_up.png'}
+                    variant={'redRound'}
+                />
             </div>
         </div>
     )

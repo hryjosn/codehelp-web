@@ -15,7 +15,10 @@ const meta = {
     // Use `fn` to spy on the onClick arg, which will appear in the actions panel once invoked: https://storybook.js.org/docs/essentials/actions#action-args
     args: { src: '/VideoConference/microphone.png', variant: 'default' },
     argTypes: {
-        variant: { control: 'select', options: ['default', 'red'] },
+        variant: {
+            control: 'select',
+            options: ['default', 'grayRound', 'redRound'],
+        },
         src: {
             control: 'select',
             options: [
@@ -32,6 +35,9 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 export const Default: Story = {}
-export const RedBackground: Story = {
-    args: { src: '/VideoConference/mute.png', variant: 'red' },
+export const RedRound: Story = {
+    args: { src: '/VideoConference/mute.png', variant: 'redRound' },
+}
+export const GrayRound: Story = {
+    args: { src: '/VideoConference/mute.png', variant: 'grayRound' },
 }
