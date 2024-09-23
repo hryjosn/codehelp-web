@@ -23,9 +23,9 @@ const SignUp = () => {
     }
     return (
         <div className="flex h-screen">
-            <div className="flex flex-col flex-1 justify-center items-center">
+            <div className="flex flex-1 flex-col items-center justify-center">
                 <form onSubmit={handleSubmit(onSubmit)}>
-                    <div className="w-full flex flex-col justify-center px-40 gap-5">
+                    <div className="flex w-full flex-col justify-center gap-5 px-40">
                         <div className="text-3xl font-bold">
                             <div>Welcome to the Codehelp</div>
                             <div>Create a new account</div>
@@ -33,7 +33,7 @@ const SignUp = () => {
                         <div>
                             <Link
                                 href={'/login'}
-                                className="underline font-bold"
+                                className="font-bold underline"
                             >
                                 You have account?{' '}
                                 <code>Click here to login</code>
@@ -105,7 +105,7 @@ const SignUp = () => {
                                     'bg-gray-400':
                                         Object.keys(errors).length !== 0,
                                 },
-                                ' text-white p-3 rounded-full mt-5'
+                                'mt-5 rounded-full p-3 text-white'
                             )}
                             disabled={Object.keys(errors).length !== 0}
                         >
