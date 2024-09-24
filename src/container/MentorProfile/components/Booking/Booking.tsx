@@ -1,8 +1,12 @@
 'use client'
 import React, { useState, useMemo } from 'react'
-import Calendar from 'react-calendar'
 import 'react-calendar/dist/Calendar.css'
 import { MOCK_TIME_OPTIONS } from './constants'
+import { DateText } from './components/DateText/DateText'
+import SelectButton from './components/SelectButton/SelectButton'
+import ArrowBackIcon from '@mui/icons-material/ArrowBack'
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
+import CalendarModal from './components/CalendarModal/CalendarModal'
 
 const Booking = () => {
     const [visibleTimes, setVisibleTimes] = useState<string[]>(
@@ -20,12 +24,20 @@ const Booking = () => {
     }, [])
 
     const onSelectDate = (date: Date) => {
-        setSelectedDate(date)
+        if (selectedDate === date) {
+            setSelectedDate(null)
+        } else {
+            setSelectedDate(date)
+        }
         setIsCalendarOpen(false)
     }
 
     const onSelectTime = (time: string) => {
-        setSelectedTime(time)
+        if (selectedTime === time) {
+            setSelectedTime('')
+        } else {
+            setSelectedTime(time)
+        }
     }
 
     const onNextTimes = () => {
@@ -50,30 +62,26 @@ const Booking = () => {
             <small className="font-light tracking-wide text-slate-500">
                 Book 1:1 sessions from the options based on your needs
             </small>
-            <ul className="my-6 grid grid-cols-5 gap-4">
+            <ul className="my-6 grid grid-cols-5 items-center gap-4">
                 {currentFourDays.map((day, index) => (
-                    <li
+                    <SelectButton
                         key={index}
-                        style={{ height: '70px' }}
-                        className={`flex cursor-pointer flex-col justify-center gap-2 rounded-lg border border-solid border-gray-200 text-center font-bold hover:border-sky-900 ${selectedDate === day ? 'border-sky-900' : ''}`}
+                        variant={'primary'}
+                        className={`${selectedDate === day && 'border-sky-900'}`}
                         onClick={() => onSelectDate(day)}
                     >
-                        <small className="text-xs uppercase text-gray-500">
-                            {day
-                                .toLocaleDateString('en-US', {
-                                    weekday: 'short',
-                                })
-                                .toUpperCase()}
-                        </small>
-                        <p className="text-sm text-cyan-900">
-                            {day
-                                .toLocaleDateString('en-US', {
-                                    day: 'numeric',
-                                    month: 'short',
-                                })
-                                .toUpperCase()}
-                        </p>
-                    </li>
+                        <DateText variant={'primary'}>
+                            {day.toLocaleDateString('en-US', {
+                                weekday: 'short',
+                            })}
+                        </DateText>
+                        <DateText variant={'secondary'}>
+                            {day.toLocaleDateString('en-US', {
+                                day: 'numeric',
+                                month: 'short',
+                            })}
+                        </DateText>
+                    </SelectButton>
                 ))}
                 <div
                     style={{ height: '70px' }}
@@ -87,57 +95,55 @@ const Booking = () => {
                 <span className="text-sm text-blue-950">
                     Available time slots
                 </span>
-                <div className="flex cursor-pointer gap-5 text-gray-200">
-                    <span
-                        className="hover:text-blue-950"
+                <div className="flex cursor-pointer items-center gap-2 text-gray-200">
+                    <ArrowBackIcon
+                        className={'hover:text-black'}
                         onClick={() => onPrevTimes()}
-                    >
-                        &#8678;
-                    </span>
-                    <span
-                        className="hover:text-blue-950"
+                        sx={{
+                            height: '15px',
+                            width: '15px',
+                            color: 'lightGray',
+                        }}
+                    />
+                    <ArrowForwardIcon
+                        className={'hover:text-black'}
                         onClick={() => onNextTimes()}
-                    >
-                        &#8680;
-                    </span>
+                        sx={{
+                            height: '15px',
+                            width: '15px',
+                            color: 'lightGray',
+                        }}
+                    />
                 </div>
             </div>
-            <ul className="grid grid-cols-3 gap-2">
+            <ul className="grid grid-cols-3 items-center gap-2">
                 {visibleTimes.map((time) => (
-                    <li
+                    <SelectButton
                         key={time}
-                        className={`flex h-10 cursor-pointer items-center justify-center rounded-lg border border-solid border-gray-200 text-center font-bold hover:border-sky-900 ${selectedTime === time ? 'border-sky-900' : ''}`}
+                        value={'secondary'}
+                        className={`${selectedTime === time && 'border-sky-900'}`}
                         onClick={() => onSelectTime(time)}
                     >
-                        {new Date(time).toLocaleTimeString('en-US', {
-                            hour: '2-digit',
-                            minute: '2-digit',
-                            hour12: true,
-                        })}
-                    </li>
+                        <span>
+                            {new Date(time).toLocaleTimeString('en-US', {
+                                hour: '2-digit',
+                                minute: '2-digit',
+                                hour12: true,
+                            })}
+                        </span>
+                    </SelectButton>
                 ))}
             </ul>
             <button className="my-6 h-10 w-full rounded-md bg-teal-700 font-bold text-white">
                 BOOK
             </button>
             {isCalendarOpen && (
-                <div
-                    style={{ width: '300px' }}
-                    className="absolute bottom-0 left-0 right-0 top-0 m-auto"
-                >
-                    <div
-                        className="flex cursor-pointer justify-end font-bold text-green-800"
-                        onClick={() => setIsCalendarOpen(false)}
-                    >
-                        X
-                    </div>
-                    <Calendar
-                        minDate={new Date()}
-                        className="react-calendar"
-                        view="month"
-                        onClickDay={(date) => onSelectDate(date)}
-                    />
-                </div>
+                <CalendarModal
+                    className="bottom-0 left-0 right-0 top-0 m-auto"
+                    closeModal={() => setIsCalendarOpen(false)}
+                    onSelectDate={onSelectDate}
+                    value={selectedDate}
+                />
             )}
         </div>
     )

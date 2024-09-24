@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import Booking from '.'
+import Booking from './Booking'
 
 const meta = {
     title: 'MentorProfile/Components/Booking',
