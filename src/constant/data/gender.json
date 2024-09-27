@@ -1,12 +1,5 @@
 [
-    "Male",
-    "Female",
-    "Bigender",
-    "Non-conforming",
-    "Non Binary",
-    "Agender",
-    "Trans Man",
-    "Trans Woman",
-    "Rather Not Say",
-    "Other"
+    { "name": "Male", "code": "m" },
+    { "name": "Female", "code": "f" },
+    { "name": "Unknown", "code": "n" }
 ]
