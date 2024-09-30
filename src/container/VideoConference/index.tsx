@@ -1,11 +1,14 @@
 'use client'
 import { useState } from 'react'
-import Button from './components/Button'
 import MessageBox from './components/MessageBox'
+import { IoMdMic, IoMdMicOff } from 'react-icons/io'
+import { MdOutlineScreenShare } from 'react-icons/md'
+import { ImPhoneHangUp } from 'react-icons/im'
+import { IoSend } from 'react-icons/io5'
+import { PiChatCircleText } from 'react-icons/pi'
 
 const VideoConference = () => {
     const [isMicOpen, setIsMicOpen] = useState(false)
-    const [isVideo, setIsVideo] = useState(false)
     const [isChatOpen, setIsChatOpen] = useState(false)
     const MOCK_MESSAGE_LIST = [
         {
@@ -73,34 +76,29 @@ const VideoConference = () => {
                                 className="custom-scrollbar flex-1 resize-none break-words border-0 bg-slate-50 py-2 outline-none"
                                 rows={1}
                             />
-                            <Button src={'/VideoConference/send.png'} />
+                            <IoSend className="h-7 w-7 self-center" />
                         </div>
                     </div>
                 )}
             </div>
             <div className="mt-5 flex h-20 justify-center gap-10">
-                <Button
-                    src={
-                        isMicOpen
-                            ? '/VideoConference/microphone.png'
-                            : '/VideoConference/mute.png'
-                    }
-                    variant={isMicOpen ? 'grayRound' : 'redRound'}
-                    onClick={() => setIsMicOpen(!isMicOpen)}
-                />
-                <Button
-                    src={'/VideoConference/share_screen.png'}
-                    variant={'grayRound'}
-                />
-                <Button
-                    src={'/VideoConference/chat.png'}
-                    variant={'grayRound'}
+                {isMicOpen ? (
+                    <IoMdMic
+                        onClick={() => setIsMicOpen(false)}
+                        className="h-14 w-14 rounded-full bg-gray-200 p-3"
+                    />
+                ) : (
+                    <IoMdMicOff
+                        onClick={() => setIsMicOpen(true)}
+                        className="h-14 w-14 rounded-full bg-red-600 p-3"
+                    />
+                )}
+                <MdOutlineScreenShare className="h-14 w-14 rounded-full bg-gray-200 p-3" />
+                <PiChatCircleText
                     onClick={() => setIsChatOpen(!isChatOpen)}
+                    className="h-14 w-14 rounded-full bg-gray-200 p-3"
                 />
-                <Button
-                    src={'/VideoConference/hang_up.png'}
-                    variant={'redRound'}
-                />
+                <ImPhoneHangUp className="h-14 w-14 rounded-full bg-red-600 p-3" />
             </div>
         </div>
     )
