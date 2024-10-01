@@ -1,43 +1,30 @@
 'use client'
 import React, { useState, useMemo } from 'react'
-import 'react-calendar/dist/Calendar.css'
-import { MOCK_TIME_OPTIONS } from './constants'
-import { DateText } from './components/DateText/DateText'
-import SelectButton from './components/SelectButton/SelectButton'
+import { MOCK_TIME_OPTIONS, MOCK_TIME_OPTIONS_T } from './constants'
+import DateSlot from './components/DateSlot/DateSlot'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 import CalendarModal from './components/CalendarModal/CalendarModal'
+import BookingModal from './components/BookingModal/BookingModal'
+import TimeSlot from './components/TimeSlot/TimeSlot'
 
 const Booking = () => {
-    const [visibleTimes, setVisibleTimes] = useState<string[]>(
+    const [visibleTimes, setVisibleTimes] = useState<MOCK_TIME_OPTIONS_T[]>(
         MOCK_TIME_OPTIONS.slice(0, 6)
     )
     const [isCalendarOpen, setIsCalendarOpen] = useState<boolean>(false)
-    const [selectedDate, setSelectedDate] = useState<Date | null>(null)
+    const [isBookingModalOpen, setIsBookingModalOpen] = useState<boolean>(false)
+    const [selectedDate, setSelectedDate] = useState<Date>(new Date())
     const [selectedTime, setSelectedTime] = useState<string>('')
 
-    const currentFourDays = useMemo(() => {
-        return Array.from(
-            { length: 4 },
-            (_, i) => new Date(Date.now() + i * 86400000)
-        )
-    }, [])
+    const currentFourDays = Array.from(
+        { length: 4 },
+        (_, i) => new Date(selectedDate.getTime() + i * 86400000)
+    )
 
     const onSelectDate = (date: Date) => {
-        if (selectedDate === date) {
-            setSelectedDate(null)
-        } else {
-            setSelectedDate(date)
-        }
+        setSelectedDate(date)
         setIsCalendarOpen(false)
-    }
-
-    const onSelectTime = (time: string) => {
-        if (selectedTime === time) {
-            setSelectedTime('')
-        } else {
-            setSelectedTime(time)
-        }
     }
 
     const onNextTimes = () => {
@@ -56,32 +43,39 @@ const Booking = () => {
 
     return (
         <div className="relative max-w-[480px] rounded-xl border border-solid border-gray-200 p-6">
+            <BookingModal
+                selectedDate={selectedDate}
+                selectedTime={selectedTime}
+                isOpen={isBookingModalOpen}
+                onClose={() => {
+                    setIsBookingModalOpen(false)
+                }}
+            />
             <p className="mb-1 text-lg font-bold tracking-wider text-blue-950">
                 Available sessions
             </p>
             <small className="font-light tracking-wide text-slate-500">
                 Book 1:1 sessions from the options based on your needs
             </small>
-            <ul className="my-6 grid grid-cols-5 items-center gap-4">
+            <div className="my-6 grid grid-cols-5 items-center gap-4">
                 {currentFourDays.map((day, index) => (
-                    <SelectButton
+                    <DateSlot
                         key={index}
-                        variant={'primary'}
-                        className={`${selectedDate === day && 'border-sky-900'}`}
+                        className={`${selectedDate.getDate() === day.getDate() && 'border-sky-900'}`}
                         onClick={() => onSelectDate(day)}
                     >
-                        <DateText variant={'primary'}>
+                        <span className="self-center text-xs font-bold uppercase text-gray-500">
                             {day.toLocaleDateString('en-US', {
                                 weekday: 'short',
                             })}
-                        </DateText>
-                        <DateText variant={'secondary'}>
+                        </span>
+                        <span className="self-center text-sm font-bold uppercase text-cyan-900">
                             {day.toLocaleDateString('en-US', {
-                                day: 'numeric',
+                                day: '2-digit',
                                 month: 'short',
                             })}
-                        </DateText>
-                    </SelectButton>
+                        </span>
+                    </DateSlot>
                 ))}
                 <div
                     style={{ height: '70px' }}
@@ -90,7 +84,7 @@ const Booking = () => {
                 >
                     <span>View all</span>
                 </div>
-            </ul>
+            </div>
             <div className="mb-3 flex justify-between border-b border-solid border-gray-200 pb-3 tracking-wider">
                 <span className="text-sm text-blue-950">
                     Available time slots
@@ -117,31 +111,38 @@ const Booking = () => {
                 </div>
             </div>
             <ul className="grid grid-cols-3 items-center gap-2">
-                {visibleTimes.map((time) => (
-                    <SelectButton
-                        key={time}
-                        value={'secondary'}
-                        className={`${selectedTime === time && 'border-sky-900'}`}
-                        onClick={() => onSelectTime(time)}
+                {visibleTimes.map((data) => (
+                    <TimeSlot
+                        key={data.time}
+                        variant={data.state}
+                        className={`${selectedTime === data.time && 'border-sky-900'} py-2`}
+                        disabled={data.state !== 'idle'}
+                        onClick={() => setSelectedTime(data.time)}
                     >
                         <span>
-                            {new Date(time).toLocaleTimeString('en-US', {
+                            {new Date(data.time).toLocaleTimeString('en-US', {
                                 hour: '2-digit',
                                 minute: '2-digit',
                                 hour12: true,
                             })}
                         </span>
-                    </SelectButton>
+                    </TimeSlot>
                 ))}
             </ul>
-            <button className="my-6 h-10 w-full rounded-md bg-teal-700 font-bold text-white">
+            <button
+                className="my-6 h-10 w-full rounded-md bg-teal-700 font-bold text-white"
+                disabled={!selectedTime}
+                onClick={() => {
+                    setIsBookingModalOpen(true)
+                }}
+            >
                 BOOK
             </button>
             {isCalendarOpen && (
                 <CalendarModal
                     className="bottom-0 left-0 right-0 top-0 m-auto"
                     closeModal={() => setIsCalendarOpen(false)}
-                    onSelectDate={onSelectDate}
+                    setSelectedDate={setSelectedDate}
                     value={selectedDate}
                 />
             )}

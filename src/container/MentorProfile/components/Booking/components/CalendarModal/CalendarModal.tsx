@@ -1,16 +1,16 @@
 import { FC, HTMLAttributes } from 'react'
-import Calendar from 'react-calendar'
 import { cn } from '~/lib/utils'
-
+import DatePicker from 'react-datepicker'
+import 'react-datepicker/dist/react-datepicker.css'
 interface CalendarModalProps extends HTMLAttributes<HTMLDivElement> {
     closeModal: () => void
-    onSelectDate: (date: Date) => void
-    value: Date | null
+    setSelectedDate: (date: Date) => void
+    value: Date
 }
 
 const CalendarModal: FC<CalendarModalProps> = ({
     closeModal,
-    onSelectDate,
+    setSelectedDate,
     className,
     value,
 }) => {
@@ -22,15 +22,16 @@ const CalendarModal: FC<CalendarModalProps> = ({
             >
                 X
             </div>
-            <Calendar
-                minDate={new Date()}
-                className="react-calendar"
-                view="month"
-                onClickDay={(date) => {
-                    onSelectDate(date)
+            <DatePicker
+                showIcon
+                selected={new Date()}
+                inline
+                onChange={(date: Date | null) => {
+                    if (date === null) return
+                    setSelectedDate(date)
                     closeModal()
                 }}
-                value={value}
+                value={value?.toLocaleString()}
             />
         </div>
     )

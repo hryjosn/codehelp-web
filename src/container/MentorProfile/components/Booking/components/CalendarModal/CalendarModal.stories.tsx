@@ -11,7 +11,7 @@ const meta = {
     },
     args: {
         closeModal: fn(),
-        onSelectDate: fn(),
+        setSelectedDate: fn(),
         value: new Date(),
     },
 } satisfies Meta<typeof CalendarModal>
@@ -22,7 +22,7 @@ type Story = StoryObj<typeof meta>
 export const Primary: Story = {
     render: () => {
         const [isVisible, setIsVisible] = useState<boolean>(false)
-        const [selectedDate, setSelectedDate] = useState<Date | null>(null)
+        const [selectedDate, setSelectedDate] = useState<Date>(new Date())
         return (
             <div className="relative flex h-screen items-center justify-center">
                 <button
@@ -36,7 +36,7 @@ export const Primary: Story = {
                     <CalendarModal
                         className="top-50 bottom-50 right-80"
                         closeModal={() => setIsVisible(false)}
-                        onSelectDate={setSelectedDate}
+                        setSelectedDate={setSelectedDate}
                         value={selectedDate}
                     />
                 )}
