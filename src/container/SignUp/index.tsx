@@ -28,7 +28,7 @@ const SignUp = () => {
 
     return (
         <div className="flex h-screen">
-            <div className="flex flex-col flex-1 justify-center items-center">
+            <div className="flex flex-1 flex-col items-center justify-center">
                 <div className="flex flex-col gap-5">
                     <div className="text-3xl font-bold">
                         <div>Welcome to the Codehelp</div>
