@@ -11,6 +11,7 @@ const meta = {
     tags: ['autodocs'],
     args: {
         onClick: fn(),
+        selected: false,
     },
     argTypes: {
         variant: {
@@ -24,13 +25,36 @@ export default meta
 type Story = StoryObj<typeof meta>
 const date = new Date()
 export const Default: Story = {
+    render: (args) => {
+        return (
+            <TimeSlot
+                variant={args.variant}
+                className={args.className}
+                selected={args.selected}
+            >
+                <span>
+                    {date.toLocaleTimeString('en-US', {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: true,
+                    })}
+                </span>
+            </TimeSlot>
+        )
+    },
+}
+export const Selected: Story = {
     args: {
         variant: 'idle',
-        className: 'p-2',
+        selected: true,
     },
     render: (args) => {
         return (
-            <TimeSlot variant={args.variant} className={args.className}>
+            <TimeSlot
+                variant={args.variant}
+                className={args.className}
+                selected={args.selected}
+            >
                 <span>
                     {date.toLocaleTimeString('en-US', {
                         hour: '2-digit',
@@ -45,11 +69,14 @@ export const Default: Story = {
 export const Booked: Story = {
     args: {
         variant: 'booked',
-        className: 'p-2',
     },
     render: (args) => {
         return (
-            <TimeSlot variant={args.variant} className={args.className}>
+            <TimeSlot
+                variant={args.variant}
+                className={args.className}
+                selected={args.selected}
+            >
                 <span>
                     {date.toLocaleTimeString('en-US', {
                         hour: '2-digit',
@@ -64,11 +91,14 @@ export const Booked: Story = {
 export const NotAvailable: Story = {
     args: {
         variant: 'notAvailable',
-        className: 'p-2',
     },
     render: (args) => {
         return (
-            <TimeSlot variant={args.variant} className={args.className}>
+            <TimeSlot
+                variant={args.variant}
+                className={args.className}
+                selected={args.selected}
+            >
                 <span>
                     {date.toLocaleTimeString('en-US', {
                         hour: '2-digit',

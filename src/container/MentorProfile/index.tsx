@@ -17,20 +17,21 @@ const MentorProfile = ({ params }: { params: { id: string } }) => {
     )
 
     const router = useRouter()
-    if (!currentMentor) {
-        router.back()
-        return
-    }
 
     useEffect(() => {
+        if (!currentMentor) return
         runInAction(() => {
             rootStore.mentorProfileStore.avatar = currentMentor.avatar
             rootStore.mentorProfileStore.name = currentMentor.name
             rootStore.mentorProfileStore.company = currentMentor.company
             rootStore.mentorProfileStore.title = currentMentor.title
         })
-    }, [currentMentor])
+    }, [currentMentor, router])
 
+    if (!currentMentor) {
+        router.back()
+        return
+    }
     return (
         <div className="p-6 md:p-16">
             <Bio

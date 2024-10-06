@@ -1,20 +1,20 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { fn } from '@storybook/test'
 import { useState } from 'react'
-import CalendarModal from './CalendarModal'
+import Calendar from './Calendar'
 
 const meta = {
-    title: 'MentorProfile/Components/Booking/Components/CalendarModal',
-    component: CalendarModal,
+    title: 'MentorProfile/Components/Booking/Components/Calendar',
+    component: Calendar,
     parameters: {
         layout: 'fullscreen',
     },
     args: {
-        closeModal: fn(),
+        onClose: fn(),
         setSelectedDate: fn(),
         value: new Date(),
     },
-} satisfies Meta<typeof CalendarModal>
+} satisfies Meta<typeof Calendar>
 
 export default meta
 type Story = StoryObj<typeof meta>
@@ -29,13 +29,12 @@ export const Primary: Story = {
                     className="rounded-lg border px-3 py-2"
                     onClick={() => setIsVisible(true)}
                 >
-                    {selectedDate?.toLocaleString() ||
-                        'Click to open calendar modal'}
+                    {selectedDate?.toLocaleString() || 'Click to open calendar'}
                 </button>
                 {isVisible && (
-                    <CalendarModal
+                    <Calendar
                         className="top-50 bottom-50 right-80"
-                        closeModal={() => setIsVisible(false)}
+                        onClose={() => setIsVisible(false)}
                         setSelectedDate={setSelectedDate}
                         value={selectedDate}
                     />

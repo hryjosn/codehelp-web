@@ -3,7 +3,7 @@ import React, { ButtonHTMLAttributes } from 'react'
 import { cn } from '~/lib/utils'
 
 const TimeSlotVariants = cva(
-    'flex items-center justify-center font-bold rounded-lg border border-solid border-gray-200 text-center ',
+    'flex items-center justify-center font-bold rounded-lg border border-solid border-gray-200 text-center py-2',
     {
         variants: {
             variant: {
@@ -20,12 +20,16 @@ const TimeSlotVariants = cva(
 
 interface TimeSlotT
     extends ButtonHTMLAttributes<HTMLButtonElement>,
-        VariantProps<typeof TimeSlotVariants> {}
+        VariantProps<typeof TimeSlotVariants> {
+    selected: boolean
+}
 
-const TimeSlot = ({ variant, className, ...props }: TimeSlotT) => {
+const TimeSlot = ({ selected, variant, className, ...props }: TimeSlotT) => {
     return (
         <button
-            className={cn(TimeSlotVariants({ variant, className }))}
+            className={cn(TimeSlotVariants({ variant, className }), {
+                'border-sky-900': selected,
+            })}
             {...props}
         />
     )

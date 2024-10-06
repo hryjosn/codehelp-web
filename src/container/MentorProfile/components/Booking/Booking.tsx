@@ -4,7 +4,7 @@ import { MOCK_TIME_OPTIONS, MOCK_TIME_OPTIONS_T } from './constants'
 import DateSlot from './components/DateSlot/DateSlot'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
-import CalendarModal from './components/CalendarModal/CalendarModal'
+import Calendar from './components/Calendar/Calendar'
 import BookingModal from './components/BookingModal/BookingModal'
 import TimeSlot from './components/TimeSlot/TimeSlot'
 
@@ -61,7 +61,7 @@ const Booking = () => {
                 {currentFourDays.map((day, index) => (
                     <DateSlot
                         key={index}
-                        className={`${selectedDate.getDate() === day.getDate() && 'border-sky-900'}`}
+                        selected={selectedDate.getDate() === day.getDate()}
                         onClick={() => onSelectDate(day)}
                     >
                         <span className="self-center text-xs font-bold uppercase text-gray-500">
@@ -115,7 +115,7 @@ const Booking = () => {
                     <TimeSlot
                         key={data.time}
                         variant={data.state}
-                        className={`${selectedTime === data.time && 'border-sky-900'} py-2`}
+                        selected={selectedTime === data.time}
                         disabled={data.state !== 'idle'}
                         onClick={() => setSelectedTime(data.time)}
                     >
@@ -139,9 +139,9 @@ const Booking = () => {
                 BOOK
             </button>
             {isCalendarOpen && (
-                <CalendarModal
+                <Calendar
                     className="bottom-0 left-0 right-0 top-0 m-auto"
-                    closeModal={() => setIsCalendarOpen(false)}
+                    onClose={() => setIsCalendarOpen(false)}
                     setSelectedDate={setSelectedDate}
                     value={selectedDate}
                 />
