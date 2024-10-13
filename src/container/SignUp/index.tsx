@@ -14,8 +14,12 @@ import AvatarSelect from './components/AvatarSelect/AvatarSelect'
 
 const SignUp = () => {
     const route = useRouter()
+    const {
+        signUpStore: { avatar },
+    } = rootStore
 
     const onSubmit = ({ userName, email, password }: SignUpInputT) => {
+        if (!avatar[0]) return
         runInAction(() => {
             rootStore.signUpStore.userName = userName
             rootStore.signUpStore.email = email
@@ -48,6 +52,7 @@ const SignUp = () => {
                     </div>
                     <div className="flex flex-col items-center">
                         <AvatarSelect />
+
                         <Form onSubmit={onSubmit} schema={schema}>
                             <FormInput
                                 label="Username"

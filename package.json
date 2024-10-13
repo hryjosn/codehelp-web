@@ -16,6 +16,7 @@
     "@hookform/resolvers": "^3.9.0",
     "@mui/material": "^5.15.20",
     "axios": "^1.7.7",
+    "browser-image-compression": "^2.0.2",
     "class-variance-authority": "^0.7.0",
     "classnames": "^2.5.1",
     "joi": "^17.13.3",

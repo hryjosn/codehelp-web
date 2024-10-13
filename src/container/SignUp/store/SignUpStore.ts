@@ -4,7 +4,7 @@ class SignUpStore {
     userName: string = ''
     email: string = ''
     password: string = ''
-    avatar: string = ''
+    avatar: File[] = []
     gender: string = ''
     country: string = ''
     title: string = ''
@@ -26,44 +26,45 @@ class SignUpStore {
         return this[registerName as keyof SignUpStore]
     }
     mentorSignUp = () => {
-        const data = {
-            userName: this.userName,
-            password: this.password,
-            email: this.email,
-            avatar: this.avatar,
-            gender: this.gender,
-            country: this.country,
-            title: this.title,
-            company: this.company,
-            introduction: this.introduction,
-            phoneNumber: this.phoneNumber,
-            level: Number(this.years),
-            linkedInURL: this.linkedIn,
-            primaryExpertise: this.expertise[0],
-            secondaryExpertise: this.expertise[1] || '',
-            tertiaryExpertise: this.expertise[2] || '',
-            disciplines: this.disciplines,
-            skills: this.skills,
-            tools: this.tools,
-        }
-        const res = callMentorSignUp(data)
+        const formData = new FormData()
+
+        formData.append('userName', this.userName)
+        formData.append('password', this.password)
+        formData.append('email', this.email)
+        formData.append(`avatar`, this.avatar[0])
+        formData.append('gender', this.gender)
+        formData.append('country', this.country)
+        formData.append('title', this.title)
+        formData.append('company', this.company)
+        formData.append('introduction', this.introduction)
+        formData.append('phoneNumber', this.phoneNumber)
+        formData.append('linkedInURL', this.linkedIn)
+        formData.append('primaryExpertise', this.expertise[0])
+        formData.append('secondaryExpertise', this.expertise[1] || '')
+        formData.append('tertiaryExpertise', this.expertise[2] || '')
+        formData.append('disciplines[]', JSON.stringify(this.disciplines))
+        formData.append('skills[]', JSON.stringify(this.skills))
+        formData.append('tools[]', JSON.stringify(this.tools))
+        return callMentorSignUp(formData)
     }
+
     memberSignUp = () => {
-        const data = {
-            userName: this.userName,
-            password: this.password,
-            email: this.email,
-            avatar: this.avatar,
-            gender: this.gender,
-            country: this.country,
-            title: this.title,
-            company: this.company,
-            introduction: this.introduction,
-            phoneNumber: this.phoneNumber,
-            level: Number(this.level),
-            fieldOfWork: this.work,
-        }
-        const res = callMemberSignUp(data)
+        const formData = new FormData()
+
+        formData.append('userName', this.userName)
+        formData.append('password', this.password)
+        formData.append(`avatar`, this.avatar[0])
+        formData.append('email', this.email)
+        formData.append('gender', this.gender)
+        formData.append('country', this.country)
+        formData.append('title', this.title)
+        formData.append('company', this.company)
+        formData.append('introduction', this.introduction)
+        formData.append('phoneNumber', this.phoneNumber)
+        formData.append('level', this.level)
+        formData.append('fieldOfWork[]', JSON.stringify(this.work))
+
+        return callMemberSignUp(formData)
     }
 }
 export default SignUpStore

@@ -7,9 +7,13 @@ import FormInput from '../../components/FormInput/FormInput'
 import { Form } from '../../components/Form'
 import FormButton from '../../components/FormButton/FormButton'
 import Joi from 'joi/lib'
+import { isAxiosError } from 'axios'
+import { RESPONSE_CODE } from '~/container/Login/store/types'
+import { useState } from 'react'
 
 const Step4 = () => {
     const router = useRouter()
+    const [errorText, setErrorText] = useState('')
     const schema = Joi.object({
         introduction: Joi.string().required().messages({
             'string.empty': 'Introduction is a required field',
@@ -18,11 +22,28 @@ const Step4 = () => {
     const {
         signUpStore: { mentorSignUp },
     } = rootStore
-    const onSubmit = ({ introduction }: { introduction: string }) => {
+    const onSubmit = async ({ introduction }: { introduction: string }) => {
         runInAction(() => {
             rootStore.signUpStore.introduction = introduction
         })
-        mentorSignUp()
+        try {
+            const res = await mentorSignUp()
+            if (res.data.token) {
+                router.push('/')
+            }
+        } catch (error) {
+            if (isAxiosError(error)) {
+                switch (error.response?.data.code) {
+                    case RESPONSE_CODE.VALIDATE_ERROR:
+                        setErrorText(
+                            'Validate error: Please check your information'
+                        )
+                        break
+                    default:
+                        setErrorText('Unknown error')
+                }
+            }
+        }
     }
     return (
         <div className="flex h-full items-center justify-center">
@@ -37,6 +58,7 @@ const Step4 = () => {
                         multiline
                         rows={3}
                     />
+                    <p className="mb-2 min-h-6 text-red-500">{errorText}</p>
                     <div className="flex w-full justify-between">
                         <button
                             type="button"
