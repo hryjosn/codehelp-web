@@ -27,8 +27,10 @@ const Calendar: FC<CalendarProps> = ({ value, setSelectedDate }) => {
     return (
         <DatePicker
             selected={value}
-            onChange={(date: Date) => {
-                setSelectedDate(date)
+            onChange={(date: Date | null) => {
+                if (date !== null) {
+                    setSelectedDate(date)
+                }
             }}
             customInput={<ShowCalendarButton />}
         />
