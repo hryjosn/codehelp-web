@@ -60,10 +60,10 @@ const Login = () => {
 
     return (
         <div className="flex h-screen">
-            <div className="flex flex-col flex-1 justify-center items-center">
+            <div className="flex flex-1 flex-col items-center justify-center">
                 <FormProvider {...methods}>
                     <form onSubmit={handleSubmit(onSubmit)}>
-                        <div className="w-full flex flex-col justify-center items-center gap-5">
+                        <div className="flex w-full flex-col items-center justify-center gap-5">
                             <div className="text-3xl font-bold">
                                 <div>Welcome to the Codehelp</div>
                                 <div>Log in to continue</div>
@@ -80,7 +80,7 @@ const Login = () => {
                                     type="password"
                                 />
                                 <Button errors={errors}>Login</Button>
-                                <p className="text-red-500 min-h-6">
+                                <p className="min-h-6 text-red-500">
                                     {errorText}
                                 </p>
                             </div>
