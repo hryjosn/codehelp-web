@@ -75,15 +75,16 @@ const SignUp = () => {
                     </div>
                 </div>
             </div>
-            <div className="flex flex-1">
-                <Image
-                    priority
-                    alt="The beautiful picture"
-                    src="/Login/Login_Picture.jpg"
-                    width={932}
-                    height={622}
-                />
-            </div>
+            <Image
+                priority
+                alt="The beautiful picture"
+                src="/Login/Login_Picture.jpg"
+                className="flex-1"
+                width={0}
+                height={0}
+                sizes="100vw"
+                style={{ width: 'auto', height: 'auto' }}
+            />
         </div>
     )
 }
