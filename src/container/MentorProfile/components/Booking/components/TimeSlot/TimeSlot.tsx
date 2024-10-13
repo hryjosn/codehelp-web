@@ -7,13 +7,13 @@ const TimeSlotVariants = cva(
     {
         variants: {
             variant: {
-                idle: 'bg-green-200 hover:border-sky-900 cursor-pointer',
-                booked: 'bg-red-200 cursor-default',
-                notAvailable: 'bg-gray-300 cursor-default',
+                primary: 'bg-green-200 hover:border-sky-900 cursor-pointer',
+                secondary: 'bg-gray-300',
+                danger: 'bg-red-200',
             },
         },
         defaultVariants: {
-            variant: 'idle',
+            variant: 'primary',
         },
     }
 )
@@ -24,14 +24,22 @@ interface TimeSlotT
     selected: boolean
 }
 
-const TimeSlot = ({ selected, variant, className, ...props }: TimeSlotT) => {
+const TimeSlot = ({
+    selected,
+    variant,
+    className,
+    children,
+    ...props
+}: TimeSlotT) => {
     return (
         <button
             className={cn(TimeSlotVariants({ variant, className }), {
                 'border-sky-900': selected,
             })}
             {...props}
-        />
+        >
+            {children}
+        </button>
     )
 }
 

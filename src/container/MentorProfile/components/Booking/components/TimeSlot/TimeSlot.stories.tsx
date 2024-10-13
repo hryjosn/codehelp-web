@@ -45,7 +45,7 @@ export const Default: Story = {
 }
 export const Selected: Story = {
     args: {
-        variant: 'idle',
+        variant: 'primary',
         selected: true,
     },
     render: (args) => {
@@ -68,7 +68,7 @@ export const Selected: Story = {
 }
 export const Booked: Story = {
     args: {
-        variant: 'booked',
+        variant: 'danger',
     },
     render: (args) => {
         return (
@@ -90,7 +90,7 @@ export const Booked: Story = {
 }
 export const NotAvailable: Story = {
     args: {
-        variant: 'notAvailable',
+        variant: 'secondary',
     },
     render: (args) => {
         return (

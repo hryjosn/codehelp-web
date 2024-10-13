@@ -77,13 +77,10 @@ const Booking = () => {
                         </span>
                     </DateSlot>
                 ))}
-                <div
-                    style={{ height: '70px' }}
-                    className="flex cursor-pointer items-center justify-center font-bold text-green-800"
-                    onClick={() => setIsCalendarOpen(true)}
-                >
-                    <span>View all</span>
-                </div>
+                <Calendar
+                    value={selectedDate}
+                    setSelectedDate={setSelectedDate}
+                />
             </div>
             <div className="mb-3 flex justify-between border-b border-solid border-gray-200 pb-3 tracking-wider">
                 <span className="text-sm text-blue-950">
@@ -114,7 +111,13 @@ const Booking = () => {
                 {visibleTimes.map((data) => (
                     <TimeSlot
                         key={data.time}
-                        variant={data.state}
+                        variant={
+                            data.state === 'idle'
+                                ? 'primary'
+                                : data.state === 'booked'
+                                  ? 'danger'
+                                  : 'secondary'
+                        }
                         selected={selectedTime === data.time}
                         disabled={data.state !== 'idle'}
                         onClick={() => setSelectedTime(data.time)}
@@ -138,14 +141,6 @@ const Booking = () => {
             >
                 BOOK
             </button>
-            {isCalendarOpen && (
-                <Calendar
-                    className="bottom-0 left-0 right-0 top-0 m-auto"
-                    onClose={() => setIsCalendarOpen(false)}
-                    setSelectedDate={setSelectedDate}
-                    value={selectedDate}
-                />
-            )}
         </div>
     )
 }

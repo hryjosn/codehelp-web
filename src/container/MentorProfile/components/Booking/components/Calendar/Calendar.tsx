@@ -1,40 +1,38 @@
-import { FC, HTMLAttributes } from 'react'
-import { cn } from '~/lib/utils'
+'use client'
+import { FC, forwardRef, HTMLAttributes } from 'react'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
+
 interface CalendarProps extends HTMLAttributes<HTMLDivElement> {
-    onClose: () => void
     setSelectedDate: (date: Date) => void
     value: Date
 }
 
-const CalendarModal: FC<CalendarProps> = ({
-    onClose,
-    setSelectedDate,
-    className,
-    value,
-}) => {
+const Calendar: FC<CalendarProps> = ({ value, setSelectedDate }) => {
+    const ShowCalendarButton = forwardRef<
+        HTMLButtonElement,
+        { onClick?: () => void }
+    >(({ onClick }, ref) => (
+        <button
+            className="flex items-center justify-center font-bold text-green-800"
+            onClick={onClick}
+            ref={ref}
+        >
+            <span>View all</span>
+        </button>
+    ))
+
+    ShowCalendarButton.displayName = 'ShowCalendarButton'
+
     return (
-        <div style={{ width: '250px' }} className={cn('absolute', className)}>
-            <div
-                className="flex cursor-pointer justify-end font-bold text-green-800"
-                onClick={onClose}
-            >
-                X
-            </div>
-            <DatePicker
-                showIcon
-                selected={new Date()}
-                inline
-                onChange={(date: Date | null) => {
-                    if (date === null) return
-                    setSelectedDate(date)
-                    onClose()
-                }}
-                value={value?.toLocaleString()}
-            />
-        </div>
+        <DatePicker
+            selected={value}
+            onChange={(date: Date) => {
+                setSelectedDate(date)
+            }}
+            customInput={<ShowCalendarButton />}
+        />
     )
 }
 
-export default CalendarModal
+export default Calendar

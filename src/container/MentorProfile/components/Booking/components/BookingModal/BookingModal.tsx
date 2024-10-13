@@ -6,6 +6,7 @@ import Image from 'next/image'
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth'
 import AccessTimeIcon from '@mui/icons-material/AccessTime'
 import { Button } from '~/components/Button/Button'
+import { Modal } from '@mui/material'
 interface BookingModalProps {
     selectedDate: Date
     selectedTime: string
@@ -18,8 +19,6 @@ const BookingModal = ({
     isOpen,
     onClose,
 }: BookingModalProps) => {
-    if (!isOpen) return null
-
     const {
         mentorProfileStore: { avatar, name, title },
     } = rootStore
@@ -28,14 +27,12 @@ const BookingModal = ({
         onClose()
     }
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-50">
-            <div className="relative flex w-[700px] gap-5 rounded-lg bg-white p-7 shadow-xl">
-                <button
-                    onClick={onClose}
-                    className="absolute right-3 top-2 text-lg"
-                >
-                    x
-                </button>
+        <Modal
+            open={isOpen}
+            onClose={onClose}
+            className="flex justify-center items-center"
+        >
+            <div className="relative flex gap-5 rounded-lg bg-white p-7 shadow-xl">
                 <div className="flex flex-col gap-3 p-5">
                     <div className="flex items-center gap-3">
                         <Image
@@ -107,14 +104,14 @@ const BookingModal = ({
                     </div>
 
                     <Button
-                        className="mt-5 w-full border-0 bg-gray-500 p-4 text-white hover:bg-teal-600"
+                        className="mt-5 w-full border-0 bg-gray-500 py-4 px-40 text-white hover:bg-teal-600"
                         onClick={confirmBooking}
                     >
                         Confirm Booking
                     </Button>
                 </div>
             </div>
-        </div>
+        </Modal>
     )
 }
 
