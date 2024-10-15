@@ -12,7 +12,6 @@ const Booking = () => {
     const [visibleTimes, setVisibleTimes] = useState<MOCK_TIME_OPTIONS_T[]>(
         MOCK_TIME_OPTIONS.slice(0, 6)
     )
-    const [isCalendarOpen, setIsCalendarOpen] = useState<boolean>(false)
     const [isBookingModalOpen, setIsBookingModalOpen] = useState<boolean>(false)
     const [selectedDate, setSelectedDate] = useState<Date>(new Date())
     const [selectedTime, setSelectedTime] = useState<string>('')
@@ -21,11 +20,6 @@ const Booking = () => {
         { length: 4 },
         (_, i) => new Date(selectedDate.getTime() + i * 86400000)
     )
-
-    const onSelectDate = (date: Date) => {
-        setSelectedDate(date)
-        setIsCalendarOpen(false)
-    }
 
     const onNextTimes = () => {
         const startIndex = MOCK_TIME_OPTIONS.indexOf(visibleTimes[0]) + 6
@@ -62,7 +56,7 @@ const Booking = () => {
                     <DateSlot
                         key={index}
                         selected={selectedDate.getDate() === day.getDate()}
-                        onClick={() => onSelectDate(day)}
+                        onClick={() => setSelectedDate(day)}
                     >
                         <span className="self-center text-xs font-bold uppercase text-gray-500">
                             {day.toLocaleDateString('en-US', {
