@@ -14,9 +14,9 @@ const VideoConference = () => {
     const localMediaRef = useRef<HTMLVideoElement | null>(null)
     const remoteMediaRef = useRef<HTMLVideoElement | null>(null)
 
-    let peerConnection: RTCPeerConnection | null = null
+    let peerConnection: any | null = null
     let socket: Socket<ServerToClientEvents, ClientToServerEvents> | null = null
-    let localStream: any
+    let localStream: MediaStream
     const room = 'room1'
 
     const socketConnect = () => {
@@ -30,6 +30,7 @@ const VideoConference = () => {
         // 監聽加入房間
         socket.on('ready', (msg) => {
             // 發送 Offer SDP
+
             sendSDP('offer')
         })
 
@@ -128,12 +129,12 @@ const VideoConference = () => {
         peerConnection = new RTCPeerConnection(configuration)
 
         // 增加本地串流
-        localStream!.getTracks().forEach((track: any) => {
-            peerConnection!.addTrack(track, localStream)
+        localStream.getTracks().forEach((track: any) => {
+            peerConnection.addTrack(track, localStream)
         })
 
         // 找尋到 ICE 候選位址後，送去 Server 與另一位配對
-        peerConnection.onicecandidate = (e) => {
+        peerConnection.onicecandidate = (e: any) => {
             if (socket === null) return
             if (e.candidate) {
                 // 發送 ICE
@@ -146,17 +147,19 @@ const VideoConference = () => {
         }
 
         // 監聽 ICE 連接狀態
-        peerConnection.oniceconnectionstatechange = (e) => {
-            // 若連接已斷，執行掛斷相關動作
-            if (e.target!.iceConnectionState === 'disconnected') {
-                hangup()
-            }
-        }
+        // peerConnection.oniceconnectionstatechange = (e) => {
+        //     // 若連接已斷，執行掛斷相關動作
+        //     if (e.target!.iceConnectionState === 'disconnected') {
+        //         hangup()
+        //     }
+        // }
 
         // 監聽是否有媒體串流傳入
-        peerConnection.addStream = ({ stream }: any) => {
-            // Dom 加入遠端串流
-            remoteMediaRef.current!.srcObject = stream
+        peerConnection.ontrack = (event: RTCTrackEvent) => {
+            const stream = event.streams[0] // 提取第一個流
+            if (remoteMediaRef.current) {
+                remoteMediaRef.current.srcObject = stream // 設置遠端視頻
+            }
         }
     }
 
