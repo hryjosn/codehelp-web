@@ -1,13 +1,39 @@
 'use client'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import MessageBox from './components/MessageBox'
 import { IoMdMic, IoMdMicOff } from 'react-icons/io'
 import { MdOutlineScreenShare } from 'react-icons/md'
 import { ImPhoneHangUp } from 'react-icons/im'
 import { IoSend } from 'react-icons/io5'
 import { PiChatCircleText } from 'react-icons/pi'
+import { observer } from 'mobx-react-lite'
+import rootStore from '~/store'
+import { runInAction } from 'mobx'
+import * as io from 'socket.io-client'
 
+const socket = io.connect('http://localhost:80/')
+const configuration = {
+    iceServers: [
+        {
+            urls: 'stun:stun.l.google.com:19302',
+        },
+        {
+            urls: 'stun:stun.xten.com',
+        },
+    ],
+}
+const room = 'testRoom'
 const VideoConference = () => {
+    // const {
+    //     videoConferenceStore: {
+    //         pcPeers,
+    //         localStream,
+    //         remote,
+    //         sendSDP,
+    //         createLocalStream,
+    //         join,
+    //     },
+    // } = rootStore
     const [isMicOpen, setIsMicOpen] = useState(false)
     const [isChatOpen, setIsChatOpen] = useState(false)
     const MOCK_MESSAGE_LIST = [
@@ -35,23 +61,159 @@ const VideoConference = () => {
         { name: 'user1', time: '下午1:10', message: 'hi' },
         { name: 'user2', time: '下午1:11', message: 'hello' },
     ]
+
+    const [localStream, setLocalStream] = useState<MediaStream>()
+    const [remote, setRemote] = useState<MediaStream>()
+    const [pcPeers, setPcPeers] = useState<RTCPeerConnection>()
+    const join = async () => {
+        socket.emit('join', room)
+        createPeerConnection()
+    }
+
+    const hangup = () => {
+        if (pcPeers) {
+            pcPeers.onicecandidate = null
+            pcPeers.onnegotiationneeded = null
+            pcPeers.close()
+        }
+
+        socket.emit('hangup', room)
+        setPcPeers(undefined)
+        setRemote(undefined)
+    }
+
+    const createPeerConnection = () => {
+        const peers: RTCPeerConnection = new RTCPeerConnection(configuration)
+        setPcPeers(peers)
+
+        localStream?.getTracks().forEach((track) => {
+            peers?.addTrack(track, localStream)
+        })
+
+        peers.onicecandidate = (e) => {
+            if (e.candidate) {
+                socket.emit('ice_candidate', room, {
+                    label: e.candidate.sdpMLineIndex,
+                    id: e.candidate.sdpMid,
+                    candidate: e.candidate.candidate,
+                })
+            }
+        }
+
+        peers.oniceconnectionstatechange = (e) => {
+            const peerConnection = e.target as RTCPeerConnection
+            if (peerConnection.iceConnectionState === 'disconnected') {
+                hangup()
+            }
+        }
+
+        peers.ontrack = (event) => {
+            const [stream] = event.streams
+            setRemote(stream)
+        }
+    }
+
+    const createLocalStream = async () => {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({
+                audio: true,
+                video: true,
+            })
+            setLocalStream(stream)
+        } catch (err) {
+            console.log('getUserMedia error: ', err)
+        }
+    }
+
+    const sendSDP = async (type: string) => {
+        try {
+            if (!pcPeers) {
+                console.log('尚未開啟視訊')
+                return
+            }
+
+            const method = type === 'offer' ? 'createOffer' : 'createAnswer'
+
+            const localSDP = await pcPeers?.[method]({
+                offerToReceiveAudio: true,
+                offerToReceiveVideo: true,
+            })
+            await pcPeers?.setLocalDescription(localSDP)
+            socket.emit(type, room, pcPeers?.localDescription)
+        } catch (err) {
+            console.log('error: ', err)
+        }
+    }
+    useEffect(() => {
+        createLocalStream()
+
+        socket.on('ready', () => {
+            sendSDP('offer')
+        })
+
+        socket.on('otherUserHangup', () => {
+            setRemote(undefined)
+        })
+
+        socket.on('offer', async (desc) => {
+            if (pcPeers) {
+                await pcPeers?.setRemoteDescription(desc)
+                await sendSDP('answer')
+            }
+        })
+
+        socket.on('answer', (desc) => {
+            if (pcPeers) {
+                pcPeers?.setRemoteDescription(desc)
+            }
+        })
+
+        socket.on('ice_candidate', (data) => {
+            const candidate = new RTCIceCandidate({
+                sdpMLineIndex: data.label,
+                candidate: data.candidate,
+            })
+            pcPeers?.addIceCandidate(candidate)
+        })
+    }, [pcPeers])
+
     return (
         <div className="flex h-screen flex-col bg-zinc-800">
             <div className="flex flex-1">
+                <button
+                    onClick={() => {
+                        join()
+                    }}
+                >
+                    Join
+                </button>
                 <div className="flex flex-1 gap-3 px-5 pt-5">
                     <video
-                        autoPlay
-                        className="h-full w-1/2 rounded-3xl border-2 border-white"
-                    >
-                        user1
-                    </video>
-                    <video
+                        ref={(video) => {
+                            if (video && localStream) {
+                                video.srcObject = localStream
+                            }
+                        }}
                         autoPlay
                         muted
                         className="h-full w-1/2 rounded-3xl border-2 border-white"
                     >
-                        user2
+                        user1
                     </video>
+                    {remote && (
+                        <video
+                            ref={(video) => {
+                                if (video) {
+                                    video.srcObject = remote
+                                }
+                            }}
+                            autoPlay
+                            muted
+                            className="h-full w-1/2 rounded-3xl border-2 border-white"
+                        >
+                            user2
+                        </video>
+                    )}
                 </div>
                 {isChatOpen && (
                     <div className="mr-5 mt-5 flex w-96 flex-col justify-between gap-2 rounded-lg bg-white p-5 pt-2">
@@ -98,9 +260,12 @@ const VideoConference = () => {
                     onClick={() => setIsChatOpen(!isChatOpen)}
                     className="h-14 w-14 rounded-full bg-gray-200 p-3"
                 />
-                <ImPhoneHangUp className="h-14 w-14 rounded-full bg-red-600 p-3" />
+                <ImPhoneHangUp
+                    className="h-14 w-14 rounded-full bg-red-600 p-3"
+                    onClick={hangup}
+                />
             </div>
         </div>
     )
 }
-export default VideoConference
+export default observer(VideoConference)
