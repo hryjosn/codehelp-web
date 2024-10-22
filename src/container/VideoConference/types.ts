@@ -22,4 +22,5 @@ export interface ServerToClientEvents {
     offer: (desc: RTCSessionDescription) => void
     answer: (desc: RTCSessionDescription) => void
     iceCandidate: (data: IceCandidateData) => void
+    leave: () => void
 }

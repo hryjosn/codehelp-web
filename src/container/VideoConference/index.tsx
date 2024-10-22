@@ -120,6 +120,9 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
                 await peerConnection.addIceCandidate(candidate)
                 console.log('add ice')
             })
+            socket.on('leave', async () => {
+                remoteVideoRef.current!.srcObject = null
+            })
         })()
     }, [])
 
