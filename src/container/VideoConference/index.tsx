@@ -24,16 +24,6 @@ const configuration = {
 }
 const room = 'testRoom'
 const VideoConference = () => {
-    // const {
-    //     videoConferenceStore: {
-    //         pcPeers,
-    //         localStream,
-    //         remote,
-    //         sendSDP,
-    //         createLocalStream,
-    //         join,
-    //     },
-    // } = rootStore
     const [isMicOpen, setIsMicOpen] = useState(false)
     const [isChatOpen, setIsChatOpen] = useState(false)
     const MOCK_MESSAGE_LIST = [
