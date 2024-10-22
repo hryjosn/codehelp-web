@@ -14,76 +14,57 @@ const VideoConference = () => {
     const localMediaRef = useRef<HTMLVideoElement | null>(null)
     const remoteMediaRef = useRef<HTMLVideoElement | null>(null)
 
-    let peerConnection: any | null = null
-    let socket: Socket<ServerToClientEvents, ClientToServerEvents> | null = null
+    let peerConnection: RTCPeerConnection | null = null
+    let socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(
+        'localhost:80',
+        {
+            transports: ['websocket'],
+        }
+    )
     let localStream: MediaStream
     const room = 'room1'
 
     const socketConnect = () => {
-        socket = io('localhost:80', {
-            transports: ['websocket'],
-        })
-
-        // 發送房間資訊
         socket.emit('join', room)
 
-        // 監聽加入房間
-        socket.on('ready', (msg) => {
-            // 發送 Offer SDP
-
+        socket.on('ready', () => {
             sendSDP('offer')
         })
 
-        // 監聽收到 Offer
         socket.on('offer', async (desc) => {
-            if (peerConnection === null) {
-                return
-            }
-            // 設定對方的媒體串流
-            await peerConnection.setRemoteDescription(desc)
-            // 發送 Answer SDP
+            await peerConnection!.setRemoteDescription(desc)
             await sendSDP('answer')
         })
 
-        // 監聽收到 Answer
         socket.on('answer', (desc) => {
-            if (peerConnection === null) {
-                return
-            }
-            // 設定對方的媒體串流
-            peerConnection.setRemoteDescription(desc)
+            peerConnection!.setRemoteDescription(desc)
         })
 
-        // 監聽收到 ICE 候選位址
         socket.on('ice_candidate', (data) => {
-            if (peerConnection === null) {
-                return
-            }
-            // RTCIceCandidate 用以定義 ICE 候選位址
             const candidate = new RTCIceCandidate({
                 sdpMLineIndex: data.label,
                 candidate: data.candidate,
             })
-            // 加入 ICE 候選位址
-            peerConnection.addIceCandidate(candidate)
+            peerConnection!.addIceCandidate(candidate)
         })
     }
 
-    const createStream = async () => {
-        try {
-            const constraints = {
+    const createStream = () => {
+        navigator.mediaDevices
+            .getUserMedia({
                 audio: true,
                 video: true,
-            }
-            const stream =
-                await navigator.mediaDevices.getUserMedia(constraints)
-            if (localMediaRef.current) {
-                localMediaRef.current.srcObject = stream
-            }
-            localStream = stream
-        } catch (err) {
-            throw err
-        }
+            })
+            .then((stream) => {
+                if (localMediaRef.current) {
+                    localMediaRef.current.srcObject = stream
+                }
+                localStream = stream
+                call()
+            })
+            .catch((error) => {
+                throw error
+            })
     }
 
     const sendSDP = async (type: 'offer' | 'answer') => {
@@ -95,21 +76,15 @@ const VideoConference = () => {
 
             const method = type === 'offer' ? 'createOffer' : 'createAnswer'
             const offerOptions = {
-                offerToReceiveAudio: true, // 是否傳送聲音流給對方
-                offerToReceiveVideo: true, // 是否傳送影像流給對方
+                offerToReceiveAudio: true,
+                offerToReceiveVideo: true,
             }
-
-            // 建立 SDP
             const localSDP = await peerConnection[method](offerOptions)
 
-            // 設定本地 SDP
             await peerConnection.setLocalDescription(localSDP)
 
-            // 發送 SDP
             if (peerConnection.localDescription) {
-                socket!.emit(type, room, peerConnection.localDescription)
-            } else {
-                console.error('Local description is null, cannot send SDP.')
+                socket.emit(type, room, peerConnection.localDescription)
             }
         } catch (err) {
             console.log('error: ', err)
@@ -117,7 +92,6 @@ const VideoConference = () => {
     }
 
     const createPeerConnection = () => {
-        // 設定 iceServer
         const configuration = {
             iceServers: [
                 {
@@ -125,19 +99,14 @@ const VideoConference = () => {
                 },
             ],
         }
-        // 建立 RTCPeerConnection
         peerConnection = new RTCPeerConnection(configuration)
 
-        // 增加本地串流
-        localStream.getTracks().forEach((track: any) => {
-            peerConnection.addTrack(track, localStream)
+        localStream.getTracks().forEach((track: MediaStreamTrack) => {
+            peerConnection!.addTrack(track, localStream)
         })
 
-        // 找尋到 ICE 候選位址後，送去 Server 與另一位配對
-        peerConnection.onicecandidate = (e: any) => {
-            if (socket === null) return
+        peerConnection.onicecandidate = (e: RTCPeerConnectionIceEvent) => {
             if (e.candidate) {
-                // 發送 ICE
                 socket.emit('ice_candidate', room, {
                     label: e.candidate.sdpMLineIndex,
                     id: e.candidate.sdpMid,
@@ -146,75 +115,64 @@ const VideoConference = () => {
             }
         }
 
-        // 監聽 ICE 連接狀態
-        // peerConnection.oniceconnectionstatechange = (e) => {
-        //     // 若連接已斷，執行掛斷相關動作
-        //     if (e.target!.iceConnectionState === 'disconnected') {
-        //         hangup()
-        //     }
-        // }
+        peerConnection.oniceconnectionstatechange = (e) => {
+            const pc = e.target as RTCPeerConnection
+            if (pc.iceConnectionState === 'disconnected') {
+                hangup()
+            }
+        }
 
-        // 監聽是否有媒體串流傳入
         peerConnection.ontrack = (event: RTCTrackEvent) => {
-            const stream = event.streams[0] // 提取第一個流
+            const stream = event.streams[0]
             if (remoteMediaRef.current) {
-                remoteMediaRef.current.srcObject = stream // 設置遠端視頻
+                remoteMediaRef.current.srcObject = stream
             }
         }
     }
 
-    // 開始連線
     const call = () => {
-        socketConnect() // socket 連線
-        createPeerConnection() // 建立 P2P 連線
+        socketConnect()
+        createPeerConnection()
     }
 
-    // 關閉連線
     const hangup = () => {
-        // 移除事件監聽
         if (peerConnection === null || socket === null) {
             return
         }
 
         peerConnection.onicecandidate = null
         peerConnection.onnegotiationneeded = null
-
-        // 關閉 RTCPeerConnection 連線並釋放記憶體
         peerConnection.close()
         peerConnection = null
 
-        // 傳遞掛斷事件給 Server
         socket.emit('hangup', room)
-        socket = null
+        socket.close()
 
-        // 移除遠端 video src
-        remoteMediaRef.current!.srcObject = null // 移除遠端媒體串流
+        remoteMediaRef.current!.srcObject = null
     }
 
     useEffect(() => {
         createStream()
+        return () => {
+            hangup()
+        }
     }, [])
 
     return (
         <div className="flex h-screen flex-col bg-zinc-800">
-            <button onClick={call}>call</button>
             <div className="flex flex-1">
                 <div className="flex flex-1 gap-3 px-5 pt-5">
                     <video
                         autoPlay
-                        className="h-full w-1/2 rounded-3xl border-2 border-white"
+                        className="border-whit h-full w-1/2 rounded-3xl border-2 object-fill"
                         ref={remoteMediaRef}
-                    >
-                        user1
-                    </video>
+                    />
                     <video
                         autoPlay
                         muted
-                        className="h-full w-1/2 rounded-3xl border-2 border-white"
+                        className="h-full w-1/2 rounded-3xl border-2 border-white object-fill"
                         ref={localMediaRef}
-                    >
-                        user2
-                    </video>
+                    />
                 </div>
                 {isChatOpen && (
                     <div className="mr-5 mt-5 flex w-96 flex-col justify-between gap-2 rounded-lg bg-white p-5 pt-2">
