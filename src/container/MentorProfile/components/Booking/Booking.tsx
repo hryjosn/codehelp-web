@@ -8,7 +8,7 @@ import Calendar from './components/Calendar/Calendar'
 import BookingModal from './components/BookingModal/BookingModal'
 import TimeSlot from './components/TimeSlot/TimeSlot'
 
-const Booking = () => {
+const Booking = ({ mentorId }: { mentorId: string }) => {
     const [visibleTimes, setVisibleTimes] = useState<MOCK_TIME_OPTIONS_T[]>(
         MOCK_TIME_OPTIONS.slice(0, 6)
     )
@@ -38,6 +38,7 @@ const Booking = () => {
     return (
         <div className="relative max-w-[480px] rounded-xl border border-solid border-gray-200 p-6">
             <BookingModal
+                mentorId={mentorId}
                 selectedDate={selectedDate}
                 selectedTime={selectedTime}
                 isOpen={isBookingModalOpen}

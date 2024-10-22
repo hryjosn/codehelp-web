@@ -10,7 +10,7 @@ export type Experience = {
 }
 
 export type Mentor = {
-    id: number
+    id: string
     name: string
     bio: string
     slug: string
