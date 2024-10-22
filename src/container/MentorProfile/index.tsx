@@ -7,12 +7,17 @@ import Experience from '~/components/mentor/Experience'
 import { MOCK_MENTOR_LIST } from '~/container/Home/components/MentorList/constant'
 import type { Mentor } from '~/container/Home/components/MentorList/types'
 import Booking from './components/Booking/Booking'
+import Link from 'next/link'
+import rootStore from '~/store'
+import { socket } from '~/lib/utils'
 
 const MentorProfile = ({ params }: { params: { id: string } }) => {
     const currentMentor: Mentor | undefined = MOCK_MENTOR_LIST.find(
         (mentor) => mentor.id === Number(params.id)
     )
-
+    const {
+        videoConferenceStore: { setLocalVideo },
+    } = rootStore
     const router = useRouter()
     if (!currentMentor) {
         router.back()
@@ -35,6 +40,12 @@ const MentorProfile = ({ params }: { params: { id: string } }) => {
                 </div>
                 <Booking />
             </div>
+            <Link
+                className={'rounded-lg border bg-gray-100 p-2'}
+                href={'/video-conference/room1'}
+            >
+                Go to video chatroom
+            </Link>
         </div>
     )
 }
