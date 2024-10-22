@@ -7,6 +7,9 @@ import Experience from '~/components/mentor/Experience'
 import { MOCK_MENTOR_LIST } from '~/container/Home/components/MentorList/constant'
 import type { Mentor } from '~/container/Home/components/MentorList/types'
 import Booking from './components/Booking/Booking'
+import { runInAction } from 'mobx'
+import rootStore from '~/store'
+import { useEffect } from 'react'
 
 const MentorProfile = ({ params }: { params: { id: string } }) => {
     const currentMentor: Mentor | undefined = MOCK_MENTOR_LIST.find(
@@ -14,11 +17,21 @@ const MentorProfile = ({ params }: { params: { id: string } }) => {
     )
 
     const router = useRouter()
+
+    useEffect(() => {
+        if (!currentMentor) return
+        runInAction(() => {
+            rootStore.mentorProfileStore.avatar = currentMentor.avatar
+            rootStore.mentorProfileStore.name = currentMentor.name
+            rootStore.mentorProfileStore.company = currentMentor.company
+            rootStore.mentorProfileStore.title = currentMentor.title
+        })
+    }, [currentMentor, router])
+
     if (!currentMentor) {
         router.back()
         return
     }
-
     return (
         <div className="p-6 md:p-16">
             <Bio
