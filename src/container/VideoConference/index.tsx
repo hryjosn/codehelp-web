@@ -106,10 +106,12 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
                     )
                 }
             })
+            // 監聽answer，當收到時
             socket.on('answer', (desc) => {
                 // 設定對方的媒體串流
                 peerConnection.setRemoteDescription(desc)
             })
+            // 監聽iceCandidate，當收到時
             socket.on('iceCandidate', async (data) => {
                 // RTCIceCandidate 用以定義 ICE 候選位址
                 const candidate = new RTCIceCandidate({
