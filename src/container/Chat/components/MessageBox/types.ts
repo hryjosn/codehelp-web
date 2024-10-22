@@ -1,4 +1,3 @@
-export interface MessageBoxT {
-    name: string
+export interface Props {
     message: string
 }

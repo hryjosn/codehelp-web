@@ -1,7 +1,7 @@
-import { ChatroomT } from './types'
+import { Props } from './types'
 import Image from 'next/image'
 
-const Chatroom = (props: ChatroomT) => {
+const Chatroom = (props: Props) => {
     const { userName, avatar } = props
     return (
         <button className="flex w-full items-center rounded-lg px-3 py-3 hover:bg-gray-100">
