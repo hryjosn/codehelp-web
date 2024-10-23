@@ -1,17 +1,13 @@
 'use client'
-import { useEffect, useState } from 'react'
-import MessageBox from './components/MessageBox'
-import { IoMdMic, IoMdMicOff } from 'react-icons/io'
-import { MdOutlineScreenShare } from 'react-icons/md'
+import { useEffect, useRef, useState } from 'react'
 import { ImPhoneHangUp } from 'react-icons/im'
+import { IoMdMic, IoMdMicOff } from 'react-icons/io'
 import { IoSend } from 'react-icons/io5'
+import { MdOutlineScreenShare } from 'react-icons/md'
 import { PiChatCircleText } from 'react-icons/pi'
-import { observer } from 'mobx-react-lite'
-import rootStore from '~/store'
-import { runInAction } from 'mobx'
 import * as io from 'socket.io-client'
+import MessageBox from './components/MessageBox'
 
-const socket = io.connect('http://localhost:80/')
 const configuration = {
     iceServers: [
         {
@@ -24,6 +20,9 @@ const configuration = {
 }
 const room = 'testRoom'
 const VideoConference = () => {
+    const socketRef = useRef<io.Socket | null>(null)
+
+    const socket = socketRef.current
     const [isMicOpen, setIsMicOpen] = useState(false)
     const [isChatOpen, setIsChatOpen] = useState(false)
     const MOCK_MESSAGE_LIST = [
@@ -54,27 +53,29 @@ const VideoConference = () => {
 
     const [localStream, setLocalStream] = useState<MediaStream>()
     const [remote, setRemote] = useState<MediaStream>()
-    const [pcPeers, setPcPeers] = useState<RTCPeerConnection>()
-    const join = async () => {
-        socket.emit('join', room)
+    const pcPeersRef = useRef<RTCPeerConnection | null>(null)
+
+    const join = () => {
+        console.log('socket join', socketRef.current)
+        socketRef.current?.emit('join', room)
         createPeerConnection()
     }
 
     const hangup = () => {
-        if (pcPeers) {
-            pcPeers.onicecandidate = null
-            pcPeers.onnegotiationneeded = null
-            pcPeers.close()
+        if (pcPeersRef.current) {
+            pcPeersRef.current.onicecandidate = null
+            pcPeersRef.current.onnegotiationneeded = null
+            pcPeersRef.current?.close()
         }
 
-        socket.emit('hangup', room)
-        setPcPeers(undefined)
+        socketRef.current?.emit('hangup', room)
+        pcPeersRef.current = null
         setRemote(undefined)
     }
 
     const createPeerConnection = () => {
         const peers: RTCPeerConnection = new RTCPeerConnection(configuration)
-        setPcPeers(peers)
+        pcPeersRef.current = peers
 
         localStream?.getTracks().forEach((track) => {
             peers?.addTrack(track, localStream)
@@ -82,7 +83,7 @@ const VideoConference = () => {
 
         peers.onicecandidate = (e) => {
             if (e.candidate) {
-                socket.emit('ice_candidate', room, {
+                socketRef.current?.emit('ice_candidate', room, {
                     label: e.candidate.sdpMLineIndex,
                     id: e.candidate.sdpMid,
                     candidate: e.candidate.candidate,
@@ -99,6 +100,7 @@ const VideoConference = () => {
 
         peers.ontrack = (event) => {
             const [stream] = event.streams
+            console.log('setRemote>')
             setRemote(stream)
         }
     }
@@ -117,55 +119,73 @@ const VideoConference = () => {
 
     const sendSDP = async (type: string) => {
         try {
-            if (!pcPeers) {
+            if (!pcPeersRef.current) {
                 console.log('尚未開啟視訊')
                 return
             }
 
             const method = type === 'offer' ? 'createOffer' : 'createAnswer'
 
-            const localSDP = await pcPeers?.[method]({
+            const localSDP = await pcPeersRef.current?.[method]({
                 offerToReceiveAudio: true,
                 offerToReceiveVideo: true,
             })
-            await pcPeers?.setLocalDescription(localSDP)
-            socket.emit(type, room, pcPeers?.localDescription)
+            await pcPeersRef.current?.setLocalDescription(localSDP)
+            socketRef.current?.emit(
+                type,
+                room,
+                pcPeersRef.current?.localDescription
+            )
         } catch (err) {
             console.log('error: ', err)
         }
     }
-    useEffect(() => {
-        createLocalStream()
 
-        socket.on('ready', () => {
+    useEffect(() => {
+        console.log('useEffect1')
+        socketRef.current = io.connect('http://localhost:80')
+        console.log('useEffect2')
+        createLocalStream()
+        join()
+
+        socketRef.current?.on('ready', () => {
+            console.log('ready')
             sendSDP('offer')
         })
 
-        socket.on('otherUserHangup', () => {
+        socketRef.current?.on('otherUserHangup', () => {
             setRemote(undefined)
         })
 
-        socket.on('offer', async (desc) => {
-            if (pcPeers) {
-                await pcPeers?.setRemoteDescription(desc)
-                await sendSDP('answer')
+        socketRef.current?.on(
+            'offer',
+            async (desc: RTCSessionDescriptionInit) => {
+                console.log('offer>')
+                if (pcPeersRef.current) {
+                    await pcPeersRef.current?.setRemoteDescription(desc)
+                    await sendSDP('answer')
+                }
+            }
+        )
+
+        socketRef.current?.on('answer', (desc) => {
+            console.log('answer>')
+            if (pcPeersRef.current) {
+                pcPeersRef.current?.setRemoteDescription(desc)
             }
         })
 
-        socket.on('answer', (desc) => {
-            if (pcPeers) {
-                pcPeers?.setRemoteDescription(desc)
-            }
-        })
-
-        socket.on('ice_candidate', (data) => {
+        socketRef.current?.on('ice_candidate', (data) => {
             const candidate = new RTCIceCandidate({
                 sdpMLineIndex: data.label,
                 candidate: data.candidate,
             })
-            pcPeers?.addIceCandidate(candidate)
+            pcPeersRef.current?.addIceCandidate(candidate)
         })
-    }, [pcPeers])
+        return () => {
+            socketRef.current?.disconnect()
+        }
+    }, [])
 
     return (
         <div className="flex h-screen flex-col bg-zinc-800">
@@ -258,4 +278,4 @@ const VideoConference = () => {
         </div>
     )
 }
-export default observer(VideoConference)
+export default VideoConference
