@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import apiHandler from './api'
 
-export const useMentorInfo = (mentorId: string) => {
+export const useGetMentorInfo = (mentorId: string) => {
     return useQuery({
         queryKey: ['mentorInfo', mentorId],
         queryFn: async () => {

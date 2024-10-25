@@ -7,7 +7,7 @@ import Experience from '~/components/mentor/Experience'
 import { MOCK_MENTOR_LIST } from '~/container/Home/components/MentorList/constant'
 import type { Mentor } from '~/container/Home/components/MentorList/types'
 import Booking from './components/Booking/Booking'
-import { useMentorInfo } from '~/api/mentor'
+import { useGetMentorInfo } from '~/api/mentor'
 import React from 'react'
 const MentorProfile = ({ params }: { params: { id: string } }) => {
     const currentMentor: Mentor | undefined = MOCK_MENTOR_LIST.find(
@@ -15,7 +15,7 @@ const MentorProfile = ({ params }: { params: { id: string } }) => {
     )
 
     const router = useRouter()
-    const { data, isPending } = useMentorInfo(params.id)
+    const { data, isPending } = useGetMentorInfo(params.id)
     if (!currentMentor) {
         router.back()
         return

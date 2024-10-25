@@ -4,7 +4,7 @@ import CalendarMonthIcon from '@mui/icons-material/CalendarMonth'
 import AccessTimeIcon from '@mui/icons-material/AccessTime'
 import { Button } from '~/components/Button/Button'
 import { Modal } from '@mui/material'
-import { useMentorInfo } from '~/api/mentor'
+import { useGetMentorInfo } from '~/api/mentor'
 interface BookingModalProps {
     mentorId: string
     selectedDate: Date
@@ -19,7 +19,7 @@ const BookingModal = ({
     isOpen,
     onClose,
 }: BookingModalProps) => {
-    const { data } = useMentorInfo(mentorId)
+    const { data } = useGetMentorInfo(mentorId)
     const confirmBooking = () => {
         onClose()
     }
