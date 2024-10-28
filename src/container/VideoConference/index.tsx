@@ -13,63 +13,61 @@ const VideoConference = () => {
     const [isChatOpen, setIsChatOpen] = useState(false)
     const localMediaRef = useRef<HTMLVideoElement | null>(null)
     const remoteMediaRef = useRef<HTMLVideoElement | null>(null)
-
-    let peerConnection: RTCPeerConnection | null = null
-    let socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(
-        'localhost:80',
-        {
+    const socketRef = useRef<
+        Socket<ServerToClientEvents, ClientToServerEvents>
+    >(
+        io('localhost:80', {
             transports: ['websocket'],
-        }
+        })
     )
+    const socket = socketRef.current
+    const pcPeersRef = useRef<RTCPeerConnection | null>(null)
     let localStream: MediaStream
     const room = 'room1'
 
-    const socketConnect = () => {
-        socket.emit('join', room)
+    const createStream = async () => {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({
+                audio: true,
+                video: true,
+            })
+            if (localMediaRef.current) {
+                localMediaRef.current.srcObject = stream
+            }
+            localStream = stream
+        } catch (err) {
+            console.log('getUserMedia error: ', err)
+        }
+    }
 
-        socket.on('ready', () => {
+    const socketConnect = () => {
+        socket!.emit('join', room)
+
+        socket!.on('ready', () => {
             sendSDP('offer')
         })
 
-        socket.on('offer', async (desc) => {
-            await peerConnection!.setRemoteDescription(desc)
+        socket!.on('offer', async (desc) => {
+            await pcPeersRef.current!.setRemoteDescription(desc)
             await sendSDP('answer')
         })
 
-        socket.on('answer', (desc) => {
-            peerConnection!.setRemoteDescription(desc)
+        socket!.on('answer', (desc) => {
+            pcPeersRef.current!.setRemoteDescription(desc)
         })
 
-        socket.on('ice_candidate', (data) => {
+        socket!.on('ice_candidate', (data) => {
             const candidate = new RTCIceCandidate({
                 sdpMLineIndex: data.label,
                 candidate: data.candidate,
             })
-            peerConnection!.addIceCandidate(candidate)
+            pcPeersRef.current!.addIceCandidate(candidate)
         })
-    }
-
-    const createStream = () => {
-        navigator.mediaDevices
-            .getUserMedia({
-                audio: true,
-                video: true,
-            })
-            .then((stream) => {
-                if (localMediaRef.current) {
-                    localMediaRef.current.srcObject = stream
-                }
-                localStream = stream
-                call()
-            })
-            .catch((error) => {
-                throw error
-            })
     }
 
     const sendSDP = async (type: 'offer' | 'answer') => {
         try {
-            if (!peerConnection) {
+            if (!pcPeersRef.current) {
                 console.log('尚未開啟視訊')
                 return
             }
@@ -79,18 +77,18 @@ const VideoConference = () => {
                 offerToReceiveAudio: true,
                 offerToReceiveVideo: true,
             }
-            const localSDP = await peerConnection[method](offerOptions)
+            const localSDP = await pcPeersRef.current[method](offerOptions)
 
-            await peerConnection.setLocalDescription(localSDP)
+            await pcPeersRef.current.setLocalDescription(localSDP)
 
-            if (peerConnection.localDescription) {
-                socket.emit(type, room, peerConnection.localDescription)
+            if (pcPeersRef.current.localDescription) {
+                socket!.emit(type, room, pcPeersRef.current.localDescription)
             }
         } catch (err) {
             console.log('error: ', err)
         }
     }
-
+    console.log('render')
     const createPeerConnection = () => {
         const configuration = {
             iceServers: [
@@ -99,15 +97,15 @@ const VideoConference = () => {
                 },
             ],
         }
-        peerConnection = new RTCPeerConnection(configuration)
+        pcPeersRef.current = new RTCPeerConnection(configuration)
 
         localStream.getTracks().forEach((track: MediaStreamTrack) => {
-            peerConnection!.addTrack(track, localStream)
+            pcPeersRef.current!.addTrack(track, localStream)
         })
 
-        peerConnection.onicecandidate = (e: RTCPeerConnectionIceEvent) => {
+        pcPeersRef.current.onicecandidate = (e: RTCPeerConnectionIceEvent) => {
             if (e.candidate) {
-                socket.emit('ice_candidate', room, {
+                socket!.emit('ice_candidate', room, {
                     label: e.candidate.sdpMLineIndex,
                     id: e.candidate.sdpMid,
                     candidate: e.candidate.candidate,
@@ -115,14 +113,14 @@ const VideoConference = () => {
             }
         }
 
-        peerConnection.oniceconnectionstatechange = (e) => {
+        pcPeersRef.current.oniceconnectionstatechange = (e) => {
             const pc = e.target as RTCPeerConnection
             if (pc.iceConnectionState === 'disconnected') {
-                hangup()
+                remoteMediaRef.current!.srcObject = null
             }
         }
 
-        peerConnection.ontrack = (event: RTCTrackEvent) => {
+        pcPeersRef.current.ontrack = (event: RTCTrackEvent) => {
             const stream = event.streams[0]
             if (remoteMediaRef.current) {
                 remoteMediaRef.current.srcObject = stream
@@ -130,20 +128,15 @@ const VideoConference = () => {
         }
     }
 
-    const call = () => {
-        socketConnect()
-        createPeerConnection()
-    }
-
     const hangup = () => {
-        if (peerConnection === null || socket === null) {
+        if (pcPeersRef.current === null) {
             return
         }
 
-        peerConnection.onicecandidate = null
-        peerConnection.onnegotiationneeded = null
-        peerConnection.close()
-        peerConnection = null
+        pcPeersRef.current.onicecandidate = null
+        pcPeersRef.current.onnegotiationneeded = null
+        pcPeersRef.current.close()
+        pcPeersRef.current = null
 
         socket.emit('hangup', room)
         socket.close()
@@ -152,7 +145,12 @@ const VideoConference = () => {
     }
 
     useEffect(() => {
-        createStream()
+        const runInEffect = async () => {
+            await createStream()
+            socketConnect()
+            createPeerConnection()
+        }
+        runInEffect()
         return () => {
             hangup()
         }
