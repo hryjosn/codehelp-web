@@ -33,7 +33,10 @@ const FormSelect = ({
     const errorMessage = errors[registerName]?.message as string
     return (
         <div className="flex w-80 flex-col gap-1">
-            <p className="font-bold">{label}</p>
+            <p className="font-bold">
+                {label}
+                <span className="text-red-500"> *</span>
+            </p>
             <Controller
                 name={registerName}
                 control={control}

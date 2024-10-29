@@ -11,15 +11,12 @@ import FormInput from './components/FormInput/FormInput'
 import rootStore from '~/store'
 import { runInAction } from 'mobx'
 import AvatarSelect from './components/AvatarSelect/AvatarSelect'
+import { SignUpInputT } from './store/types'
 
 const SignUp = () => {
     const route = useRouter()
-    const {
-        signUpStore: { avatar },
-    } = rootStore
 
     const onSubmit = ({ userName, email, password }: SignUpInputT) => {
-        if (!avatar[0]) return
         runInAction(() => {
             rootStore.signUpStore.userName = userName
             rootStore.signUpStore.email = email
@@ -33,6 +30,13 @@ const SignUp = () => {
         userName: Joi.string().min(3).max(30).required(),
         email: Joi.string().email().required(),
         password: Joi.string().min(8).max(30).required(),
+        avatar: Joi.object({
+            name: Joi.string().required(),
+            size: Joi.number()
+                .max(1 * 1024 * 1024)
+                .required(),
+            type: Joi.string().valid('image/jpeg', 'image/png').required(),
+        }),
     }).messages({
         'any.required': 'is a required field',
     })
@@ -51,9 +55,8 @@ const SignUp = () => {
                         </LinkText>
                     </div>
                     <div className="flex flex-col items-center">
-                        <AvatarSelect />
-
                         <Form onSubmit={onSubmit} schema={schema}>
+                            <AvatarSelect registerName="avatar" />
                             <FormInput
                                 label="Username"
                                 placeholder="Enter 3 to 30 characters"
