@@ -54,11 +54,13 @@ const VideoConference = () => {
     const [localStream, setLocalStream] = useState<MediaStream>()
     const [remote, setRemote] = useState<MediaStream>()
     const pcPeersRef = useRef<RTCPeerConnection | null>(null)
+    const remoteVideoRef = useRef<HTMLVideoElement | null>(null)
+    const localVideoRef = useRef<HTMLVideoElement | null>(null)
 
-    const join = () => {
+    const join = (stream: MediaStream) => {
         console.log('socket join', socketRef.current)
         socketRef.current?.emit('join', room)
-        createPeerConnection()
+        createPeerConnection(stream)
     }
 
     const hangup = () => {
@@ -73,12 +75,12 @@ const VideoConference = () => {
         setRemote(undefined)
     }
 
-    const createPeerConnection = () => {
+    const createPeerConnection = (stream: MediaStream) => {
         const peers: RTCPeerConnection = new RTCPeerConnection(configuration)
         pcPeersRef.current = peers
 
-        localStream?.getTracks().forEach((track) => {
-            peers?.addTrack(track, localStream)
+        stream?.getTracks().forEach((track) => {
+            peers.addTrack(track, stream)
         })
 
         peers.onicecandidate = (e) => {
@@ -100,7 +102,6 @@ const VideoConference = () => {
 
         peers.ontrack = (event) => {
             const [stream] = event.streams
-            console.log('setRemote>')
             setRemote(stream)
         }
     }
@@ -112,6 +113,7 @@ const VideoConference = () => {
                 video: true,
             })
             setLocalStream(stream)
+            join(stream)
         } catch (err) {
             console.log('getUserMedia error: ', err)
         }
@@ -142,14 +144,10 @@ const VideoConference = () => {
     }
 
     useEffect(() => {
-        console.log('useEffect1')
         socketRef.current = io.connect('http://localhost:80')
-        console.log('useEffect2')
         createLocalStream()
-        join()
 
         socketRef.current?.on('ready', () => {
-            console.log('ready')
             sendSDP('offer')
         })
 
@@ -160,7 +158,6 @@ const VideoConference = () => {
         socketRef.current?.on(
             'offer',
             async (desc: RTCSessionDescriptionInit) => {
-                console.log('offer>')
                 if (pcPeersRef.current) {
                     await pcPeersRef.current?.setRemoteDescription(desc)
                     await sendSDP('answer')
@@ -168,10 +165,9 @@ const VideoConference = () => {
             }
         )
 
-        socketRef.current?.on('answer', (desc) => {
-            console.log('answer>')
+        socketRef.current?.on('answer', async (desc) => {
             if (pcPeersRef.current) {
-                pcPeersRef.current?.setRemoteDescription(desc)
+                await pcPeersRef.current?.setRemoteDescription(desc)
             }
         })
 
@@ -187,39 +183,36 @@ const VideoConference = () => {
         }
     }, [])
 
+    useEffect(() => {
+        if (localVideoRef.current && localStream) {
+            localVideoRef.current.srcObject = localStream
+        }
+    }, [localStream])
+
+    useEffect(() => {
+        if (remoteVideoRef.current && remote) {
+            remoteVideoRef.current.srcObject = remote
+        }
+    }, [remote])
+
     return (
         <div className="flex h-screen flex-col bg-zinc-800">
             <div className="flex flex-1">
-                <button
-                    onClick={() => {
-                        join()
-                    }}
-                >
-                    Join
-                </button>
                 <div className="flex flex-1 gap-3 px-5 pt-5">
                     <video
-                        ref={(video) => {
-                            if (video && localStream) {
-                                video.srcObject = localStream
-                            }
-                        }}
+                        ref={localVideoRef}
                         autoPlay
                         muted
-                        className="h-full w-1/2 rounded-3xl border-2 border-white"
+                        className="h-full w-1/2 scale-x-[-1] rounded-3xl border-2 border-white"
                     >
                         user1
                     </video>
                     {remote && (
                         <video
-                            ref={(video) => {
-                                if (video) {
-                                    video.srcObject = remote
-                                }
-                            }}
+                            ref={remoteVideoRef}
                             autoPlay
                             muted
-                            className="h-full w-1/2 rounded-3xl border-2 border-white"
+                            className="h-full w-1/2 scale-x-[-1] rounded-3xl border-2 border-white"
                         >
                             user2
                         </video>
