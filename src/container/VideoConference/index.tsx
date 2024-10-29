@@ -12,6 +12,7 @@ import { ClientToServerEvents, SDP_TYPE, ServerToClientEvents } from './types'
 import {
     createPeerConnection,
     getLocalMedia,
+    hangUp,
     peerConnection,
     setLocalSDP,
 } from './utils'
@@ -33,107 +34,92 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
             if (localVideoRef.current)
                 localVideoRef.current.srcObject = localStream
 
-            createPeerConnection()
+            createPeerConnection({
+                roomId: params.id,
+                remoteVideoRef,
+            })
             console.log('create', peerConnection)
 
             socket.emit('join', params.id)
-
-            if (peerConnection) {
-                peerConnection.onicecandidate = (e) => {
-                    if (e.candidate) {
-                        // 發送 ICE
-                        socket.emit('iceCandidate', params.id, {
-                            label: e.candidate.sdpMLineIndex,
-                            id: e.candidate.sdpMid,
-                            candidate: e.candidate.candidate,
-                        })
-                    }
-                }
-
-                //監聽 ICE 連接狀態
-                peerConnection.oniceconnectionstatechange = () => {
-                    // 若連接已斷，執行掛斷相關動作
-                    if (peerConnection.iceConnectionState === 'disconnected') {
-                        console.log('hang up')
-
-                        hangUp()
-                    }
-                }
-
-                // 監聽是否有媒體串流傳入
-                peerConnection.ontrack = (e) => {
-                    if (remoteVideoRef.current) {
-                        console.log('set remote')
-                        remoteVideoRef.current.srcObject = e.streams[0]
-                    }
-                }
-            }
-            // 監聽ready事件，有人加入時
-            socket.on('ready', async (msg) => {
-                console.log('send offer')
-                // 建立Offer SDP 加入 PeerConnection.localDescription
-                await setLocalSDP(SDP_TYPE.OFFER)
-                console.log('set local des', peerConnection)
-
-                // 發送 Offer SDP
-                if (!peerConnection.localDescription) {
-                    console.log('localDescription is null')
-                } else {
-                    socket.emit(
-                        'offer',
-                        params.id,
-                        peerConnection.localDescription
-                    )
-                }
-            })
-            // 監聽offer，當收到時
-            socket.on('offer', async (desc) => {
-                console.log('receive offer')
-                // 設定對方的媒體串流
-                await peerConnection.setRemoteDescription(desc)
-                // 建立Answer SDP 加入 PeerConnection.localDescription
-                await setLocalSDP(SDP_TYPE.ANSWER)
-                console.log('set local des', peerConnection)
-
-                // 發送 Answer SDP
-                if (!peerConnection.localDescription) {
-                    console.log('localDescription is null')
-                } else {
-                    socket.emit(
-                        'answer',
-                        params.id,
-                        peerConnection.localDescription
-                    )
-                }
-            })
-            // 監聽answer，當收到時
-            socket.on('answer', (desc) => {
-                // 設定對方的媒體串流
-                peerConnection.setRemoteDescription(desc)
-            })
-            // 監聽iceCandidate，當收到時
-            socket.on('iceCandidate', async (data) => {
-                // RTCIceCandidate 用以定義 ICE 候選位址
-                const candidate = new RTCIceCandidate({
-                    sdpMLineIndex: data.label,
-                    candidate: data.candidate,
-                })
-                // 加入 ICE 候選位址
-                await peerConnection.addIceCandidate(candidate)
-                console.log('add ice')
-            })
-            socket.on('leave', async () => {
-                remoteVideoRef.current!.srcObject = null
-            })
         })()
-    }, [])
 
-    const hangUp = () => {
-        peerConnection?.close()
-        remoteVideoRef.current!.srcObject = null
-        socket.emit('leave', params.id)
-        console.log(peerConnection)
-    }
+        // 監聽ready事件，有人加入時
+        socket.on('ready', async (msg) => {
+            console.log('send offer')
+
+            if (
+                peerConnection.connectionState === 'closed' &&
+                peerConnection.iceConnectionState === 'closed' &&
+                peerConnection.signalingState === 'closed'
+            ) {
+                console.log('closed')
+                createPeerConnection({
+                    roomId: params.id,
+                    remoteVideoRef,
+                })
+            }
+            // 建立Offer SDP 加入 PeerConnection.localDescription
+            await setLocalSDP(SDP_TYPE.OFFER)
+
+            // 發送 Offer SDP
+            if (!peerConnection.localDescription) {
+                console.log('localDescription is null')
+            } else {
+                console.log('send offer')
+                socket.emit('offer', params.id, peerConnection.localDescription)
+            }
+        })
+        // 監聽offer，當收到時
+        socket.on('offer', async (desc) => {
+            console.log('receive offer')
+            // 建立Answer SDP 加入 PeerConnection.localDescription
+            await setLocalSDP(SDP_TYPE.ANSWER)
+            // 設定對方的媒體串流
+            await peerConnection.setRemoteDescription(desc)
+            console.log('after set remote', peerConnection.remoteDescription)
+
+            // 發送 Answer SDP
+            if (!peerConnection.localDescription) {
+                console.log('localDescription is null')
+            } else {
+                console.log('send answer')
+
+                socket.emit(
+                    'answer',
+                    params.id,
+                    peerConnection.localDescription
+                )
+            }
+        })
+        // 監聽answer，當收到時
+        socket.on('answer', async (desc) => {
+            // 設定對方的媒體串流
+            console.log('receive answer')
+            await peerConnection.setRemoteDescription(desc)
+            console.log('after set remote', peerConnection.remoteDescription)
+        })
+        // 監聽iceCandidate，當收到時
+        socket.on('iceCandidate', async (data) => {
+            console.log('receive ice')
+            // RTCIceCandidate 用以定義 ICE 候選位址
+            const candidate = new RTCIceCandidate({
+                sdpMLineIndex: data.label,
+                candidate: data.candidate,
+            })
+            // 加入 ICE 候選位址
+            await peerConnection.addIceCandidate(candidate)
+        })
+        socket.on('leave', () => {
+            console.log('leave')
+            if (remoteVideoRef.current) remoteVideoRef.current.srcObject = null
+            peerConnection.close()
+            console.log(peerConnection)
+        })
+
+        return () => {
+            hangUp(params.id)
+        }
+    }, [])
 
     return (
         <div className="flex h-screen flex-col bg-zinc-800">
@@ -203,7 +189,7 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
                 />
                 <ImPhoneHangUp
                     onClick={() => {
-                        hangUp()
+                        hangUp(params.id)
                         router.back()
                     }}
                     className="h-14 w-14 cursor-pointer rounded-full bg-red-600 p-3"
