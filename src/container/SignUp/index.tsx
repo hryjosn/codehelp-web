@@ -1,45 +1,28 @@
 'use client'
 
 import { observer } from 'mobx-react-lite'
-import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { Form } from './components/Form'
-import Joi from 'joi/lib'
 import LinkText from './components/LinkText/LinkText'
 import FormButton from './components/FormButton/FormButton'
 import FormInput from './components/FormInput/FormInput'
 import rootStore from '~/store'
 import { runInAction } from 'mobx'
 import AvatarSelect from './components/AvatarSelect/AvatarSelect'
-import { SignUpInputT } from './store/types'
+import { SignUpInputT, signUpSchema } from './store/types'
 
 const SignUp = () => {
     const route = useRouter()
-
-    const onSubmit = ({ userName, email, password }: SignUpInputT) => {
+    const onSubmit = ({ avatar, userName, email, password }: SignUpInputT) => {
+        if (!avatar.name || !avatar.size || !avatar.type) return
         runInAction(() => {
+            rootStore.signUpStore.avatar = avatar
             rootStore.signUpStore.userName = userName
             rootStore.signUpStore.email = email
             rootStore.signUpStore.password = password
         })
-
         route.push('/signup/select-role')
     }
-
-    const schema = Joi.object({
-        userName: Joi.string().min(3).max(30).required(),
-        email: Joi.string().email().required(),
-        password: Joi.string().min(8).max(30).required(),
-        avatar: Joi.object({
-            name: Joi.string().required(),
-            size: Joi.number()
-                .max(1 * 1024 * 1024)
-                .required(),
-            type: Joi.string().valid('image/jpeg', 'image/png').required(),
-        }),
-    }).messages({
-        'any.required': 'is a required field',
-    })
 
     return (
         <div className="flex h-screen">
@@ -55,7 +38,7 @@ const SignUp = () => {
                         </LinkText>
                     </div>
                     <div className="flex flex-col items-center">
-                        <Form onSubmit={onSubmit} schema={schema}>
+                        <Form onSubmit={onSubmit} schema={signUpSchema}>
                             <AvatarSelect registerName="avatar" />
                             <FormInput
                                 label="Username"
@@ -78,16 +61,6 @@ const SignUp = () => {
                     </div>
                 </div>
             </div>
-            <Image
-                priority
-                alt="The beautiful picture"
-                src="/Login/Login_Picture.jpg"
-                className="flex-1"
-                width={0}
-                height={0}
-                sizes="100vw"
-                style={{ width: 'auto', height: 'auto' }}
-            />
         </div>
     )
 }

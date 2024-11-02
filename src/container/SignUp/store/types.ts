@@ -1,6 +1,7 @@
 import Joi from 'joi'
 
 export type SignUpInputT = {
+    avatar: File
     userName: string
     email: string
     password: string
@@ -114,4 +115,10 @@ export const memberSchema = Joi.object({
     introduction: Joi.string()
         .required()
         .messages({ 'string.empty': 'Introduction is required' }),
+})
+export const signUpSchema = Joi.object({
+    userName: Joi.string().min(3).max(30).required(),
+    email: Joi.string().email({ tlds: false }).required(),
+    password: Joi.string().min(8).max(30).required(),
+    avatar: Joi.any(),
 })

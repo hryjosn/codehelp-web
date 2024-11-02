@@ -37,10 +37,12 @@ const MentorSignUp = () => {
     }: mentorSignUpT) => {
         const formData = new FormData()
 
+        if (!avatar) return
+
         formData.append('userName', userName)
         formData.append('password', password)
         formData.append('email', email)
-        formData.append(`avatar`, avatar[0])
+        formData.append(`avatar`, avatar)
         formData.append('gender', gender)
         formData.append('country', country)
         formData.append('title', title)

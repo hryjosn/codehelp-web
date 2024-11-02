@@ -4,7 +4,7 @@ class SignUpStore {
     userName: string = ''
     email: string = ''
     password: string = ''
-    avatar: File[] = []
+    avatar: File | null = null
 
     constructor() {
         makeAutoObservable(this)

@@ -33,9 +33,11 @@ const MemberSignUp = () => {
     }: memberSignUpT) => {
         const formData = new FormData()
 
+        if (!avatar) return
+
         formData.append('userName', userName)
         formData.append('password', password)
-        formData.append(`avatar`, avatar[0])
+        formData.append(`avatar`, avatar)
         formData.append('email', email)
         formData.append('gender', gender)
         formData.append('country', country)
