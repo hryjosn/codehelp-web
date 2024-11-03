@@ -30,7 +30,7 @@ const BookingModal = ({
         <Modal
             open={isOpen}
             onClose={onClose}
-            className="flex justify-center items-center"
+            className="flex items-center justify-center"
         >
             <div className="relative flex gap-5 rounded-lg bg-white p-7 shadow-xl">
                 <div className="flex flex-col gap-3 p-5">
@@ -104,7 +104,7 @@ const BookingModal = ({
                     </div>
 
                     <Button
-                        className="mt-5 w-full border-0 bg-gray-500 py-4 px-40 text-white hover:bg-teal-600"
+                        className="mt-5 w-full border-0 bg-gray-500 px-40 py-4 text-white hover:bg-teal-600"
                         onClick={confirmBooking}
                     >
                         Confirm Booking
