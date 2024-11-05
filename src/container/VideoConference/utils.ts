@@ -1,6 +1,6 @@
 import { SDP_TYPE } from '~/lib/types'
 import { PC_CONFIG } from './constant'
-import { PeerConnectionT, SendSDPT } from './types'
+import { PeerConnectionT, SendSDPT, HangupT } from './types'
 import { socket } from '~/lib/utils'
 
 export let peerConnection: RTCPeerConnection
@@ -41,7 +41,7 @@ export const createPeerConnection = ({
     peerConnection.oniceconnectionstatechange = (e) => {
         const peerConnection = e.target as RTCPeerConnection
         if (peerConnection.iceConnectionState === 'disconnected') {
-            hangup(roomID)
+            console.log('other user is disconnected')
         }
     }
 
@@ -73,12 +73,16 @@ export const sendSDP = async ({ type, roomID }: SendSDPT) => {
     }
 }
 
-export const hangup = (roomID: string) => {
+export const hangup = ({ roomID, localStream }: HangupT) => {
     if (peerConnection) {
         peerConnection.onicecandidate = null
         peerConnection.onnegotiationneeded = null
         peerConnection?.close()
     }
+
+    localStream.getTracks().forEach((track) => {
+        track.stop()
+    })
 
     socket?.emit('hangup', roomID)
 }

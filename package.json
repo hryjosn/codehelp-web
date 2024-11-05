@@ -21,6 +21,7 @@
     "classnames": "^2.5.1",
     "clsx": "^2.1.1",
     "joi": "^17.13.3",
+    "lottie-react": "^2.4.0",
     "mobx": "^6.12.4",
     "mobx-react-lite": "^4.0.7",
     "mui-tel-input": "^6.0.1",
