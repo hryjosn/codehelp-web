@@ -10,7 +10,7 @@ type Props = {
 const Bio = ({ avatar, name, company, title }: Props) => {
     return (
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:gap-6">
-            <div className="overflow-hidden w-32 h-32 rounded-full md:w-48 md:h-48">
+            <div className="h-32 w-32 overflow-hidden rounded-full md:h-48 md:w-48">
                 <Image
                     src={avatar}
                     alt={name}
@@ -21,10 +21,10 @@ const Bio = ({ avatar, name, company, title }: Props) => {
                 />
             </div>
             <div>
-                <h2 className="text-2xl text-slate-800 font-bold mb-1 md:text-4xl">
+                <h2 className="mb-1 text-2xl font-bold text-slate-800 md:text-4xl">
                     {name}
                 </h2>
-                <p className="text-base	md:text-lg">
+                <p className="text-base md:text-lg">
                     <span>{title}</span>
                     <span className="mx-1 text-gray-500">at</span>
                     <span>{company}</span>

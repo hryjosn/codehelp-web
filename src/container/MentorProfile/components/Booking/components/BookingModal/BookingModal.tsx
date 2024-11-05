@@ -1,31 +1,29 @@
 import React from 'react'
 import Input from '~/components/Input/Input'
-import rootStore from '~/store'
-import Image from 'next/image'
-
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth'
 import AccessTimeIcon from '@mui/icons-material/AccessTime'
 import { Button } from '~/components/Button/Button'
 import { Modal } from '@mui/material'
+import { useGetMentorInfo } from '~/api/mentor'
 interface BookingModalProps {
+    mentorId: string
     selectedDate: Date
     selectedTime: string
     isOpen: boolean
     onClose: () => void
 }
 const BookingModal = ({
+    mentorId,
     selectedDate,
     selectedTime,
     isOpen,
     onClose,
 }: BookingModalProps) => {
-    const {
-        mentorProfileStore: { avatar, name, title },
-    } = rootStore
-
+    const { data } = useGetMentorInfo(mentorId)
     const confirmBooking = () => {
         onClose()
     }
+
     return (
         <Modal
             open={isOpen}
@@ -35,17 +33,19 @@ const BookingModal = ({
             <div className="relative flex gap-5 rounded-lg bg-white p-7 shadow-xl">
                 <div className="flex flex-col gap-3 p-5">
                     <div className="flex items-center gap-3">
-                        <Image
-                            src={avatar}
+                        {/* <Image
+                            src={data.avatar} // Waiting for backend fix avatar URL problem
                             width={0}
                             height={0}
                             sizes="100%"
                             className="h-12 w-12 rounded-full"
                             alt="avatar"
-                        />
+                        /> */}
                         <div className="flex flex-col">
-                            <p className="text-sm">{name}</p>
-                            <p className="text-sm text-zinc-500">{title}</p>
+                            <p className="text-sm">{data.userName}</p>
+                            <p className="text-sm text-zinc-500">
+                                {data.title}
+                            </p>
                         </div>
                     </div>
                     <hr className="h-1" />

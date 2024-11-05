@@ -9,33 +9,31 @@ import type { Mentor } from '~/container/Home/components/MentorList/types'
 import Booking from './components/Booking/Booking'
 import { runInAction } from 'mobx'
 import rootStore from '~/store'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { HiPhone } from 'react-icons/hi2'
 import { createLocalStream } from '../VideoConference/utils'
 import LoadingModal from '~/components/LoadingModal/LoadingModal'
 
+import { useGetMentorInfo } from '~/api/mentor'
+import React from 'react'
 const MentorProfile = ({ params }: { params: { id: string } }) => {
     const currentMentor: Mentor | undefined = MOCK_MENTOR_LIST.find(
-        (mentor) => mentor.id === Number(params.id)
+        (mentor) => mentor.id === params.id
     )
     const [modalVisible, setModalVisible] = useState(false)
 
     const router = useRouter()
-
-    useEffect(() => {
-        if (!currentMentor) return
-        runInAction(() => {
-            rootStore.mentorProfileStore.avatar = currentMentor.avatar
-            rootStore.mentorProfileStore.name = currentMentor.name
-            rootStore.mentorProfileStore.company = currentMentor.company
-            rootStore.mentorProfileStore.title = currentMentor.title
-        })
-    }, [currentMentor, router])
-
+    const { data, isPending } = useGetMentorInfo(
+        '0415338d-95be-4977-8b2a-74029e64ca25'
+    ) // temporary
     if (!currentMentor) {
         router.back()
         return
     }
+    if (isPending) {
+        return
+    }
+
     return (
         <>
             <div className="p-6 md:p-16">
@@ -69,7 +67,7 @@ const MentorProfile = ({ params }: { params: { id: string } }) => {
                         <Experience experiences={currentMentor.experience} />
                         <Education education={currentMentor.education} />
                     </div>
-                    <Booking />
+                    <Booking mentorId={data.id} />
                 </div>
             </div>
             <LoadingModal visible={modalVisible} />
