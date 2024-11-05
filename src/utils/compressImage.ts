@@ -13,7 +13,7 @@ const compressImage = async (event: any) => {
             type: imageFile.type,
             lastModified: Date.now(),
         })
-        
+
         return compressedFile
     } catch (error) {
         console.log(error)
