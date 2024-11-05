@@ -1,40 +1,44 @@
 'use client'
-import { usePathname, useRouter } from 'next/navigation'
-import type { Mentor } from '~/container/MentorList/types'
-import { MOCK_MENTOR_LIST } from '~/container/MentorList/constant'
-import Booking from '~/components/Booking'
-import Bio from '~/components/mentor/Bio'
-import Experience from '~/components/mentor/Experience'
-import Education from '~/components/mentor/Education'
+import { useRouter } from 'next/navigation'
 
-const MentorProfile = () => {
-    const pathname = usePathname()
-    const splitPathname = pathname!.split('/')
+import Bio from '~/components/mentor/Bio'
+import Education from '~/components/mentor/Education'
+import Experience from '~/components/mentor/Experience'
+import { MOCK_MENTOR_LIST } from '~/container/Home/components/MentorList/constant'
+import type { Mentor } from '~/container/Home/components/MentorList/types'
+import Booking from './components/Booking/Booking'
+import { useGetMentorInfo } from '~/api/mentor'
+import React from 'react'
+const MentorProfile = ({ params }: { params: { id: string } }) => {
     const currentMentor: Mentor | undefined = MOCK_MENTOR_LIST.find(
-        (mentor) => mentor.slug === splitPathname[splitPathname.length - 1]
+        (mentor) => mentor.id === params.id
     )
 
     const router = useRouter()
+    const { data, isPending } = useGetMentorInfo(params.id)
     if (!currentMentor) {
-        router.push('/mentor-list')
+        router.back()
+        return
+    }
+    if (isPending) {
         return
     }
 
     return (
         <div className="p-6 md:p-16">
             <Bio
-                avatar={currentMentor.avatar}
-                name={currentMentor.name}
-                company={currentMentor.company}
-                title={currentMentor.title}
+                avatar={'/MentorList/mentor_1.jpg'}
+                name={data.userName}
+                company={data.company}
+                title={data.title}
             />
-            <div className="mt-6 pt-6 flex flex-col gap-6 border-t border-solid border-gray-200 md:flex-row md:gap-32">
-                <div className="p-6 flex flex-col flex-1 gap-4">
-                    <p className="line-clamp-3">{currentMentor.bio}</p>
+            <div className="mt-6 flex flex-col items-center gap-6 border-t border-solid border-gray-200 pt-6 md:flex-row md:gap-32">
+                <div className="flex flex-1 flex-col gap-4 p-6">
+                    <p className="line-clamp-3">{data.introduction}</p>
                     <Experience experiences={currentMentor.experience} />
                     <Education education={currentMentor.education} />
                 </div>
-                <Booking />
+                <Booking mentorId={data.id} />
             </div>
         </div>
     )

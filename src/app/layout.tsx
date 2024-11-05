@@ -1,4 +1,5 @@
 import { Metadata } from 'next'
+import { ReactQueryClientProvider } from '~/components/ReactQueryClientProvider/ReactQueryClientProvider'
 import '~/styles/globals.css'
 
 export const metadata: Metadata = {
@@ -13,8 +14,10 @@ export default function RootLayout({
     children: React.ReactNode
 }) {
     return (
-        <html lang="en">
-            <body>{children}</body>
-        </html>
+        <ReactQueryClientProvider>
+            <html lang="en">
+                <body>{children}</body>
+            </html>
+        </ReactQueryClientProvider>
     )
 }

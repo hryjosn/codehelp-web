@@ -1,3 +1,7 @@
+export interface LoginDataT {
+    email: string
+    password: string
+}
 export enum RESPONSE_CODE {
     VALIDATE_ERROR = '4001',
     USER_DATA_ERROR = '4002',

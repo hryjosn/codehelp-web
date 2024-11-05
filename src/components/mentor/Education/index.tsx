@@ -1,4 +1,4 @@
-import type { Education } from '~/container/MentorList/types'
+import type { Education } from '~/container/Home/components/MentorList/types'
 import Image from 'next/image'
 
 type EducationProps = {
@@ -7,9 +7,9 @@ type EducationProps = {
 
 const Education = ({ education }: EducationProps) => {
     return (
-        <div className="p-6 rounded-xl border border-solid border-gray-200 text-slate-800">
-            <div className="text-base font-bold mb-2">Education</div>
-            <div className="flex gap-2 mb-2">
+        <div className="rounded-xl border border-solid border-gray-200 p-6 text-slate-800">
+            <div className="mb-2 text-base font-bold">Education</div>
+            <div className="mb-2 flex gap-2">
                 <Image
                     src="/education.svg"
                     alt="education"
