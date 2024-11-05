@@ -8,24 +8,28 @@ import { PiChatCircleText } from 'react-icons/pi'
 import MessageBox from './components/MessageBox'
 import { MOCK_MESSAGE_LIST } from './constant'
 import { socket } from '~/lib/utils'
-import {
-    createLocalStream,
-    createPeerConnection,
-    sendSDP,
-    hangup,
-    peerConnection,
-} from './utils'
+import Link from 'next/link'
+import { createPeerConnection, sendSDP, hangup, peerConnection } from './utils'
 import { SDP_TYPE } from '~/lib/types'
+import { observer } from 'mobx-react-lite'
+import rootStore from '~/store'
+import { runInAction } from 'mobx'
+import { useRouter } from 'next/navigation'
 
 const VideoConference = ({ params }: { params: { id: string } }) => {
+    const {
+        videoConferenceStore: { localStream },
+    } = rootStore
     const [isMicOpen, setIsMicOpen] = useState(false)
     const [isChatOpen, setIsChatOpen] = useState(false)
     const remoteVideoRef = useRef<HTMLVideoElement>(null)
     const localVideoRef = useRef<HTMLVideoElement>(null)
 
+    const router = useRouter()
+
     useEffect(() => {
+        socket.connect()
         ;(async function () {
-            const localStream = await createLocalStream()
             if (localVideoRef.current && localStream) {
                 localVideoRef.current.srcObject = localStream
 
@@ -34,8 +38,14 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
                     remoteVideoRef,
                     localStream,
                 })
+            } else {
+                if (peerConnection) {
+                    peerConnection.onicecandidate = null
+                    peerConnection.onnegotiationneeded = null
+                    peerConnection?.close()
+                }
+                router.push(`/mentor-profile/${params.id}`)
             }
-
             socket.emit('join', params.id)
         })()
 
@@ -48,8 +58,10 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
         })
 
         socket.on('offer', async (desc: RTCSessionDescriptionInit) => {
-            await peerConnection.setRemoteDescription(desc)
-            await sendSDP({ type: SDP_TYPE.ANSWER, roomID: params.id })
+            if (peerConnection) {
+                await peerConnection.setRemoteDescription(desc)
+                await sendSDP({ type: SDP_TYPE.ANSWER, roomID: params.id })
+            }
         })
 
         socket.on('answer', async (desc) => {
@@ -134,12 +146,25 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
                     onClick={() => setIsChatOpen(!isChatOpen)}
                     className="h-14 w-14 rounded-full bg-gray-200 p-3"
                 />
-                <ImPhoneHangUp
-                    className="h-14 w-14 rounded-full bg-red-600 p-3"
-                    onClick={() => hangup(params.id)}
-                />
+                <Link
+                    href={`/mentor-profile/${params.id}`}
+                    onClick={() => {
+                        if (localStream) {
+                            hangup({
+                                roomID: params.id,
+                                localStream: localStream,
+                            })
+                            runInAction(() => {
+                                rootStore.videoConferenceStore.localStream =
+                                    undefined
+                            })
+                        }
+                    }}
+                >
+                    <ImPhoneHangUp className="h-14 w-14 rounded-full bg-red-600 p-3" />
+                </Link>
             </div>
         </div>
     )
 }
-export default VideoConference
+export default observer(VideoConference)

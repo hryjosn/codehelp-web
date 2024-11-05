@@ -11,3 +11,7 @@ export interface SendSDPT {
     type: SDP_TYPE
     roomID: string
 }
+export interface HangupT {
+    roomID: string
+    localStream: MediaStream
+}

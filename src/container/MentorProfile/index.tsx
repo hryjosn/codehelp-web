@@ -7,15 +7,25 @@ import Experience from '~/components/mentor/Experience'
 import { MOCK_MENTOR_LIST } from '~/container/Home/components/MentorList/constant'
 import type { Mentor } from '~/container/Home/components/MentorList/types'
 import Booking from './components/Booking/Booking'
+import { runInAction } from 'mobx'
+import rootStore from '~/store'
+import { useState } from 'react'
+import { HiPhone } from 'react-icons/hi2'
+import { createLocalStream } from '../VideoConference/utils'
+import LoadingModal from '~/components/LoadingModal/LoadingModal'
+
 import { useGetMentorInfo } from '~/api/mentor'
 import React from 'react'
 const MentorProfile = ({ params }: { params: { id: string } }) => {
     const currentMentor: Mentor | undefined = MOCK_MENTOR_LIST.find(
         (mentor) => mentor.id === params.id
     )
+    const [modalVisible, setModalVisible] = useState(false)
 
     const router = useRouter()
-    const { data, isPending } = useGetMentorInfo(params.id)
+    const { data, isPending } = useGetMentorInfo(
+        '0415338d-95be-4977-8b2a-74029e64ca25'
+    ) // temporary
     if (!currentMentor) {
         router.back()
         return
@@ -25,22 +35,43 @@ const MentorProfile = ({ params }: { params: { id: string } }) => {
     }
 
     return (
-        <div className="p-6 md:p-16">
-            <Bio
-                avatar={'/MentorList/mentor_1.jpg'}
-                name={data.userName}
-                company={data.company}
-                title={data.title}
-            />
-            <div className="mt-6 flex flex-col items-center gap-6 border-t border-solid border-gray-200 pt-6 md:flex-row md:gap-32">
-                <div className="flex flex-1 flex-col gap-4 p-6">
-                    <p className="line-clamp-3">{data.introduction}</p>
-                    <Experience experiences={currentMentor.experience} />
-                    <Education education={currentMentor.education} />
+        <>
+            <div className="p-6 md:p-16">
+                <Bio
+                    avatar={currentMentor.avatar}
+                    name={currentMentor.name}
+                    company={currentMentor.company}
+                    title={currentMentor.title}
+                />
+                <div className="flex justify-end">
+                    <HiPhone
+                        className="cursor-pointer"
+                        size={30}
+                        onClick={async () => {
+                            setModalVisible(true)
+                            const localStream = await createLocalStream()
+                            runInAction(() => {
+                                rootStore.videoConferenceStore.localStream =
+                                    localStream
+                            })
+                            if (localStream) {
+                                setModalVisible(false)
+                                router.push(`/video-conference/${params.id}`)
+                            }
+                        }}
+                    />
                 </div>
-                <Booking mentorId={data.id} />
+                <div className="mt-6 flex flex-col items-center gap-6 border-t border-solid border-gray-200 pt-6 md:flex-row md:gap-32">
+                    <div className="flex flex-1 flex-col gap-4 p-6">
+                        <p className="line-clamp-3">{currentMentor.bio}</p>
+                        <Experience experiences={currentMentor.experience} />
+                        <Education education={currentMentor.education} />
+                    </div>
+                    <Booking mentorId={data.id} />
+                </div>
             </div>
-        </div>
+            <LoadingModal visible={modalVisible} />
+        </>
     )
 }
 
