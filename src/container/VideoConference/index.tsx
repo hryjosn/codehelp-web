@@ -1,54 +1,90 @@
 'use client'
-import { useState } from 'react'
-import MessageBox from './components/MessageBox'
-import { IoMdMic, IoMdMicOff } from 'react-icons/io'
-import { MdOutlineScreenShare } from 'react-icons/md'
+import { useEffect, useRef, useState } from 'react'
 import { ImPhoneHangUp } from 'react-icons/im'
+import { IoMdMic, IoMdMicOff } from 'react-icons/io'
 import { IoSend } from 'react-icons/io5'
+import { MdOutlineScreenShare } from 'react-icons/md'
 import { PiChatCircleText } from 'react-icons/pi'
+import MessageBox from './components/MessageBox'
+import { MOCK_MESSAGE_LIST } from './constant'
+import { socket } from '~/lib/utils'
+import {
+    createLocalStream,
+    createPeerConnection,
+    sendSDP,
+    hangup,
+    peerConnection,
+} from './utils'
+import { SDP_TYPE } from '~/lib/types'
 
-const VideoConference = () => {
+const VideoConference = ({ params }: { params: { id: string } }) => {
     const [isMicOpen, setIsMicOpen] = useState(false)
     const [isChatOpen, setIsChatOpen] = useState(false)
-    const MOCK_MESSAGE_LIST = [
-        {
-            name: 'user1',
-            time: '下午1:00',
-            message:
-                'hihihihihihihihihihihihihihihihihihihihihihihihihihihihihihihihihihihihihihihihihihihihihihihihihihihihihihi',
-        },
-        { name: 'user2', time: '下午1:01', message: 'hello' },
-        { name: 'user1', time: '下午1:10', message: 'hi' },
-        { name: 'user2', time: '下午1:11', message: 'hello' },
-        { name: 'user1', time: '下午1:12', message: 'hi' },
-        { name: 'user1', time: '下午1:12', message: 'hi' },
-        { name: 'user1', time: '下午1:12', message: 'hi' },
-        { name: 'user1', time: '下午1:12', message: 'hi' },
-        { name: 'user1', time: '下午1:12', message: 'hi' },
-        { name: 'user1', time: '下午1:12', message: 'hi' },
-        { name: 'user1', time: '下午1:12', message: 'hi' },
-        { name: 'user1', time: '下午1:12', message: 'hi' },
-        { name: 'user1', time: '下午1:12', message: 'hi' },
-        { name: 'user1', time: '下午1:12', message: 'hi' },
-        { name: 'user1', time: '下午1:12', message: 'hi' },
-        { name: 'user2', time: '下午1:01', message: 'hello' },
-        { name: 'user1', time: '下午1:10', message: 'hi' },
-        { name: 'user2', time: '下午1:11', message: 'hello' },
-    ]
+    const remoteVideoRef = useRef<HTMLVideoElement>(null)
+    const localVideoRef = useRef<HTMLVideoElement>(null)
+
+    useEffect(() => {
+        ;(async function () {
+            const localStream = await createLocalStream()
+            if (localVideoRef.current && localStream) {
+                localVideoRef.current.srcObject = localStream
+
+                createPeerConnection({
+                    roomID: params.id,
+                    remoteVideoRef,
+                    localStream,
+                })
+            }
+
+            socket.emit('join', params.id)
+        })()
+
+        socket.on('ready', () => {
+            sendSDP({ type: SDP_TYPE.OFFER, roomID: params.id })
+        })
+
+        socket.on('otherUserHangup', () => {
+            if (remoteVideoRef.current) remoteVideoRef.current.srcObject = null
+        })
+
+        socket.on('offer', async (desc: RTCSessionDescriptionInit) => {
+            await peerConnection.setRemoteDescription(desc)
+            await sendSDP({ type: SDP_TYPE.ANSWER, roomID: params.id })
+        })
+
+        socket.on('answer', async (desc) => {
+            await peerConnection.setRemoteDescription(desc)
+        })
+
+        socket.on('ice_candidate', (data) => {
+            const candidate = new RTCIceCandidate({
+                sdpMLineIndex: data.label,
+                candidate: data.candidate,
+            })
+            peerConnection.addIceCandidate(candidate)
+        })
+        return () => {
+            socket.disconnect()
+        }
+    }, [])
+
     return (
         <div className="flex h-screen flex-col bg-zinc-800">
             <div className="flex flex-1">
                 <div className="flex flex-1 gap-3 px-5 pt-5">
                     <video
+                        ref={localVideoRef}
                         autoPlay
-                        className="h-full w-1/2 rounded-3xl border-2 border-white"
+                        muted
+                        className="h-full w-1/2 scale-x-[-1] rounded-3xl border-2 border-white"
                     >
                         user1
                     </video>
                     <video
+                        ref={remoteVideoRef}
                         autoPlay
                         muted
-                        className="h-full w-1/2 rounded-3xl border-2 border-white"
+                        className="h-full w-1/2 scale-x-[-1] rounded-3xl border-2 border-white"
                     >
                         user2
                     </video>
@@ -98,7 +134,10 @@ const VideoConference = () => {
                     onClick={() => setIsChatOpen(!isChatOpen)}
                     className="h-14 w-14 rounded-full bg-gray-200 p-3"
                 />
-                <ImPhoneHangUp className="h-14 w-14 rounded-full bg-red-600 p-3" />
+                <ImPhoneHangUp
+                    className="h-14 w-14 rounded-full bg-red-600 p-3"
+                    onClick={() => hangup(params.id)}
+                />
             </div>
         </div>
     )
