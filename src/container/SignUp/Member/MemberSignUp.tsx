@@ -46,7 +46,10 @@ const MemberSignUp = () => {
         formData.append('introduction', introduction)
         formData.append('phoneNumber', phoneNumber)
         formData.append('level', level)
-        formData.append('fieldOfWork[]', JSON.stringify(work))
+
+        work.forEach((work) => {
+            formData.append(`fieldOfWork[]`, work)
+        })
 
         try {
             const res = await memberSignUp(formData)

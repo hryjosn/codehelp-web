@@ -54,9 +54,15 @@ const MentorSignUp = () => {
         formData.append('primaryExpertise', expertise[0])
         formData.append('secondaryExpertise', expertise[1] || '')
         formData.append('tertiaryExpertise', expertise[2] || '')
-        formData.append('disciplines[]', JSON.stringify(disciplines))
-        formData.append('skills[]', JSON.stringify(skills))
-        formData.append('tools[]', JSON.stringify(tools))
+        disciplines.forEach((discipline) => {
+            formData.append('disciplines[]', discipline)
+        })
+        skills.forEach((skill) => {
+            formData.append('skills[]', skill)
+        })
+        tools.forEach((tool) => {
+            formData.append('tools[]', tool)
+        })
 
         try {
             const res = await mentorSignUp(formData)
