@@ -15,6 +15,8 @@ export interface ServerToClientEvents {
     ice_candidate: (data: Ice_candidateT) => void
     ready: () => void
     otherUserHangup: () => void
+    remoteStartShare: (isScreenSharing: boolean) => void
+    remoteStopShare: (isScreenSharing: boolean) => void
 }
 
 export interface ClientToServerEvents {
@@ -23,4 +25,6 @@ export interface ClientToServerEvents {
     ice_candidate: (room: string, data: Ice_candidateT) => void
     hangup: (roomID: string) => void
     offer: (room: string, description: RTCSessionDescription) => void
+    remoteStartShare: (roomID: string, isScreenSharing: boolean) => void
+    remoteStopShare: (roomID: string, isScreenSharing: boolean) => void
 }
