@@ -7,13 +7,15 @@ import { MdOutlineScreenShare } from 'react-icons/md'
 import { PiChatCircleText } from 'react-icons/pi'
 import MessageBox from './components/MessageBox'
 import { MOCK_MESSAGE_LIST } from './constant'
-import { socket } from '~/lib/utils'
+import { cn, socket } from '~/lib/utils'
 import {
     createLocalStream,
     createPeerConnection,
     sendSDP,
     hangup,
     peerConnection,
+    shareScreen,
+    stopShareScreen,
 } from './utils'
 import { SDP_TYPE } from '~/lib/types'
 
@@ -23,6 +25,8 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
     const [isChatOpen, setIsChatOpen] = useState(false)
     const remoteVideoRef = useRef<HTMLVideoElement>(null)
     const localVideoRef = useRef<HTMLVideoElement>(null)
+    const [isLocalShareScreen, setIsLocalShareScreen] = useState(false)
+    const [isRemoteShareScreen, setIsRemoteShareScreen] = useState(false)
 
     useEffect(() => {
         ;(async function () {
@@ -53,6 +57,14 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
             await sendSDP({ type: SDP_TYPE.ANSWER, roomID: params.id })
         })
 
+        socket.on('remoteStartShare', async (isScreenSharing: boolean) => {
+            setIsRemoteShareScreen(isScreenSharing)
+        })
+
+        socket.on('remoteStopShare', async (isScreenSharing: boolean) => {
+            setIsRemoteShareScreen(isScreenSharing)
+        })
+
         socket.on('answer', async (desc) => {
             await peerConnection.setRemoteDescription(desc)
         })
@@ -64,6 +76,7 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
             })
             peerConnection.addIceCandidate(candidate)
         })
+
         return () => {
             socket.disconnect()
         }
@@ -80,7 +93,7 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
         }
     }
 
-    const CamSwitch = () => {
+    const camSwitch = () => {
         if (localVideoRef.current && localVideoRef.current.srcObject) {
             const mediaStream = localVideoRef.current.srcObject as MediaStream
             const audioTracks = mediaStream.getVideoTracks()
@@ -99,7 +112,10 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
                         ref={localVideoRef}
                         autoPlay
                         muted
-                        className="h-full w-1/2 scale-x-[-1] rounded-3xl border-2 border-white"
+                        className={cn(
+                            '`h-full border-white` w-1/2 rounded-3xl border-2',
+                            { isLocalShareScreen: 'scale-x-[-1]' }
+                        )}
                     >
                         user1
                     </video>
@@ -107,7 +123,10 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
                         ref={remoteVideoRef}
                         autoPlay
                         muted
-                        className="h-full w-1/2 scale-x-[-1] rounded-3xl border-2 border-white"
+                        className={cn(
+                            '`h-full border-white` w-1/2 rounded-3xl border-2',
+                            { isRemoteShareScreen: 'scale-x-[-1]' }
+                        )}
                     >
                         user2
                     </video>
@@ -153,31 +172,58 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
                         onClick={() => {
                             audioSwitch()
                         }}
-                        className="h-14 w-14 rounded-full bg-red-600 p-3"
+                        className="h-14 w-14 rounded-full bg-red-500 p-3"
                     />
                 )}
                 {isCamOpen ? (
                     <IoVideocam
                         onClick={() => {
-                            CamSwitch()
+                            camSwitch()
                         }}
                         className="h-14 w-14 rounded-full bg-gray-200 p-3"
                     />
                 ) : (
                     <IoVideocamOff
                         onClick={() => {
-                            CamSwitch()
+                            camSwitch()
                         }}
-                        className="h-14 w-14 rounded-full bg-red-600 p-3"
+                        className="h-14 w-14 rounded-full bg-red-500 p-3"
                     />
                 )}
-                <MdOutlineScreenShare className="h-14 w-14 rounded-full bg-gray-200 p-3" />
+                {isLocalShareScreen === false ? (
+                    <MdOutlineScreenShare
+                        className={'h-14 w-14 rounded-full bg-gray-200 p-3'}
+                        onClick={async () => {
+                            await shareScreen(localVideoRef)
+                            setIsLocalShareScreen(true)
+                            socket.emit(
+                                'remoteStartShare',
+                                params.id,
+                                isLocalShareScreen
+                            )
+                        }}
+                    />
+                ) : (
+                    <MdOutlineScreenShare
+                        className={'h-14 w-14 rounded-full bg-red-500 p-3'}
+                        onClick={async () => {
+                            await stopShareScreen(localVideoRef)
+                            setIsLocalShareScreen(false)
+                            socket.emit(
+                                'remoteStopShare',
+                                params.id,
+                                isLocalShareScreen
+                            )
+                        }}
+                    />
+                )}
+
                 <PiChatCircleText
                     onClick={() => setIsChatOpen(!isChatOpen)}
                     className="h-14 w-14 rounded-full bg-gray-200 p-3"
                 />
                 <ImPhoneHangUp
-                    className="h-14 w-14 rounded-full bg-red-600 p-3"
+                    className="h-14 w-14 rounded-full bg-red-500 p-3"
                     onClick={() => hangup(params.id)}
                 />
             </div>
