@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { ImPhoneHangUp } from 'react-icons/im'
 import { IoMdMic, IoMdMicOff } from 'react-icons/io'
-import { IoSend } from 'react-icons/io5'
+import { IoSend, IoVideocam, IoVideocamOff } from 'react-icons/io5'
 import { MdOutlineScreenShare } from 'react-icons/md'
 import { PiChatCircleText } from 'react-icons/pi'
 import MessageBox from './components/MessageBox'
@@ -20,8 +20,10 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
     const {
         videoConferenceStore: { localStream },
     } = rootStore
-    const [isMicOpen, setIsMicOpen] = useState(false)
+    const [isMicOpen, setIsMicOpen] = useState(true)
+    const [isCamOpen, setIsCamOpen] = useState(true)
     const [isChatOpen, setIsChatOpen] = useState(false)
+
     const remoteVideoRef = useRef<HTMLVideoElement>(null)
     const localVideoRef = useRef<HTMLVideoElement>(null)
 
@@ -80,6 +82,27 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
         }
     }, [])
 
+    const audioSwitch = () => {
+        if (localVideoRef.current && localVideoRef.current.srcObject) {
+            const mediaStream = localVideoRef.current.srcObject as MediaStream
+            const audioTracks = mediaStream.getAudioTracks()
+            if (audioTracks.length > 0) {
+                setIsMicOpen(!audioTracks[0].enabled)
+                audioTracks[0].enabled = !audioTracks[0].enabled
+            }
+        }
+    }
+
+    const CamSwitch = () => {
+        if (localVideoRef.current && localVideoRef.current.srcObject) {
+            const mediaStream = localVideoRef.current.srcObject as MediaStream
+            const audioTracks = mediaStream.getVideoTracks()
+            if (audioTracks.length > 0) {
+                setIsCamOpen(!audioTracks[0].enabled)
+                audioTracks[0].enabled = !audioTracks[0].enabled
+            }
+        }
+    }
     return (
         <div className="flex h-screen flex-col bg-zinc-800">
             <div className="flex flex-1">
@@ -132,12 +155,31 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
             <div className="mt-5 flex h-20 justify-center gap-10">
                 {isMicOpen ? (
                     <IoMdMic
-                        onClick={() => setIsMicOpen(false)}
+                        onClick={() => {
+                            audioSwitch()
+                        }}
                         className="h-14 w-14 rounded-full bg-gray-200 p-3"
                     />
                 ) : (
                     <IoMdMicOff
-                        onClick={() => setIsMicOpen(true)}
+                        onClick={() => {
+                            audioSwitch()
+                        }}
+                        className="h-14 w-14 rounded-full bg-red-600 p-3"
+                    />
+                )}
+                {isCamOpen ? (
+                    <IoVideocam
+                        onClick={() => {
+                            CamSwitch()
+                        }}
+                        className="h-14 w-14 rounded-full bg-gray-200 p-3"
+                    />
+                ) : (
+                    <IoVideocamOff
+                        onClick={() => {
+                            CamSwitch()
+                        }}
                         className="h-14 w-14 rounded-full bg-red-600 p-3"
                     />
                 )}
