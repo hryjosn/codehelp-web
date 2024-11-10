@@ -19,6 +19,7 @@ export interface HangupT {
 export enum ICE_CONNECTION_STATE {
     CONNECTED = 'connected',
     COMPLETED = 'completed',
+    FAILED = 'failed',
     DISCONNECTED = 'disconnected',
 }
 

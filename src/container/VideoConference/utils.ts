@@ -10,9 +10,9 @@ import {
     IConnectionQuality,
 } from './types'
 import { socket } from '~/lib/utils'
-
+import Decimal from 'decimal.js'
 export let peerConnection: RTCPeerConnection
-
+let connectionQualityInterval: NodeJS.Timeout | null = null
 export const createLocalStream = async () => {
     try {
         const stream = await navigator.mediaDevices.getUserMedia({
@@ -49,14 +49,22 @@ export const createPeerConnection = ({
     peerConnection.oniceconnectionstatechange = (e) => {
         const peerConnection = e.target as RTCPeerConnection
         const state = peerConnection.iceConnectionState
-        if (state === ICE_CONNECTION_STATE.DISCONNECTED) {
+        if (
+            state === ICE_CONNECTION_STATE.DISCONNECTED ||
+            state === ICE_CONNECTION_STATE.FAILED
+        ) {
             console.log('other user is disconnected')
+            if (connectionQualityInterval) {
+                clearInterval(connectionQualityInterval)
+                connectionQualityInterval = null
+            }
         }
         if (
-            state === ICE_CONNECTION_STATE.CONNECTED ||
-            state === ICE_CONNECTION_STATE.COMPLETED
+            (state === ICE_CONNECTION_STATE.CONNECTED ||
+                state === ICE_CONNECTION_STATE.COMPLETED) &&
+            !connectionQualityInterval
         ) {
-            setInterval(async () => {
+            connectionQualityInterval = setInterval(async () => {
                 const connectionQuality = await checkConnectionQuality()
                 if (connectionQuality) {
                     const maxBitrate = getMaxBitrate(connectionQuality)
@@ -105,6 +113,10 @@ export const hangup = ({ roomID, localStream }: HangupT) => {
         track.stop()
     })
 
+    if (connectionQualityInterval) {
+        clearInterval(connectionQualityInterval)
+        connectionQualityInterval = null
+    }
     socket?.emit('hangup', roomID)
 }
 
@@ -117,9 +129,6 @@ const adjustMaxBitrate = async (
         const sender: RTCRtpSender | undefined = peerConnection
             .getSenders()
             .find((sender) => sender.track === videoTrack)
-
-        console.log('sender', sender)
-        console.log('maxBitrate', maxBitrate)
 
         if (sender) {
             const params = sender.getParameters()
@@ -141,22 +150,19 @@ const checkConnectionQuality = async (): Promise<IConnectionQuality> => {
 
     stats.forEach((report) => {
         if (report.type === 'inbound-rtp') {
-            console.log('report >>', report)
-            console.log(`Received bitrate: ${report.bytesReceived}`)
-
-            const packetLoss = report.packetsLost / report.packetsReceived || 0
+            const packetLoss =
+                new Decimal(report.packetsLost)
+                    .div(report.packetsReceived)
+                    .toFixed(2) || 0
             const rtt = report.roundTripTime || 0
             const jitter = report.jitter || 0
 
-            console.log(
-                `Packet Loss: ${(packetLoss * 100).toFixed(2)}%, RTT: ${rtt} ms, Jitter: ${jitter} ms`
-            )
             if (
-                packetLoss > highestPacketLoss ||
+                Number(packetLoss) > highestPacketLoss ||
                 rtt > highestRTT ||
                 jitter > highestJitter
             ) {
-                highestPacketLoss = packetLoss
+                highestPacketLoss = Number(packetLoss)
                 highestRTT = rtt
                 highestJitter = jitter
             }
