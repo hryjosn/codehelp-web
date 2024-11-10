@@ -130,7 +130,7 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
                         muted
                         className={cn(
                             '`h-full border-white` w-1/2 rounded-3xl border-2',
-                            { isLocalShareScreen: 'scale-x-[-1]' }
+                            { 'scale-x-[-1]': !isLocalShareScreen }
                         )}
                     >
                         user1
@@ -141,7 +141,7 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
                         muted
                         className={cn(
                             '`h-full border-white` w-1/2 rounded-3xl border-2',
-                            { isRemoteShareScreen: 'scale-x-[-1]' }
+                            { 'scale-x-[-1]': !isRemoteShareScreen }
                         )}
                     >
                         user2
