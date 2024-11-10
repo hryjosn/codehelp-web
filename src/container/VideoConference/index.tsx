@@ -9,20 +9,20 @@ import MessageBox from './components/MessageBox'
 import { MOCK_MESSAGE_LIST } from './constant'
 import { socket } from '~/lib/utils'
 import Link from 'next/link'
-import { createPeerConnection, sendSDP, hangup, peerConnection } from './utils'
-import { SDP_TYPE } from '~/lib/types'
+import { hangup, sendAnswerSDP, sendOfferSDP } from './utils'
 import { observer } from 'mobx-react-lite'
 import rootStore from '~/store'
 import { runInAction } from 'mobx'
 import { useRouter } from 'next/navigation'
+import RemoteVideo from './components/RemoteVideo/RemoteVideo'
 
 const VideoConference = ({ params }: { params: { id: string } }) => {
     const {
-        videoConferenceStore: { localStream },
+        videoConferenceStore: { localStream, peerConnectionList },
+        videoConferenceStore,
     } = rootStore
     const [isMicOpen, setIsMicOpen] = useState(false)
     const [isChatOpen, setIsChatOpen] = useState(false)
-    const remoteVideoRef = useRef<HTMLVideoElement>(null)
     const localVideoRef = useRef<HTMLVideoElement>(null)
 
     const router = useRouter()
@@ -32,49 +32,77 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
         ;(async function () {
             if (localVideoRef.current && localStream) {
                 localVideoRef.current.srcObject = localStream
-
-                createPeerConnection({
-                    roomID: params.id,
-                    remoteVideoRef,
-                    localStream,
-                })
+                socket.emit('join', params.id)
             } else {
-                if (peerConnection) {
-                    peerConnection.onicecandidate = null
-                    peerConnection.onnegotiationneeded = null
-                    peerConnection?.close()
-                }
+                // 須思考如何重設
                 router.push(`/mentor-profile/${params.id}`)
             }
-            socket.emit('join', params.id)
         })()
 
-        socket.on('ready', () => {
-            sendSDP({ type: SDP_TYPE.OFFER, roomID: params.id })
-        })
-
-        socket.on('otherUserHangup', () => {
-            if (remoteVideoRef.current) remoteVideoRef.current.srcObject = null
-        })
-
-        socket.on('offer', async (desc: RTCSessionDescriptionInit) => {
-            if (peerConnection) {
-                await peerConnection.setRemoteDescription(desc)
-                await sendSDP({ type: SDP_TYPE.ANSWER, roomID: params.id })
+        socket.on('ready', (id, roomMembers) => {
+            if (socket.id && roomMembers.length > 1) {
+                console.log('發送 offer')
+                roomMembers.forEach((remoteId) => {
+                    if (remoteId === id) {
+                        sendOfferSDP({
+                            remoteId,
+                            localStream: localStream!,
+                        })
+                    }
+                })
             }
         })
 
-        socket.on('answer', async (desc) => {
-            await peerConnection.setRemoteDescription(desc)
+        socket.on('leave', (remoteId) => {
+            runInAction(() => {
+                videoConferenceStore.peerConnectionList[
+                    remoteId
+                ].onicecandidate = null
+                videoConferenceStore.peerConnectionList[
+                    remoteId
+                ].onnegotiationneeded = null
+                videoConferenceStore.peerConnectionList[
+                    remoteId
+                ].oniceconnectionstatechange = null
+
+                videoConferenceStore.peerConnectionList[remoteId].close()
+                delete videoConferenceStore.peerConnectionList[remoteId]
+            })
         })
 
-        socket.on('ice_candidate', (data) => {
+        socket.on('offer', async (desc, remoteId) => {
+            console.log('收到 offer')
+            await sendAnswerSDP({
+                localStream: localStream!,
+                remoteId,
+                desc,
+            })
+        })
+
+        socket.on('answer', (desc, remoteId) => {
+            console.log('收到 answer')
+            runInAction(() => {
+                videoConferenceStore.peerConnectionList[
+                    remoteId
+                ].setRemoteDescription(desc)
+            })
+        })
+
+        socket.on('ice_candidate', (data, remoteId) => {
+            console.log('收到 ice_candidate')
+
             const candidate = new RTCIceCandidate({
                 sdpMLineIndex: data.label,
                 candidate: data.candidate,
             })
-            peerConnection.addIceCandidate(candidate)
+
+            runInAction(() => {
+                videoConferenceStore.peerConnectionList[
+                    remoteId
+                ].addIceCandidate(candidate)
+            })
         })
+
         return () => {
             socket.disconnect()
         }
@@ -83,24 +111,23 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
     return (
         <div className="flex h-screen flex-col bg-zinc-800">
             <div className="flex flex-1">
-                <div className="flex flex-1 gap-3 px-5 pt-5">
+                <div className="flex flex-1 justify-center px-5 pt-5">
                     <video
                         ref={localVideoRef}
                         autoPlay
                         muted
-                        className="h-full w-1/2 scale-x-[-1] rounded-3xl border-2 border-white"
+                        className="h-full scale-x-[-1] rounded-3xl border-2 border-white"
                     >
                         user1
                     </video>
-                    <video
-                        ref={remoteVideoRef}
-                        autoPlay
-                        muted
-                        className="h-full w-1/2 scale-x-[-1] rounded-3xl border-2 border-white"
-                    >
-                        user2
-                    </video>
                 </div>
+
+                {Object.keys(peerConnectionList).map((key) => (
+                    <div key={key} className="flex flex-1 px-5 pt-5">
+                        <RemoteVideo remoteId={key} />
+                    </div>
+                ))}
+
                 {isChatOpen && (
                     <div className="mr-5 mt-5 flex w-96 flex-col justify-between gap-2 rounded-lg bg-white p-5 pt-2">
                         <button
@@ -146,22 +173,22 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
                     onClick={() => setIsChatOpen(!isChatOpen)}
                     className="h-14 w-14 rounded-full bg-gray-200 p-3"
                 />
-                <Link
-                    href={`/mentor-profile/${params.id}`}
-                    onClick={() => {
-                        if (localStream) {
-                            hangup({
-                                roomID: params.id,
-                                localStream: localStream,
-                            })
-                            runInAction(() => {
-                                rootStore.videoConferenceStore.localStream =
-                                    undefined
-                            })
-                        }
-                    }}
-                >
-                    <ImPhoneHangUp className="h-14 w-14 rounded-full bg-red-600 p-3" />
+                <Link href={`/mentor-profile/${params.id}`}>
+                    <ImPhoneHangUp
+                        onClick={() => {
+                            if (localStream && socket.id) {
+                                hangup({
+                                    roomId: params.id,
+                                    localStream: localStream,
+                                    remoteId: socket.id,
+                                })
+                                runInAction(() => {
+                                    videoConferenceStore.localStream = undefined
+                                })
+                            }
+                        }}
+                        className="h-14 w-14 rounded-full bg-red-600 p-3"
+                    />
                 </Link>
             </div>
         </div>
