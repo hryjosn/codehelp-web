@@ -182,9 +182,9 @@ const getMaxBitrate = ({
     highestRTT,
     highestJitter,
 }: IConnectionQuality): number => {
-    if (highestPacketLoss > 0.1 || highestRTT > 500 || highestJitter > 100) {
+    if (highestPacketLoss > 0.1 || highestRTT > 300 || highestJitter > 100) {
         return MAX_BITRATE[CONNECTION_QUALITY.LOW] // 糟糕的網絡，降低品質
-    } else if (highestPacketLoss > 0.05 || highestRTT > 300) {
+    } else if (highestPacketLoss > 0.05 || highestRTT > 200) {
         return MAX_BITRATE[CONNECTION_QUALITY.MEDIUM] // 中等品質
     } else {
         return MAX_BITRATE[CONNECTION_QUALITY.HIGH] // 良好的網絡，保持高品質
