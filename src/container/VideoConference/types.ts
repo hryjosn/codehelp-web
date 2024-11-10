@@ -15,3 +15,27 @@ export interface HangupT {
     roomID: string
     localStream: MediaStream
 }
+
+export enum ICE_CONNECTION_STATE {
+    CONNECTED = 'connected',
+    COMPLETED = 'completed',
+    DISCONNECTED = 'disconnected',
+}
+
+export enum CONNECTION_QUALITY {
+    LOW = 'low',
+    MEDIUM = 'medium',
+    HIGH = 'high',
+}
+
+export const MAX_BITRATE = {
+    [CONNECTION_QUALITY.LOW]: 500 * 1000,
+    [CONNECTION_QUALITY.MEDIUM]: 1500 * 1000,
+    [CONNECTION_QUALITY.HIGH]: 3000 * 1000,
+}
+
+export interface IConnectionQuality {
+    highestPacketLoss: number
+    highestRTT: number
+    highestJitter: number
+}
