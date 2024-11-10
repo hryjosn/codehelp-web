@@ -1,30 +1,28 @@
 'use client'
 
 import { observer } from 'mobx-react-lite'
-import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { Form } from './components/Form'
-import Joi from 'joi/lib'
 import LinkText from './components/LinkText/LinkText'
 import FormButton from './components/FormButton/FormButton'
 import FormInput from './components/FormInput/FormInput'
+import rootStore from '~/store'
+import { runInAction } from 'mobx'
+import AvatarSelect from './components/AvatarSelect/AvatarSelect'
+import { SignUpInputT, signUpSchema } from './store/types'
 
 const SignUp = () => {
     const route = useRouter()
-
-    const onSubmit = (data: SignUpInputT) => {
-        if (data) {
-            route.push('/signup/select-role')
-        }
+    const onSubmit = ({ avatar, userName, email, password }: SignUpInputT) => {
+        if (!avatar.name || !avatar.size || !avatar.type) return
+        runInAction(() => {
+            rootStore.signUpStore.avatar = avatar
+            rootStore.signUpStore.userName = userName
+            rootStore.signUpStore.email = email
+            rootStore.signUpStore.password = password
+        })
+        route.push('/signup/select-role')
     }
-
-    const schema = Joi.object({
-        userName: Joi.string().min(3).max(30).required(),
-        email: Joi.string().email().required(),
-        password: Joi.string().min(8).max(30).required(),
-    }).messages({
-        'any.required': 'is a required field',
-    })
 
     return (
         <div className="flex h-screen">
@@ -40,13 +38,8 @@ const SignUp = () => {
                         </LinkText>
                     </div>
                     <div className="flex flex-col items-center">
-                        <Image
-                            alt="userAvatar"
-                            src={'/Login/UserAvatar.png'}
-                            width={120}
-                            height={120}
-                        />
-                        <Form onSubmit={onSubmit} schema={schema}>
+                        <Form onSubmit={onSubmit} schema={signUpSchema}>
+                            <AvatarSelect registerName="avatar" />
                             <FormInput
                                 label="Username"
                                 placeholder="Enter 3 to 30 characters"
@@ -67,15 +60,6 @@ const SignUp = () => {
                         </Form>
                     </div>
                 </div>
-            </div>
-            <div className="flex flex-1">
-                <Image
-                    priority
-                    alt="The beautiful picture"
-                    src="/Login/Login_Picture.jpg"
-                    width={932}
-                    height={622}
-                />
             </div>
         </div>
     )

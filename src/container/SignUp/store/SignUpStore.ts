@@ -1,26 +1,25 @@
 import { makeAutoObservable } from 'mobx'
+import { callMemberSignUp, callMentorSignUp } from '~/api/user'
 class SignUpStore {
     userName: string = ''
-    gender: string = ''
-    country: string = ''
-    title: string = ''
-    company: string = ''
-    years: string = ''
-    linkedIn: string = ''
-    work: string = ''
-    level: string = ''
-    introduction: string = ''
-    role: string = ''
-    phoneNumber: string = ''
-    expertise: string[] = []
-    disciplines: string[] = []
-    skills: string[] = []
-    tools: string[] = []
+    email: string = ''
+    password: string = ''
+    avatar: File | null = null
+
     constructor() {
         makeAutoObservable(this)
     }
     getFromData = (registerName: string) => {
         return this[registerName as keyof SignUpStore]
+    }
+    mentorSignUp = (formData: FormData) => {
+        const res = callMentorSignUp(formData)
+        return res
+    }
+
+    memberSignUp = (formData: FormData) => {
+        const res = callMemberSignUp(formData)
+        return res
     }
 }
 export default SignUpStore

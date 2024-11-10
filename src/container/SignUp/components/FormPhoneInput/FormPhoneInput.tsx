@@ -25,7 +25,10 @@ const FormPhoneInput = ({ label, registerName }: FormPhoneInputProps) => {
     return (
         <div className="w-full flex flex-col items-center">
             <div>
-                <p className="font-bold">{label}</p>
+                <p className="font-bold">
+                    {label}
+                    <span className="text-red-500"> *</span>
+                </p>
                 <Controller
                     name={registerName}
                     control={control}
