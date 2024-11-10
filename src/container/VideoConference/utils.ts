@@ -152,10 +152,11 @@ const checkConnectionQuality = async (): Promise<IConnectionQuality> => {
         if (report.type === 'inbound-rtp') {
             const packetLoss =
                 new Decimal(report.packetsLost)
-                    .div(report.packetsReceived)
+                    .div(report.packetsReceived + report.packetsLost)
                     .toFixed(2) || 0
             const rtt = report.roundTripTime || 0
             const jitter = report.jitter || 0
+            console.log(packetLoss)
 
             if (
                 Number(packetLoss) > highestPacketLoss ||
