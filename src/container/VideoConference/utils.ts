@@ -8,6 +8,7 @@ import {
     CONNECTION_QUALITY,
     MAX_BITRATE,
     IConnectionQuality,
+    REPORT_TYPE,
 } from './types'
 import { socket } from '~/lib/utils'
 import Decimal from 'decimal.js'
@@ -149,23 +150,25 @@ const checkConnectionQuality = async (): Promise<IConnectionQuality> => {
     let highestJitter = 0
 
     stats.forEach((report) => {
-        if (report.type === 'inbound-rtp') {
+        if (report.type === REPORT_TYPE.INBOUND_RTP) {
             const packetLoss =
                 new Decimal(report.packetsLost)
                     .div(report.packetsReceived + report.packetsLost)
                     .toFixed(2) || 0
-            const rtt = report.roundTripTime || 0
             const jitter = report.jitter || 0
-            console.log(packetLoss)
 
             if (
                 Number(packetLoss) > highestPacketLoss ||
-                rtt > highestRTT ||
                 jitter > highestJitter
             ) {
                 highestPacketLoss = Number(packetLoss)
-                highestRTT = rtt
                 highestJitter = jitter
+            }
+        }
+        if (report.type === REPORT_TYPE.CANDIDATE_PAIR) {
+            const rtt = report.roundTripTime || 0
+            if (rtt > highestRTT) {
+                highestRTT = rtt
             }
         }
     })
@@ -182,9 +185,13 @@ const getMaxBitrate = ({
     highestRTT,
     highestJitter,
 }: IConnectionQuality): number => {
-    if (highestPacketLoss > 0.1 || highestRTT > 300 || highestJitter > 100) {
+    if (highestPacketLoss > 0.1 || highestRTT > 0.3 || highestJitter > 0.05) {
         return MAX_BITRATE[CONNECTION_QUALITY.LOW] // 糟糕的網絡，降低品質
-    } else if (highestPacketLoss > 0.05 || highestRTT > 200) {
+    } else if (
+        highestPacketLoss > 0.05 ||
+        highestRTT > 0.2 ||
+        highestJitter > 0.03
+    ) {
         return MAX_BITRATE[CONNECTION_QUALITY.MEDIUM] // 中等品質
     } else {
         return MAX_BITRATE[CONNECTION_QUALITY.HIGH] // 良好的網絡，保持高品質

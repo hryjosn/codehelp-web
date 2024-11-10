@@ -40,3 +40,8 @@ export interface IConnectionQuality {
     highestRTT: number
     highestJitter: number
 }
+
+export enum REPORT_TYPE {
+    INBOUND_RTP = 'inbound-rtp',
+    CANDIDATE_PAIR = 'candidate-pair',
+}
