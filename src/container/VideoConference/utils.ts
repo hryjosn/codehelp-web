@@ -146,7 +146,6 @@ const adjustMaxBitrate = async (
 const checkConnectionQuality = async (): Promise<IConnectionQuality> => {
     const stats: RTCStatsReport = await peerConnection.getStats()
     let highestPacketLoss = 0
-    let highestRTT = 0
     let highestJitter = 0
 
     stats.forEach((report) => {
@@ -165,33 +164,21 @@ const checkConnectionQuality = async (): Promise<IConnectionQuality> => {
                 highestJitter = jitter
             }
         }
-        if (report.type === REPORT_TYPE.CANDIDATE_PAIR) {
-            const rtt = report.roundTripTime || 0
-            if (rtt > highestRTT) {
-                highestRTT = rtt
-            }
-        }
     })
 
     return {
         highestPacketLoss,
-        highestRTT,
         highestJitter,
     }
 }
 
 const getMaxBitrate = ({
     highestPacketLoss,
-    highestRTT,
     highestJitter,
 }: IConnectionQuality): number => {
-    if (highestPacketLoss > 0.1 || highestRTT > 0.3 || highestJitter > 0.05) {
+    if (highestPacketLoss > 0.1 || highestJitter > 0.05) {
         return MAX_BITRATE[CONNECTION_QUALITY.LOW] // 糟糕的網絡，降低品質
-    } else if (
-        highestPacketLoss > 0.05 ||
-        highestRTT > 0.2 ||
-        highestJitter > 0.03
-    ) {
+    } else if (highestPacketLoss > 0.05 || highestJitter > 0.03) {
         return MAX_BITRATE[CONNECTION_QUALITY.MEDIUM] // 中等品質
     } else {
         return MAX_BITRATE[CONNECTION_QUALITY.HIGH] // 良好的網絡，保持高品質

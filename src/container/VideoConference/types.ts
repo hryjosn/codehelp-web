@@ -37,7 +37,6 @@ export const MAX_BITRATE = {
 
 export interface IConnectionQuality {
     highestPacketLoss: number
-    highestRTT: number
     highestJitter: number
 }
 
