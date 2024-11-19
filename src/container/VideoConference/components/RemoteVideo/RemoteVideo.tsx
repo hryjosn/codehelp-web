@@ -1,14 +1,17 @@
 import React, { useEffect, useRef } from 'react'
 import { Props } from './types'
-import { peerConnection } from '../../utils'
+import rootStore from '~/store'
 
 const RemoteVideo = ({ remoteId }: Props) => {
+    const {
+        videoConferenceStore: { peerConnectionList },
+    } = rootStore
     const videoRef = useRef<HTMLVideoElement>(null)
 
     useEffect(() => {
-        if (!peerConnection) return
+        if (!peerConnectionList[remoteId]) return
 
-        peerConnection.ontrack = (event) => {
+        peerConnectionList[remoteId].ontrack = (event) => {
             console.log('監聽到遠端媒體軌道')
             const [stream] = event.streams
 
@@ -16,16 +19,12 @@ const RemoteVideo = ({ remoteId }: Props) => {
                 videoRef.current.srcObject = stream
             }
         }
-
-        return () => {
-            peerConnection.ontrack = null
-        }
-    }, [peerConnection])
+    }, [peerConnectionList])
 
     return (
         <video
             ref={videoRef}
-            className="h-full scale-x-[-1] rounded-3xl border-2 border-white"
+            className="scale-x-[-1] rounded-3xl border-2 border-white"
             autoPlay
             muted
             id={remoteId}

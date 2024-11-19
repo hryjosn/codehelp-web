@@ -28,20 +28,23 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
     const router = useRouter()
 
     useEffect(() => {
-        socket.connect()
+        if (!socket.connected) {
+            socket.connect()
+        }
         ;(async function () {
             if (localVideoRef.current && localStream) {
                 localVideoRef.current.srcObject = localStream
                 socket.emit('join', params.id)
             } else {
-                // 須思考如何重設
+                runInAction(() => {
+                    videoConferenceStore.peerConnectionList = {}
+                })
                 router.push(`/mentor-profile/${params.id}`)
             }
         })()
 
         socket.on('ready', (id, roomMembers) => {
             if (socket.id && roomMembers.length > 1) {
-                console.log('發送 offer')
                 roomMembers.forEach((remoteId) => {
                     if (remoteId === id) {
                         sendOfferSDP({
@@ -104,6 +107,11 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
         })
 
         return () => {
+            socket.off('ready')
+            socket.off('leave')
+            socket.off('offer')
+            socket.off('answer')
+            socket.off('ice_candidate')
             socket.disconnect()
         }
     }, [])
@@ -111,23 +119,24 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
     return (
         <div className="flex h-screen flex-col bg-zinc-800">
             <div className="flex flex-1">
-                <div className="flex flex-1 justify-center px-5 pt-5">
-                    <video
-                        ref={localVideoRef}
-                        autoPlay
-                        muted
-                        className="h-full scale-x-[-1] rounded-3xl border-2 border-white"
-                    >
-                        user1
-                    </video>
-                </div>
-
-                {Object.keys(peerConnectionList).map((key) => (
-                    <div key={key} className="flex flex-1 px-5 pt-5">
-                        <RemoteVideo remoteId={key} />
+                <div className="grid grid-cols-3 justify-center gap-x-2 gap-y-2">
+                    <div className="flex justify-center px-5 pt-5">
+                        <video
+                            ref={localVideoRef}
+                            autoPlay
+                            muted
+                            className="scale-x-[-1] rounded-3xl border-2 border-white"
+                        >
+                            user1
+                        </video>
                     </div>
-                ))}
-
+                    {Object.keys(peerConnectionList).length > 0 &&
+                        Object.keys(peerConnectionList).map((key) => (
+                            <div key={key} className="flex px-5 pt-5">
+                                <RemoteVideo remoteId={key} />
+                            </div>
+                        ))}
+                </div>
                 {isChatOpen && (
                     <div className="mr-5 mt-5 flex w-96 flex-col justify-between gap-2 rounded-lg bg-white p-5 pt-2">
                         <button

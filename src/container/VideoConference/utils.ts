@@ -1,4 +1,3 @@
-import { SDP_TYPE } from '~/lib/types'
 import { PC_CONFIG } from './constant'
 import {
     CreatePeerConnectionT,
@@ -9,8 +8,6 @@ import {
 import { socket } from '~/lib/utils'
 import { runInAction } from 'mobx'
 import rootStore from '~/store'
-
-export let peerConnection: RTCPeerConnection
 
 const { videoConferenceStore } = rootStore
 
@@ -35,7 +32,7 @@ export const createPeerConnection = async ({
     localStream,
     remoteId,
 }: CreatePeerConnectionT) => {
-    peerConnection = new RTCPeerConnection(PC_CONFIG)
+    const peerConnection = new RTCPeerConnection(PC_CONFIG)
 
     localStream?.getTracks().forEach((track) => {
         peerConnection.addTrack(track, localStream)
@@ -86,8 +83,6 @@ export const createPeerConnection = async ({
 }
 
 export const hangup = ({ roomId, localStream, remoteId }: HangupT) => {
-    console.log('離開聊天室')
-
     if (videoConferenceStore.peerConnectionList) {
         Object.keys(videoConferenceStore.peerConnectionList).forEach((key) => {
             runInAction(() => {
