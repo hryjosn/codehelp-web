@@ -1,10 +1,19 @@
 import { SDP_TYPE } from '~/lib/types'
 import { PC_CONFIG } from './constant'
-import { PeerConnectionT, SendSDPT, HangupT } from './types'
+import {
+    PeerConnectionT,
+    SendSDPT,
+    HangupT,
+    ICE_CONNECTION_STATE,
+    CONNECTION_QUALITY,
+    MAX_BITRATE,
+    IConnectionQuality,
+    REPORT_TYPE,
+} from './types'
 import { socket } from '~/lib/utils'
-
+import Decimal from 'decimal.js'
 export let peerConnection: RTCPeerConnection
-
+let connectionQualityInterval: NodeJS.Timeout | null = null
 export const createLocalStream = async () => {
     try {
         const stream = await navigator.mediaDevices.getUserMedia({
@@ -40,8 +49,29 @@ export const createPeerConnection = ({
 
     peerConnection.oniceconnectionstatechange = (e) => {
         const peerConnection = e.target as RTCPeerConnection
-        if (peerConnection.iceConnectionState === 'disconnected') {
+        const state = peerConnection.iceConnectionState
+        if (
+            state === ICE_CONNECTION_STATE.DISCONNECTED ||
+            state === ICE_CONNECTION_STATE.FAILED
+        ) {
             console.log('other user is disconnected')
+            if (connectionQualityInterval) {
+                clearInterval(connectionQualityInterval)
+                connectionQualityInterval = null
+            }
+        }
+        if (
+            (state === ICE_CONNECTION_STATE.CONNECTED ||
+                state === ICE_CONNECTION_STATE.COMPLETED) &&
+            !connectionQualityInterval
+        ) {
+            connectionQualityInterval = setInterval(async () => {
+                const connectionQuality = await checkConnectionQuality()
+                if (connectionQuality) {
+                    const maxBitrate = getMaxBitrate(connectionQuality)
+                    await adjustMaxBitrate(localStream, maxBitrate)
+                }
+            }, 1000)
         }
     }
 
@@ -84,5 +114,73 @@ export const hangup = ({ roomID, localStream }: HangupT) => {
         track.stop()
     })
 
+    if (connectionQualityInterval) {
+        clearInterval(connectionQualityInterval)
+        connectionQualityInterval = null
+    }
     socket?.emit('hangup', roomID)
+}
+
+const adjustMaxBitrate = async (
+    localStream: MediaStream,
+    maxBitrate: number
+) => {
+    try {
+        const videoTrack = localStream.getVideoTracks()[0]
+        const sender: RTCRtpSender | undefined = peerConnection
+            .getSenders()
+            .find((sender) => sender.track === videoTrack)
+
+        if (sender) {
+            const params = sender.getParameters()
+            params.encodings[0].maxBitrate = maxBitrate
+            sender.setParameters(params)
+        } else {
+            console.log('local video stream is not found.')
+        }
+    } catch (error) {
+        console.log('error', error)
+    }
+}
+
+const checkConnectionQuality = async (): Promise<IConnectionQuality> => {
+    const stats: RTCStatsReport = await peerConnection.getStats()
+    let highestPacketLoss = 0
+    let highestJitter = 0
+
+    stats.forEach((report) => {
+        if (report.type === REPORT_TYPE.INBOUND_RTP) {
+            const packetLoss =
+                new Decimal(report.packetsLost)
+                    .div(report.packetsReceived + report.packetsLost)
+                    .toFixed(2) || 0
+            const jitter = report.jitter || 0
+
+            if (
+                Number(packetLoss) > highestPacketLoss ||
+                jitter > highestJitter
+            ) {
+                highestPacketLoss = Number(packetLoss)
+                highestJitter = jitter
+            }
+        }
+    })
+
+    return {
+        highestPacketLoss,
+        highestJitter,
+    }
+}
+
+const getMaxBitrate = ({
+    highestPacketLoss,
+    highestJitter,
+}: IConnectionQuality): number => {
+    if (highestPacketLoss > 0.1 || highestJitter > 0.05) {
+        return MAX_BITRATE[CONNECTION_QUALITY.LOW] // 糟糕的網絡，降低品質
+    } else if (highestPacketLoss > 0.05 || highestJitter > 0.03) {
+        return MAX_BITRATE[CONNECTION_QUALITY.MEDIUM] // 中等品質
+    } else {
+        return MAX_BITRATE[CONNECTION_QUALITY.HIGH] // 良好的網絡，保持高品質
+    }
 }
