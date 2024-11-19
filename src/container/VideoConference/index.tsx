@@ -119,24 +119,22 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
     return (
         <div className="flex h-screen flex-col bg-zinc-800">
             <div className="flex flex-1">
-                <div className="grid grid-cols-3 justify-center gap-x-2 gap-y-2">
-                    <div className="flex justify-center px-5 pt-5">
-                        <video
-                            ref={localVideoRef}
-                            autoPlay
-                            muted
-                            className="scale-x-[-1] rounded-3xl border-2 border-white"
-                        >
-                            user1
-                        </video>
-                    </div>
-                    {Object.keys(peerConnectionList).length > 0 &&
-                        Object.keys(peerConnectionList).map((key) => (
-                            <div key={key} className="flex px-5 pt-5">
-                                <RemoteVideo remoteId={key} />
-                            </div>
-                        ))}
+                <div className="flex justify-center px-5 pt-5">
+                    <video
+                        ref={localVideoRef}
+                        autoPlay
+                        muted
+                        className="scale-x-[-1] rounded-3xl border-2 border-white"
+                    >
+                        user1
+                    </video>
                 </div>
+                {Object.keys(peerConnectionList).length > 0 &&
+                    Object.keys(peerConnectionList).map((key) => (
+                        <div key={key} className="flex px-5 pt-5">
+                            <RemoteVideo remoteId={key} />
+                        </div>
+                    ))}
                 {isChatOpen && (
                     <div className="mr-5 mt-5 flex w-96 flex-col justify-between gap-2 rounded-lg bg-white p-5 pt-2">
                         <button
