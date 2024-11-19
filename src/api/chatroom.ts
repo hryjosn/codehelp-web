@@ -1,16 +1,16 @@
 import apiHandler from './api'
 import { ChatroomInfoT } from '~/container/Chat/store/type'
 
-interface CreateChatroomResT {
+export interface CreateChatroomResT {
     chatroomId: string
     total: number
 }
 
-interface ChatroomInfoResT {
+export interface ChatroomInfoResT {
     chatroom: ChatroomInfoT
     status: string
 }
-interface NewMessageResT {
+export interface NewMessageResT {
     message: {
         id: string
         createdAt: string

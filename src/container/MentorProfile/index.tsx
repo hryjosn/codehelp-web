@@ -17,6 +17,7 @@ import LoadingModal from '~/components/LoadingModal/LoadingModal'
 import { useGetMentorInfo } from '~/api/mentor'
 import React from 'react'
 import { useChatroomStore } from '../Chat/store/ChatStore'
+import { RESPONSE_CODE } from '../Login/store/types'
 const MentorProfile = ({ params }: { params: { id: string } }) => {
     const currentMentor: Mentor | undefined = MOCK_MENTOR_LIST.find(
         (mentor) => mentor.id === params.id
@@ -52,8 +53,13 @@ const MentorProfile = ({ params }: { params: { id: string } }) => {
                         onClick={async () => {
                             const res = await createChatroom(
                                 '66598522-1162-4a7c-9273-ca2f2b25767a'
-                            ) // temporary
-                            router.push('/chat')
+                            )
+                            if (
+                                res === RESPONSE_CODE.DATA_DUPLICATE ||
+                                res.chatroomId
+                            ) {
+                                router.push('/chat')
+                            }
                         }}
                     />
                     <HiPhone
