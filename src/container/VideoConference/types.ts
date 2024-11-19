@@ -1,17 +1,23 @@
-import { RefObject } from 'react'
-import { SDP_TYPE } from '~/lib/types'
-
-export interface PeerConnectionT {
-    roomID: string
+export interface CreatePeerConnectionT {
     localStream: MediaStream
-    remoteVideoRef: RefObject<HTMLVideoElement>
+    remoteId: string
 }
 
-export interface SendSDPT {
-    type: SDP_TYPE
-    roomID: string
+export interface PeerConnectionListT {
+    [remoteId: string]: RTCPeerConnection
 }
+
 export interface HangupT {
-    roomID: string
+    roomId: string
     localStream: MediaStream
+    remoteId: string
+}
+export interface SendOfferSDP_T {
+    localStream: MediaStream
+    remoteId: string
+}
+export interface SendAnswerSDP_T {
+    localStream: MediaStream
+    remoteId: string
+    desc: RTCSessionDescription
 }

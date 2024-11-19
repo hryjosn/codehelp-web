@@ -1,9 +1,20 @@
-import { SDP_TYPE } from '~/lib/types'
 import { PC_CONFIG } from './constant'
-import { PeerConnectionT, SendSDPT, HangupT } from './types'
+import {
+    CreatePeerConnectionT,
+    HangupT,
+    SendAnswerSDP_T,
+    SendOfferSDP_T,
+} from './types'
 import { socket } from '~/lib/utils'
+import { runInAction } from 'mobx'
+import rootStore from '~/store'
 
-export let peerConnection: RTCPeerConnection
+const { videoConferenceStore } = rootStore
+
+const offerAndAnswerOptions = {
+    offerToReceiveAudio: true,
+    offerToReceiveVideo: true,
+}
 
 export const createLocalStream = async () => {
     try {
@@ -17,72 +28,131 @@ export const createLocalStream = async () => {
     }
 }
 
-export const createPeerConnection = ({
-    roomID,
+export const createPeerConnection = async ({
     localStream,
-    remoteVideoRef,
-}: PeerConnectionT) => {
-    peerConnection = new RTCPeerConnection(PC_CONFIG)
+    remoteId,
+}: CreatePeerConnectionT) => {
+    const peerConnection = new RTCPeerConnection(PC_CONFIG)
 
     localStream?.getTracks().forEach((track) => {
         peerConnection.addTrack(track, localStream)
     })
 
     peerConnection.onicecandidate = (e) => {
-        if (e.candidate) {
-            socket?.emit('ice_candidate', roomID, {
-                label: e.candidate.sdpMLineIndex,
-                id: e.candidate.sdpMid,
-                candidate: e.candidate.candidate,
-            })
+        if (e.candidate && socket.id) {
+            socket.emit(
+                'ice_candidate',
+                {
+                    label: e.candidate.sdpMLineIndex,
+                    id: e.candidate.sdpMid,
+                    candidate: e.candidate.candidate,
+                },
+                socket.id,
+                remoteId
+            )
         }
     }
 
     peerConnection.oniceconnectionstatechange = (e) => {
         const peerConnection = e.target as RTCPeerConnection
         if (peerConnection.iceConnectionState === 'disconnected') {
-            console.log('other user is disconnected')
+            console.log('有裝置斷線')
+
+            runInAction(() => {
+                videoConferenceStore.peerConnectionList[
+                    remoteId
+                ].onicecandidate = null
+                videoConferenceStore.peerConnectionList[
+                    remoteId
+                ].onnegotiationneeded = null
+                videoConferenceStore.peerConnectionList[
+                    remoteId
+                ].oniceconnectionstatechange = null
+
+                videoConferenceStore.peerConnectionList[remoteId].close()
+                delete videoConferenceStore.peerConnectionList[remoteId]
+            })
         }
     }
 
-    peerConnection.ontrack = (event) => {
-        if (remoteVideoRef.current) {
-            const [stream] = event.streams
-            remoteVideoRef.current.srcObject = stream
-        }
-    }
+    runInAction(() => {
+        videoConferenceStore.peerConnectionList[remoteId] = peerConnection
+    })
+
+    return peerConnection
 }
 
-export const sendSDP = async ({ type, roomID }: SendSDPT) => {
-    try {
-        if (!peerConnection) {
-            console.log('尚未開啟視訊')
-            return
-        }
-
-        const method = type === SDP_TYPE.OFFER ? 'createOffer' : 'createAnswer'
-
-        const localSDP = await peerConnection?.[method]({
-            offerToReceiveAudio: true,
-            offerToReceiveVideo: true,
+export const hangup = ({ roomId, localStream, remoteId }: HangupT) => {
+    if (videoConferenceStore.peerConnectionList) {
+        Object.keys(videoConferenceStore.peerConnectionList).forEach((key) => {
+            runInAction(() => {
+                videoConferenceStore.peerConnectionList[key].onicecandidate =
+                    null
+                videoConferenceStore.peerConnectionList[
+                    key
+                ].onnegotiationneeded = null
+                videoConferenceStore.peerConnectionList[
+                    key
+                ].oniceconnectionstatechange = null
+                videoConferenceStore.peerConnectionList[key].close()
+            })
         })
-        await peerConnection?.setLocalDescription(localSDP)
-        socket?.emit(type, roomID, peerConnection.localDescription!)
-    } catch (err) {
-        console.log('error: ', err)
-    }
-}
-
-export const hangup = ({ roomID, localStream }: HangupT) => {
-    if (peerConnection) {
-        peerConnection.onicecandidate = null
-        peerConnection.onnegotiationneeded = null
-        peerConnection?.close()
+        runInAction(() => {
+            videoConferenceStore.peerConnectionList = {}
+        })
     }
 
     localStream.getTracks().forEach((track) => {
         track.stop()
     })
 
-    socket?.emit('hangup', roomID)
+    socket?.emit('hangup', roomId, remoteId)
+}
+
+export const sendOfferSDP = async ({
+    localStream,
+    remoteId,
+}: SendOfferSDP_T) => {
+    const peerConnection = await createPeerConnection({
+        localStream,
+        remoteId,
+    })
+
+    const localSDP = await peerConnection.createOffer(offerAndAnswerOptions)
+
+    await peerConnection.setLocalDescription(localSDP)
+    if (peerConnection.localDescription && socket.id) {
+        socket.emit(
+            'offer',
+            peerConnection.localDescription,
+            socket.id,
+            remoteId
+        )
+    }
+}
+
+export const sendAnswerSDP = async ({
+    localStream,
+    remoteId,
+    desc,
+}: SendAnswerSDP_T) => {
+    const peerConnection = await createPeerConnection({
+        localStream,
+        remoteId,
+    })
+
+    await peerConnection.setRemoteDescription(desc)
+
+    const localSDP = await peerConnection.createAnswer(offerAndAnswerOptions)
+
+    await peerConnection.setLocalDescription(localSDP)
+
+    if (peerConnection.localDescription && socket.id) {
+        socket.emit(
+            'answer',
+            peerConnection.localDescription,
+            socket.id,
+            remoteId
+        )
+    }
 }
