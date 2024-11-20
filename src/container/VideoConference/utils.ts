@@ -1,19 +1,29 @@
-import { SDP_TYPE } from '~/lib/types'
 import { PC_CONFIG } from './constant'
 import {
-    PeerConnectionT,
-    SendSDPT,
     HangupT,
     ICE_CONNECTION_STATE,
     CONNECTION_QUALITY,
     MAX_BITRATE,
     IConnectionQuality,
     REPORT_TYPE,
+    CreatePeerConnectionT,
+    SendAnswerSDP_T,
+    SendOfferSDP_T,
 } from './types'
-import { socket } from '~/lib/utils'
 import Decimal from 'decimal.js'
+import { runInAction } from 'mobx'
+import rootStore from '~/store'
+
 export let peerConnection: RTCPeerConnection
 let connectionQualityInterval: NodeJS.Timeout | null = null
+
+const { videoConferenceStore } = rootStore
+const { removeConnectionMember } = videoConferenceStore
+const offerAndAnswerOptions = {
+    offerToReceiveAudio: true,
+    offerToReceiveVideo: true,
+}
+
 export const createLocalStream = async () => {
     try {
         const stream = await navigator.mediaDevices.getUserMedia({
@@ -26,24 +36,29 @@ export const createLocalStream = async () => {
     }
 }
 
-export const createPeerConnection = ({
-    roomID,
+export const createPeerConnection = async ({
     localStream,
-    remoteVideoRef,
-}: PeerConnectionT) => {
-    peerConnection = new RTCPeerConnection(PC_CONFIG)
+    remoteId,
+    socket,
+}: CreatePeerConnectionT) => {
+    const peerConnection = new RTCPeerConnection(PC_CONFIG)
 
     localStream?.getTracks().forEach((track) => {
         peerConnection.addTrack(track, localStream)
     })
 
     peerConnection.onicecandidate = (e) => {
-        if (e.candidate) {
-            socket?.emit('ice_candidate', roomID, {
-                label: e.candidate.sdpMLineIndex,
-                id: e.candidate.sdpMid,
-                candidate: e.candidate.candidate,
-            })
+        if (e.candidate && socket.id) {
+            socket.emit(
+                'ice_candidate',
+                {
+                    label: e.candidate.sdpMLineIndex,
+                    id: e.candidate.sdpMid,
+                    candidate: e.candidate.candidate,
+                },
+                socket.id,
+                remoteId
+            )
         }
     }
 
@@ -73,41 +88,21 @@ export const createPeerConnection = ({
                 }
             }, 1000)
         }
+        removeConnectionMember(remoteId)
     }
 
-    peerConnection.ontrack = (event) => {
-        if (remoteVideoRef.current) {
-            const [stream] = event.streams
-            remoteVideoRef.current.srcObject = stream
-        }
-    }
+    runInAction(() => {
+        videoConferenceStore.peerConnectionList[remoteId] = peerConnection
+    })
+
+    return peerConnection
 }
 
-export const sendSDP = async ({ type, roomID }: SendSDPT) => {
-    try {
-        if (!peerConnection) {
-            console.log('尚未開啟視訊')
-            return
-        }
-
-        const method = type === SDP_TYPE.OFFER ? 'createOffer' : 'createAnswer'
-
-        const localSDP = await peerConnection?.[method]({
-            offerToReceiveAudio: true,
-            offerToReceiveVideo: true,
+export const hangup = ({ roomId, localStream, remoteId, socket }: HangupT) => {
+    if (videoConferenceStore.peerConnectionList) {
+        runInAction(() => {
+            videoConferenceStore.peerConnectionList = {}
         })
-        await peerConnection?.setLocalDescription(localSDP)
-        socket?.emit(type, roomID, peerConnection.localDescription!)
-    } catch (err) {
-        console.log('error: ', err)
-    }
-}
-
-export const hangup = ({ roomID, localStream }: HangupT) => {
-    if (peerConnection) {
-        peerConnection.onicecandidate = null
-        peerConnection.onnegotiationneeded = null
-        peerConnection?.close()
     }
 
     localStream.getTracks().forEach((track) => {
@@ -118,7 +113,60 @@ export const hangup = ({ roomID, localStream }: HangupT) => {
         clearInterval(connectionQualityInterval)
         connectionQualityInterval = null
     }
-    socket?.emit('hangup', roomID)
+
+    socket?.emit('hangup', roomId, remoteId)
+}
+
+export const sendOfferSDP = async ({
+    localStream,
+    remoteId,
+    socket,
+}: SendOfferSDP_T) => {
+    const peerConnection = await createPeerConnection({
+        localStream,
+        remoteId,
+        socket,
+    })
+
+    const localSDP = await peerConnection.createOffer(offerAndAnswerOptions)
+
+    await peerConnection.setLocalDescription(localSDP)
+    if (peerConnection.localDescription && socket.id) {
+        socket.emit(
+            'offer',
+            peerConnection.localDescription,
+            socket.id,
+            remoteId
+        )
+    }
+}
+
+export const sendAnswerSDP = async ({
+    localStream,
+    remoteId,
+    desc,
+    socket,
+}: SendAnswerSDP_T) => {
+    const peerConnection = await createPeerConnection({
+        localStream,
+        remoteId,
+        socket,
+    })
+
+    await peerConnection.setRemoteDescription(desc)
+
+    const localSDP = await peerConnection.createAnswer(offerAndAnswerOptions)
+
+    await peerConnection.setLocalDescription(localSDP)
+
+    if (peerConnection.localDescription && socket.id) {
+        socket.emit(
+            'answer',
+            peerConnection.localDescription,
+            socket.id,
+            remoteId
+        )
+    }
 }
 
 const adjustMaxBitrate = async (
