@@ -7,7 +7,6 @@ import { MdOutlineScreenShare } from 'react-icons/md'
 import { PiChatCircleText } from 'react-icons/pi'
 import MessageBox from './components/MessageBox'
 import { MOCK_MESSAGE_LIST } from './constant'
-import { socket } from '~/lib/utils'
 import Link from 'next/link'
 import { hangup, sendAnswerSDP, sendOfferSDP } from './utils'
 import { observer } from 'mobx-react-lite'
@@ -18,7 +17,12 @@ import RemoteVideo from './components/RemoteVideo/RemoteVideo'
 
 const VideoConference = ({ params }: { params: { id: string } }) => {
     const {
-        videoConferenceStore: { localStream, peerConnectionList },
+        videoConferenceStore: {
+            localStream,
+            peerConnectionList,
+            socket,
+            removeConnectionMember,
+        },
         videoConferenceStore,
     } = rootStore
     const [isMicOpen, setIsMicOpen] = useState(false)
@@ -28,11 +32,8 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
     const router = useRouter()
 
     useEffect(() => {
-        if (!socket.connected) {
-            socket.connect()
-        }
         ;(async function () {
-            if (localVideoRef.current && localStream) {
+            if (localVideoRef.current && localStream && socket) {
                 localVideoRef.current.srcObject = localStream
                 socket.emit('join', params.id)
             } else {
@@ -43,46 +44,37 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
             }
         })()
 
-        socket.on('ready', (id, roomMembers) => {
-            if (socket.id && roomMembers.length > 1) {
+        socket?.on('ready', (id, roomMembers) => {
+            if (socket!.id && roomMembers.length > 1) {
                 roomMembers.forEach((remoteId) => {
                     if (remoteId === id) {
                         sendOfferSDP({
                             remoteId,
                             localStream: localStream!,
+                            socket,
                         })
                     }
                 })
             }
         })
 
-        socket.on('leave', (remoteId) => {
-            runInAction(() => {
-                videoConferenceStore.peerConnectionList[
-                    remoteId
-                ].onicecandidate = null
-                videoConferenceStore.peerConnectionList[
-                    remoteId
-                ].onnegotiationneeded = null
-                videoConferenceStore.peerConnectionList[
-                    remoteId
-                ].oniceconnectionstatechange = null
-
-                videoConferenceStore.peerConnectionList[remoteId].close()
-                delete videoConferenceStore.peerConnectionList[remoteId]
-            })
+        socket?.on('leave', (remoteId) => {
+            if (videoConferenceStore.peerConnectionList[remoteId]) {
+                removeConnectionMember(remoteId)
+            }
         })
 
-        socket.on('offer', async (desc, remoteId) => {
+        socket?.on('offer', async (desc, remoteId) => {
             console.log('收到 offer')
             await sendAnswerSDP({
                 localStream: localStream!,
                 remoteId,
                 desc,
+                socket,
             })
         })
 
-        socket.on('answer', (desc, remoteId) => {
+        socket?.on('answer', (desc, remoteId) => {
             console.log('收到 answer')
             runInAction(() => {
                 videoConferenceStore.peerConnectionList[
@@ -91,7 +83,7 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
             })
         })
 
-        socket.on('ice_candidate', (data, remoteId) => {
+        socket?.on('ice_candidate', (data, remoteId) => {
             console.log('收到 ice_candidate')
 
             const candidate = new RTCIceCandidate({
@@ -107,34 +99,38 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
         })
 
         return () => {
-            socket.off('ready')
-            socket.off('leave')
-            socket.off('offer')
-            socket.off('answer')
-            socket.off('ice_candidate')
-            socket.disconnect()
+            if (socket) {
+                socket.off('ready')
+                socket.off('leave')
+                socket.off('offer')
+                socket.off('answer')
+                socket.off('ice_candidate')
+                socket.disconnect()
+            }
         }
     }, [])
 
     return (
         <div className="flex h-screen flex-col bg-zinc-800">
             <div className="flex flex-1">
-                <div className="flex justify-center px-5 pt-5">
-                    <video
-                        ref={localVideoRef}
-                        autoPlay
-                        muted
-                        className="scale-x-[-1] rounded-3xl border-2 border-white"
-                    >
-                        user1
-                    </video>
+                <div className="grid grid-cols-3 gap-x-2 gap-y-2">
+                    <div className="flex flex-1 justify-center px-5 pt-5">
+                        <video
+                            ref={localVideoRef}
+                            autoPlay
+                            muted
+                            className="scale-x-[-1] rounded-3xl border-2 border-white"
+                        >
+                            user1
+                        </video>
+                    </div>
+                    {Object.keys(peerConnectionList).length > 0 &&
+                        Object.keys(peerConnectionList).map((key) => (
+                            <div key={key} className="flex px-5 pt-5">
+                                <RemoteVideo remoteId={key} />
+                            </div>
+                        ))}
                 </div>
-                {Object.keys(peerConnectionList).length > 0 &&
-                    Object.keys(peerConnectionList).map((key) => (
-                        <div key={key} className="flex px-5 pt-5">
-                            <RemoteVideo remoteId={key} />
-                        </div>
-                    ))}
                 {isChatOpen && (
                     <div className="mr-5 mt-5 flex w-96 flex-col justify-between gap-2 rounded-lg bg-white p-5 pt-2">
                         <button
@@ -188,6 +184,7 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
                                     roomId: params.id,
                                     localStream: localStream,
                                     remoteId: socket.id,
+                                    socket,
                                 })
                                 runInAction(() => {
                                     videoConferenceStore.localStream = undefined

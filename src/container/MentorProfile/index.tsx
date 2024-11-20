@@ -13,10 +13,13 @@ import { useState } from 'react'
 import { HiPhone } from 'react-icons/hi2'
 import { createLocalStream } from '../VideoConference/utils'
 import LoadingModal from '~/components/LoadingModal/LoadingModal'
-
+import { observer } from 'mobx-react-lite'
 import { useGetMentorInfo } from '~/api/mentor'
 import React from 'react'
 const MentorProfile = ({ params }: { params: { id: string } }) => {
+    const {
+        videoConferenceStore: { connectSocket },
+    } = rootStore
     const currentMentor: Mentor | undefined = MOCK_MENTOR_LIST.find(
         (mentor) => mentor.id === params.id
     )
@@ -50,13 +53,14 @@ const MentorProfile = ({ params }: { params: { id: string } }) => {
                         onClick={async () => {
                             setModalVisible(true)
                             const localStream = await createLocalStream()
+                            connectSocket()
                             runInAction(() => {
                                 rootStore.videoConferenceStore.localStream =
                                     localStream
                             })
                             if (localStream) {
-                                setModalVisible(false)
                                 router.push(`/video-conference/${params.id}`)
+                                setModalVisible(false)
                             }
                         }}
                     />
@@ -75,4 +79,4 @@ const MentorProfile = ({ params }: { params: { id: string } }) => {
     )
 }
 
-export default MentorProfile
+export default observer(MentorProfile)
