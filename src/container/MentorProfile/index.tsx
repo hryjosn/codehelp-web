@@ -5,7 +5,6 @@ import Bio from '~/components/mentor/Bio'
 import Education from '~/components/mentor/Education'
 import Experience from '~/components/mentor/Experience'
 import { MOCK_MENTOR_LIST } from '~/container/Home/components/MentorList/constant'
-import type { Mentor } from '~/container/Home/components/MentorList/types'
 import Booking from './components/Booking/Booking'
 import { runInAction } from 'mobx'
 import rootStore from '~/store'
@@ -18,11 +17,12 @@ import { useGetMentorInfo } from '~/api/mentor'
 import React from 'react'
 import { useChatroomStore } from '../Chat/store/ChatStore'
 import { RESPONSE_CODE } from '../Login/store/types'
+import { MentorT } from '../Home/store/type'
 const MentorProfile = ({ params }: { params: { id: string } }) => {
     const {
         videoConferenceStore: { connectSocket },
     } = rootStore
-    const currentMentor: Mentor | undefined = MOCK_MENTOR_LIST.find(
+    const currentMentor: MentorT | undefined = MOCK_MENTOR_LIST.find(
         (mentor) => mentor.id === params.id
     )
     const [modalVisible, setModalVisible] = useState(false)
@@ -45,7 +45,7 @@ const MentorProfile = ({ params }: { params: { id: string } }) => {
             <div className="p-6 md:p-16">
                 <Bio
                     avatar={currentMentor.avatar}
-                    name={currentMentor.name}
+                    name={currentMentor.userName}
                     company={currentMentor.company}
                     title={currentMentor.title}
                 />
@@ -85,9 +85,17 @@ const MentorProfile = ({ params }: { params: { id: string } }) => {
                 </div>
                 <div className="mt-6 flex flex-col items-center gap-6 border-t border-solid border-gray-200 pt-6 md:flex-row md:gap-32">
                     <div className="flex flex-1 flex-col gap-4 p-6">
-                        <p className="line-clamp-3">{currentMentor.bio}</p>
-                        <Experience experiences={currentMentor.experience} />
-                        <Education education={currentMentor.education} />
+                        <p className="line-clamp-3">
+                            {currentMentor.introduction}
+                        </p>
+                        {/* <Experience
+                            experiences={[
+                                currentMentor.primaryExpertise,
+                                currentMentor.secondaryExpertise,
+                                currentMentor.tertiaryExpertise,
+                            ]}
+                        /> */}
+                        {/* <Education education={currentMentor.education} /> */}
                     </div>
                     <Booking mentorId={data.id} />
                 </div>
