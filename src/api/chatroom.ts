@@ -1,5 +1,6 @@
+import { useInfiniteQuery } from '@tanstack/react-query'
 import apiHandler from './api'
-import { ChatroomInfoT } from '~/container/Chat/store/type'
+import { ChatroomInfoT, ChatroomListT } from '~/container/Chat/store/type'
 
 export interface CreateChatroomResT {
     chatroomId: string
@@ -19,6 +20,11 @@ export interface NewMessageResT {
         chatroom: ChatroomInfoT
     }
     status: string
+}
+interface ChatroomListResT {
+    chatroomList: ChatroomListT[]
+    status: string
+    total: number
 }
 
 export const callCreateChatroom = (data: any) => {
@@ -43,5 +49,28 @@ export const callCreateMessage = (
         url: `/chatroom/${chatroomId}/newMessage`,
         method: 'post',
         data,
+    })
+}
+export const useGetChatroomList = () => {
+    return useInfiniteQuery({
+        initialPageParam: 1,
+        queryKey: ['chatroomList'],
+        queryFn: async ({ pageParam }) => {
+            const pageSize = 10
+            const {
+                data: { total, chatroomList },
+            } = await apiHandler<ChatroomListResT>({
+                url: `/chatroom/list?page=${pageParam}&count=${pageSize}`,
+                method: 'get',
+            })
+
+            return { chatroomList, total, pageParam, pageSize }
+        },
+        getNextPageParam: (res) => {
+            if (res.pageParam * res.pageSize < res.total) {
+                return res.pageParam + 1
+            }
+            return undefined
+        },
     })
 }

@@ -9,6 +9,7 @@ const ChattingArea = () => {
     const getChatroomInfo = useChatroomStore((state) => state.getChatroomInfo)
     const createMessage = useChatroomStore((state) => state.createMessage)
     const chatroomInfo = useChatroomStore((state) => state.chatroomInfo)
+    const chatroomId = useChatroomStore((state) => state.chatroomId)
     useEffect(() => {
         getChatroomInfo('a1b04991-a6b0-4fc1-bbbb-2e099e99680f')
     }, [getChatroomInfo])
@@ -58,10 +59,7 @@ const ChattingArea = () => {
                     <button
                         className="rounded-full p-2 hover:bg-gray-200"
                         onClick={() => {
-                            createMessage(
-                                content,
-                                'a1b04991-a6b0-4fc1-bbbb-2e099e99680f'
-                            )
+                            createMessage(content, chatroomId)
                             setContent('')
                         }}
                     >
