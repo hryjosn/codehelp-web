@@ -74,21 +74,21 @@ export const createPeerConnection = async ({
                 clearInterval(connectionQualityInterval)
                 connectionQualityInterval = null
             }
+            removeConnectionMember(remoteId)
         }
-        if (
-            (state === ICE_CONNECTION_STATE.CONNECTED ||
-                state === ICE_CONNECTION_STATE.COMPLETED) &&
-            !connectionQualityInterval
-        ) {
-            connectionQualityInterval = setInterval(async () => {
-                const connectionQuality = await checkConnectionQuality()
-                if (connectionQuality) {
-                    const maxBitrate = getMaxBitrate(connectionQuality)
-                    await adjustMaxBitrate(localStream, maxBitrate)
-                }
-            }, 1000)
-        }
-        removeConnectionMember(remoteId)
+        // if (
+        //     (state === ICE_CONNECTION_STATE.CONNECTED ||
+        //         state === ICE_CONNECTION_STATE.COMPLETED) &&
+        //     !connectionQualityInterval
+        // ) {
+        //     connectionQualityInterval = setInterval(async () => {
+        //         const connectionQuality = await checkConnectionQuality()
+        //         if (connectionQuality) {
+        //             const maxBitrate = getMaxBitrate(connectionQuality)
+        //             await adjustMaxBitrate(localStream, maxBitrate)
+        //         }
+        //     }, 1000)
+        // }
     }
 
     runInAction(() => {
