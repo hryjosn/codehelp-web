@@ -19,11 +19,11 @@ export default function RootLayout({
 }) {
     return (
         <ReactQueryClientProvider>
-            <MSWProvider>
-                <html lang="en">
+            <html lang="en">
+                <MSWProvider>
                     <body>{children}</body>
-                </html>
-            </MSWProvider>
+                </MSWProvider>
+            </html>
         </ReactQueryClientProvider>
     )
 }

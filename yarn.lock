@@ -1846,7 +1846,7 @@
   dependencies:
     "@types/mdx" "^2.0.0"
 
-"@mswjs/interceptors@^0.37.0":
+"@mswjs/interceptors@^0.37.0", "@mswjs/interceptors@^0.37.1":
   version "0.37.1"
   resolved "https://registry.yarnpkg.com/@mswjs/interceptors/-/interceptors-0.37.1.tgz#fe30692c18318b0dba8aa36b390cb0a482fd81a7"
   integrity sha512-SvE+tSpcX884RJrPCskXxoS965Ky/pYABDEhWW6oeSRhpUDLrS5nTvT5n1LLSDVDYvty4imVmXsy+3/ROVuknA==

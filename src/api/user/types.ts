@@ -1,9 +1,21 @@
 import { RESPONSE_CODE } from '~/container/Login/store/types'
 
 export interface Login {
-    code?: RESPONSE_CODE
-    message: string
-    token: string
+    id: string
+    userName: string
+    email: string
+    avatar: string
+    gender: string
+    country: string
+    title: string
+    company: string
+    phoneNumber: string
+    emailOtp: boolean
+    introduction: string
+    level: number
+    fieldOfWork: string[]
+    createdAt: string
+    updatedAt: string
 }
 
 export interface LoginReq {
@@ -15,7 +27,23 @@ export interface LoginRes {
     data: Login
 }
 
-export interface MemberSignUp {}
+export interface MemberSignUp {
+    userName: string
+    email: string
+    avatar: string
+    gender: string
+    country: string
+    title: string
+    company: string
+    phoneNumber: string
+    introduction: string
+    level: number
+    fieldOfWork: string[]
+    id: string
+    emailOtp: boolean
+    createdAt: string
+    updatedAt: string
+}
 
 export interface MemberSignUpReq {}
 

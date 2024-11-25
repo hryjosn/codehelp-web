@@ -1,3 +1,3 @@
-import { login } from './user'
+import { login, memberSignUp } from './user'
 
-export const handlers = [...login]
+export const handlers = [...login, ...memberSignUp]
