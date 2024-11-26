@@ -1,5 +1,3 @@
-import { RESPONSE_CODE } from '~/container/Login/store/types'
-
 export interface Login {
     id: string
     userName: string
