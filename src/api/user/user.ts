@@ -1,9 +1,8 @@
 import apiHandler from '../api'
 import { LoginDataT } from '~/container/Login/store/types'
 import { LoginReqT, LoginResT } from './types'
-import { baseURL } from '../api'
+import { mentorSignUpURL, memberSignUpURL, loginURL } from './api_url'
 
-export const mentorSignUpURL = `${baseURL}mentor/signUp`
 export const callMentorSignUp = (data: any) => {
     return apiHandler({
         url: mentorSignUpURL,
@@ -12,7 +11,6 @@ export const callMentorSignUp = (data: any) => {
     })
 }
 
-export const memberSignUpURL = `${baseURL}member/signUp`
 export const callMemberSignUp = (data: any) => {
     return apiHandler({
         url: memberSignUpURL,
@@ -21,7 +19,6 @@ export const callMemberSignUp = (data: any) => {
     })
 }
 
-export const loginURL = `${baseURL}login`
 export const callLogin = (data: LoginDataT) => {
     return apiHandler<LoginReqT, LoginResT>({
         url: loginURL,

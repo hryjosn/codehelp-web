@@ -1,5 +1,5 @@
 import { http, HttpResponse } from 'msw'
-import { loginURL, memberSignUpURL, mentorSignUpURL } from '~/api/user/user'
+import { loginURL, memberSignUpURL, mentorSignUpURL } from '~/api/user/api_url'
 import {
     LoginReqT,
     LoginResT,
@@ -68,3 +68,5 @@ export const mentorSignUp = [
         return HttpResponse.json({})
     }),
 ]
+
+export const userHandlers = [...login, ...memberSignUp]

@@ -1,10 +1,10 @@
 import { http, HttpResponse } from 'msw'
-import { getMentorInfoURL } from '~/api/mentor/mentor'
+import { getMentorInfoURL } from '~/api/mentor/api_url'
 import { GetMentorInfoReqT, GetMentorInfoResT } from '~/api/mentor/types'
 
 export const getMentorInfo = [
     http.get<GetMentorInfoReqT, GetMentorInfoResT>(
-        getMentorInfoURL + process.env.NEXT_PUBLIC_TEST_MENTOR_ID,
+        getMentorInfoURL(process.env.NEXT_PUBLIC_TEST_MENTOR_ID!),
         () => {
             return HttpResponse.json({
                 status: 'ok',
@@ -40,3 +40,5 @@ export const getMentorInfo = [
         }
     ),
 ]
+
+export const mentorHandlers = [...getMentorInfo]

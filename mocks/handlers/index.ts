@@ -1,4 +1,9 @@
-import { login, memberSignUp } from './user'
-import { getMentorInfo } from './mentor'
+import { userHandlers } from './user'
+import { mentorHandlers } from './mentor'
+import { chatroomHandlers } from './chatroom'
 
-export const handlers = [...login, ...memberSignUp, ...getMentorInfo]
+export const handlers = [
+    ...userHandlers,
+    ...mentorHandlers,
+    ...chatroomHandlers,
+]
