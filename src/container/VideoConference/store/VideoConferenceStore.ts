@@ -19,14 +19,17 @@ class VideoConferenceStore {
     }
 
     removeConnectionMember = (remoteId: string) => {
-        runInAction(() => {
-            this.peerConnectionList[remoteId].onicecandidate = null
-            this.peerConnectionList[remoteId].onnegotiationneeded = null
-            this.peerConnectionList[remoteId].oniceconnectionstatechange = null
+        if (this.peerConnectionList[remoteId]) {
+            runInAction(() => {
+                this.peerConnectionList[remoteId].onicecandidate = null
+                this.peerConnectionList[remoteId].onnegotiationneeded = null
+                this.peerConnectionList[remoteId].oniceconnectionstatechange =
+                    null
 
-            this.peerConnectionList[remoteId].close()
-            delete this.peerConnectionList[remoteId]
-        })
+                this.peerConnectionList[remoteId].close()
+                delete this.peerConnectionList[remoteId]
+            })
+        }
     }
 }
 export default VideoConferenceStore
