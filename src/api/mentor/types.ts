@@ -1,4 +1,4 @@
-export interface Mentor {
+export interface MentorT {
     id: string
     userName: string
     email: string
@@ -23,8 +23,9 @@ export interface Mentor {
     quickReply: boolean
 }
 
-export interface GetMentorInfoReq {}
+export interface GetMentorInfoReqT {}
 
-export interface GetMentorInfoRes {
-    data: Mentor
+export interface GetMentorInfoResT {
+    status: string
+    mentor: MentorT
 }

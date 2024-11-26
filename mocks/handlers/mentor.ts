@@ -1,9 +1,9 @@
 import { http, HttpResponse } from 'msw'
 import { getMentorInfoURL } from '~/api/mentor/mentor'
-import { GetMentorInfoReq, GetMentorInfoRes } from '~/api/mentor/types'
+import { GetMentorInfoReqT, GetMentorInfoResT } from '~/api/mentor/types'
 
 export const getMentorInfo = [
-    http.get<GetMentorInfoReq, GetMentorInfoRes>(
+    http.get<GetMentorInfoReqT, GetMentorInfoResT>(
         getMentorInfoURL + process.env.NEXT_PUBLIC_TEST_MENTOR_ID,
         () => {
             return HttpResponse.json({

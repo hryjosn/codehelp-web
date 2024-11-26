@@ -84,7 +84,7 @@ const MentorSignUp = () => {
 
     return (
         <div className="flex h-full items-center justify-center">
-            <div className="w-150 flex rounded-xl p-10 pb-4 shadow-lg">
+            <div className="flex w-150 rounded-xl p-10 pb-4 shadow-lg">
                 <Form onSubmit={onSubmit} schema={mentorSchema}>
                     {currentStep === 1 && <Step1 />}
                     {currentStep === 2 && <Step2 />}

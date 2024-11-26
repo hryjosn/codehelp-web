@@ -1,4 +1,4 @@
-export interface Login {
+export interface MemberT {
     id: string
     userName: string
     email: string
@@ -16,16 +16,19 @@ export interface Login {
     updatedAt: string
 }
 
-export interface LoginReq {
+export interface LoginReqT {
     email: string
     password: string
 }
 
-export interface LoginRes {
-    data: Login
+export interface LoginResT {
+    status: string
+    msg: string
+    token: string
+    member: MemberT
 }
 
-export interface MemberSignUp {
+export interface MemberSignUpT {
     userName: string
     email: string
     avatar: string
@@ -43,16 +46,19 @@ export interface MemberSignUp {
     updatedAt: string
 }
 
-export interface MemberSignUpReq {}
+export interface MemberSignUpReqT {}
 
-export interface MemberSignUpRes {
-    data: MemberSignUp
+export interface MemberSignUpResT {
+    newMember: MemberSignUpT
+    status: string
+    message: string
+    token: string
 }
 
-export interface MentorSignUp {}
+export interface MentorSignUpT {}
 
-export interface MentorSignUpReq {}
+export interface MentorSignUpReqT {}
 
-export interface MentorSignUpRes {
-    data: MentorSignUp
+export interface MentorSignUpResT {
+    data: MentorSignUpT
 }

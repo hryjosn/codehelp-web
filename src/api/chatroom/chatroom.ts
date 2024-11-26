@@ -1,26 +1,7 @@
-import apiHandler from './api'
-import { ChatroomInfoT } from '~/container/Chat/store/type'
+import apiHandler from '../api'
+import { NewMessageResT, ChatroomInfoResT, CreateChatroomResT } from './types'
 
-export interface CreateChatroomResT {
-    chatroomId: string
-    total: number
-}
-
-export interface ChatroomInfoResT {
-    chatroom: ChatroomInfoT
-    status: string
-}
-export interface NewMessageResT {
-    message: {
-        id: string
-        createdAt: string
-        userId: string
-        content: string
-        chatroom: ChatroomInfoT
-    }
-    status: string
-}
-
+export const createChatroomURL = ''
 export const callCreateChatroom = (data: any) => {
     return apiHandler<CreateChatroomResT>({
         url: '/chatroom/create',
@@ -28,6 +9,8 @@ export const callCreateChatroom = (data: any) => {
         data,
     })
 }
+
+export const getChatroomInfoURL = ''
 export const callGetChatroomInfo = (chatroomId: string) => {
     return apiHandler<ChatroomInfoResT>({
         url: `/chatroom/info/${chatroomId}`,
@@ -35,6 +18,7 @@ export const callGetChatroomInfo = (chatroomId: string) => {
     })
 }
 
+export const createMessageURL = ''
 export const callCreateMessage = (
     data: { content: string },
     chatroomId: string

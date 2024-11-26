@@ -1,16 +1,16 @@
 import { http, HttpResponse } from 'msw'
 import { loginURL, memberSignUpURL, mentorSignUpURL } from '~/api/user/user'
 import {
-    LoginReq,
-    LoginRes,
-    MemberSignUpReq,
-    MemberSignUpRes,
-    MentorSignUpReq,
-    MentorSignUpRes,
+    LoginReqT,
+    LoginResT,
+    MemberSignUpReqT,
+    MemberSignUpResT,
+    MentorSignUpReqT,
+    MentorSignUpResT,
 } from '~/api/user/types'
 
 export const login = [
-    http.post<LoginReq, LoginRes>(loginURL, () => {
+    http.post<LoginReqT, LoginResT>(loginURL, () => {
         return HttpResponse.json({
             status: 'member_login',
             msg: 'Login successful',
@@ -37,7 +37,7 @@ export const login = [
 ]
 
 export const memberSignUp = [
-    http.post<MemberSignUpReq, MemberSignUpRes>(memberSignUpURL, () => {
+    http.post<MemberSignUpReqT, MemberSignUpResT>(memberSignUpURL, () => {
         return HttpResponse.json({
             newMember: {
                 userName: 'test1',
@@ -64,7 +64,7 @@ export const memberSignUp = [
 ]
 
 export const mentorSignUp = [
-    http.post<MentorSignUpReq, MentorSignUpRes>(mentorSignUpURL, () => {
+    http.post<MentorSignUpReqT, MentorSignUpResT>(mentorSignUpURL, () => {
         return HttpResponse.json({})
     }),
 ]

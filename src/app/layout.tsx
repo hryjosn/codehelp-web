@@ -18,12 +18,12 @@ export default function RootLayout({
     children: React.ReactNode
 }) {
     return (
-        <ReactQueryClientProvider>
-            <html lang="en">
-                <MSWProvider>
-                    <body>{children}</body>
-                </MSWProvider>
-            </html>
-        </ReactQueryClientProvider>
+        <html lang="en">
+            <body>
+                <ReactQueryClientProvider>
+                    <MSWProvider>{children}</MSWProvider>
+                </ReactQueryClientProvider>
+            </body>
+        </html>
     )
 }
