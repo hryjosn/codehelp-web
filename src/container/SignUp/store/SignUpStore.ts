@@ -1,5 +1,5 @@
 import { makeAutoObservable } from 'mobx'
-import { callMemberSignUp, callMentorSignUp } from '~/api/user'
+import { callMemberSignUp, callMentorSignUp } from '~/api/user/user'
 class SignUpStore {
     userName: string = ''
     email: string = ''

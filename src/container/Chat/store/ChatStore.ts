@@ -3,9 +3,8 @@ import {
     callCreateChatroom,
     callCreateMessage,
     callGetChatroomInfo,
-    CreateChatroomResT,
-    NewMessageResT,
-} from '~/api/chatroom'
+} from '~/api/chatroom/chatroom'
+import { CreateChatroomResT, NewMessageResT } from '~/api/chatroom/types'
 import { ChatroomInfoT } from './type'
 import { RESPONSE_CODE } from '~/container/Login/store/types'
 
