@@ -28,7 +28,7 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
     const [isMicOpen, setIsMicOpen] = useState(false)
     const [isChatOpen, setIsChatOpen] = useState(false)
     const localVideoRef = useRef<HTMLVideoElement>(null)
-
+    const res = navigator.mediaDevices.getDisplayMedia()
     const router = useRouter()
 
     useEffect(() => {
