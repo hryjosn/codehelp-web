@@ -14,7 +14,7 @@ import {
 } from '~/api/chatroom/api_url'
 
 export const createChatroom = [
-    http.get<CreateChatroomReqT, CreateChatroomResT>(createChatroomURL, () => {
+    http.post<CreateChatroomReqT, CreateChatroomResT>(createChatroomURL, () => {
         return HttpResponse.json({
             chatroomId: '79b720c1-b496-4d61-b9a1-2279eae7bb36',
             status: 'ok',
@@ -49,7 +49,7 @@ export const getChatroomInfo = [
 ]
 
 export const createMessage = [
-    http.get<NewMessageReqT, NewMessageResT>(
+    http.post<NewMessageReqT, NewMessageResT>(
         createMessageURL(process.env.NEXT_PUBLIC_TEST_CHATROOM_ID!),
         () => {
             return HttpResponse.json({
