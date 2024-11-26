@@ -12,6 +12,7 @@ import { RESPONSE_CODE } from '~/container/Login/store/types'
 type Store = {
     content: string
     chatroomInfo: ChatroomInfoT
+    chatroomId: string
     createChatroom: (
         mentorId: string
     ) => Promise<CreateChatroomResT | RESPONSE_CODE.DATA_DUPLICATE>
@@ -24,6 +25,7 @@ type Store = {
 
 export const useChatroomStore = create<Store>()((set) => ({
     content: '',
+    chatroomId: '',
     chatroomInfo: {
         id: '',
         createdAt: '',
@@ -52,6 +54,7 @@ export const useChatroomStore = create<Store>()((set) => ({
         }
     },
     getChatroomInfo: async (chatroomId) => {
+        set({ chatroomId: chatroomId })
         const res = await callGetChatroomInfo(chatroomId)
         set({ chatroomInfo: res.data.chatroom })
     },

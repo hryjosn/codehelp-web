@@ -23,3 +23,9 @@ export interface ChatroomInfoT {
     mentor: RoleInfoT
     messages: MessageT[]
 }
+export interface ChatroomListT {
+    id: string
+    createdAt: string
+    member: RoleInfoT
+    mentor: RoleInfoT
+}
