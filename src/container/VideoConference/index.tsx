@@ -103,21 +103,17 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
         if (localVideoRef.current && localVideoRef.current.srcObject) {
             const mediaStream = localVideoRef.current.srcObject as MediaStream
             const audioTracks = mediaStream.getAudioTracks()
-            if (audioTracks.length > 0) {
-                setIsMicOpen(!audioTracks[0].enabled)
-                audioTracks[0].enabled = !audioTracks[0].enabled
-            }
+            setIsMicOpen(!audioTracks[0].enabled)
+            audioTracks[0].enabled = !audioTracks[0].enabled
         }
     }
 
     const camSwitch = () => {
         if (localVideoRef.current && localVideoRef.current.srcObject) {
             const mediaStream = localVideoRef.current.srcObject as MediaStream
-            const audioTracks = mediaStream.getVideoTracks()
-            if (audioTracks.length > 0) {
-                setIsCamOpen(!audioTracks[0].enabled)
-                audioTracks[0].enabled = !audioTracks[0].enabled
-            }
+            const videoTracks = mediaStream.getVideoTracks()
+            setIsCamOpen(!videoTracks[0].enabled)
+            videoTracks[0].enabled = !videoTracks[0].enabled
         }
     }
     return (
@@ -129,7 +125,7 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
                         autoPlay
                         muted
                         className={cn(
-                            '`h-full border-white` w-1/2 rounded-3xl border-2',
+                            'h-full w-1/2 rounded-3xl border-2 border-white',
                             { 'scale-x-[-1]': !isLocalShareScreen }
                         )}
                     >
@@ -140,7 +136,7 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
                         autoPlay
                         muted
                         className={cn(
-                            '`h-full border-white` w-1/2 rounded-3xl border-2',
+                            'h-full w-1/2 rounded-3xl border-2 border-white',
                             { 'scale-x-[-1]': !isRemoteShareScreen }
                         )}
                     >
