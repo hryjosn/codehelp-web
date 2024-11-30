@@ -9,7 +9,7 @@ import type { Mentor } from '~/container/Home/components/MentorList/types'
 import Booking from './components/Booking/Booking'
 import { runInAction } from 'mobx'
 import rootStore from '~/store'
-import { useState } from 'react'
+import { use, useState } from 'react'
 import { HiPhone, HiChatBubbleLeftEllipsis } from 'react-icons/hi2'
 import { createLocalStream } from '../VideoConference/utils'
 import LoadingModal from '~/components/LoadingModal/LoadingModal'
@@ -18,12 +18,13 @@ import { useGetMentorInfo } from '~/api/mentor/mentor'
 import React from 'react'
 import { useChatroomStore } from '../Chat/store/ChatStore'
 import { RESPONSE_CODE } from '../Login/store/types'
-const MentorProfile = ({ params }: { params: { id: string } }) => {
+const MentorProfile = ({ params }: { params: Promise<{ id: string }> }) => {
     const {
         videoConferenceStore: { connectSocket },
     } = rootStore
+    const { id } = use(params)
     const currentMentor: Mentor | undefined = MOCK_MENTOR_LIST.find(
-        (mentor) => mentor.id === params.id
+        (mentor) => mentor.id === id
     )
     const [modalVisible, setModalVisible] = useState(false)
 
