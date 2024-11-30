@@ -39,6 +39,7 @@ const Login = () => {
         try {
             const res = await callLogin(data)
             if (res.data.token) {
+                localStorage.setItem('token', res.data.token)
                 router.push('/')
             }
         } catch (error) {
