@@ -1,12 +1,16 @@
-import { DetailsHTMLAttributes, FC } from 'react'
+import { DetailsHTMLAttributes, FC, useEffect, useState } from 'react'
 import { Button } from '../Button/Button'
 import { NavButton } from '../NavButton/NavButton'
+import rootStore from '~/store'
 
 interface HeaderProps extends DetailsHTMLAttributes<HTMLDivElement> {
     isAuth: boolean
 }
 
 const Header: FC<HeaderProps> = ({ isAuth, ...props }) => {
+    const {
+        homeStore: { checkIsAuth },
+    } = rootStore
     return (
         <div
             className="g-white flex items-center justify-between border-b border-gray-100 px-6 py-2 shadow-md"
@@ -20,6 +24,7 @@ const Header: FC<HeaderProps> = ({ isAuth, ...props }) => {
                     <Button
                         onClick={() => {
                             localStorage.removeItem('token')
+                            checkIsAuth()
                         }}
                         variant={'secondary'}
                         size={'default'}
