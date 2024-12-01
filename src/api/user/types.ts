@@ -22,10 +22,12 @@ export interface LoginReqT {
 }
 
 export interface LoginResT {
-    status: string
-    msg: string
-    token: string
-    member: MemberT
+    data: {
+        status: string
+        msg: string
+        token: string
+        member: MemberT
+    }
 }
 
 export interface MemberSignUpT {
