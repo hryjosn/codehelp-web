@@ -1,31 +1,36 @@
 'use client'
+import { runInAction } from 'mobx'
+import { useRouter } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 import { ImPhoneHangUp } from 'react-icons/im'
 import { IoMdMic, IoMdMicOff } from 'react-icons/io'
 import { IoSend, IoVideocam, IoVideocamOff } from 'react-icons/io5'
 import { MdOutlineScreenShare } from 'react-icons/md'
 import { PiChatCircleText } from 'react-icons/pi'
-import MessageBox from './components/MessageBox'
-import { MOCK_MESSAGE_LIST } from './constant'
-import { cn, socket } from '~/lib/utils'
+import { cn } from '~/lib/utils'
 import Link from 'next/link'
+import { observer } from 'mobx-react-lite'
+import rootStore from '~/store'
+import MessageBox from './components/MessageBox'
+import RemoteVideo from './components/RemoteVideo/RemoteVideo'
+import { MOCK_MESSAGE_LIST } from './constant'
 import {
-    createPeerConnection,
-    sendSDP,
     hangup,
-    peerConnection,
+    sendAnswerSDP,
+    sendOfferSDP,
     shareScreen,
     stopShareScreen,
 } from './utils'
-import { SDP_TYPE } from '~/lib/types'
-import { observer } from 'mobx-react-lite'
-import rootStore from '~/store'
-import { runInAction } from 'mobx'
-import { useRouter } from 'next/navigation'
 
 const VideoConference = ({ params }: { params: { id: string } }) => {
     const {
-        videoConferenceStore: { localStream },
+        videoConferenceStore: {
+            localStream,
+            peerConnectionList,
+            socket,
+            removeConnectionMember,
+        },
+        videoConferenceStore,
     } = rootStore
     const [isMicOpen, setIsMicOpen] = useState(true)
     const [isCamOpen, setIsCamOpen] = useState(true)
@@ -38,52 +43,70 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
     const router = useRouter()
 
     useEffect(() => {
-        socket.connect()
         ;(async function () {
-            if (localVideoRef.current && localStream) {
+            if (localVideoRef.current && localStream && socket) {
                 localVideoRef.current.srcObject = localStream
-
-                createPeerConnection({
-                    roomID: params.id,
-                    remoteVideoRef,
-                    localStream,
-                })
+                socket.emit('join', params.id)
             } else {
-                if (peerConnection) {
-                    peerConnection.onicecandidate = null
-                    peerConnection.onnegotiationneeded = null
-                    peerConnection?.close()
-                }
+                runInAction(() => {
+                    videoConferenceStore.peerConnectionList = {}
+                })
                 router.push(`/mentor-profile/${params.id}`)
             }
-            socket.emit('join', params.id)
         })()
 
-        socket.on('ready', () => {
-            sendSDP({ type: SDP_TYPE.OFFER, roomID: params.id })
-        })
-
-        socket.on('otherUserHangup', () => {
-            if (remoteVideoRef.current) remoteVideoRef.current.srcObject = null
-        })
-
-        socket.on('offer', async (desc: RTCSessionDescriptionInit) => {
-            if (peerConnection) {
-                await peerConnection.setRemoteDescription(desc)
-                await sendSDP({ type: SDP_TYPE.ANSWER, roomID: params.id })
+        socket?.on('ready', (id, roomMembers) => {
+            if (socket!.id && roomMembers.length > 1) {
+                roomMembers.forEach((remoteId) => {
+                    if (remoteId === id) {
+                        sendOfferSDP({
+                            remoteId,
+                            localStream: localStream!,
+                            socket,
+                        })
+                    }
+                })
             }
         })
 
-        socket.on('answer', async (desc) => {
-            await peerConnection.setRemoteDescription(desc)
+        socket?.on('leave', (remoteId) => {
+            if (videoConferenceStore.peerConnectionList[remoteId]) {
+                removeConnectionMember(remoteId)
+            }
         })
 
-        socket.on('ice_candidate', (data) => {
+        socket?.on('offer', async (desc, remoteId) => {
+            console.log('收到 offer')
+            await sendAnswerSDP({
+                localStream: localStream!,
+                remoteId,
+                desc,
+                socket,
+            })
+        })
+
+        socket?.on('answer', (desc, remoteId) => {
+            console.log('收到 answer')
+            runInAction(() => {
+                videoConferenceStore.peerConnectionList[
+                    remoteId
+                ].setRemoteDescription(desc)
+            })
+        })
+
+        socket?.on('ice_candidate', (data, remoteId) => {
+            console.log('收到 ice_candidate')
+
             const candidate = new RTCIceCandidate({
                 sdpMLineIndex: data.label,
                 candidate: data.candidate,
             })
-            peerConnection.addIceCandidate(candidate)
+
+            runInAction(() => {
+                videoConferenceStore.peerConnectionList[
+                    remoteId
+                ].addIceCandidate(candidate)
+            })
         })
 
         socket.on('remoteStartShare', async (isScreenSharing: boolean) => {
@@ -95,7 +118,14 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
         })
 
         return () => {
-            socket.disconnect()
+            if (socket) {
+                socket.off('ready')
+                socket.off('leave')
+                socket.off('offer')
+                socket.off('answer')
+                socket.off('ice_candidate')
+                socket.disconnect()
+            }
         }
     }, [])
 
@@ -119,29 +149,26 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
     return (
         <div className="flex h-screen flex-col bg-zinc-800">
             <div className="flex flex-1">
-                <div className="flex flex-1 gap-3 px-5 pt-5">
-                    <video
-                        ref={localVideoRef}
-                        autoPlay
-                        muted
-                        className={cn(
-                            'h-full w-1/2 rounded-3xl border-2 border-white',
-                            { 'scale-x-[-1]': !isLocalShareScreen }
-                        )}
-                    >
-                        user1
-                    </video>
-                    <video
-                        ref={remoteVideoRef}
-                        autoPlay
-                        muted
-                        className={cn(
-                            'h-full w-1/2 rounded-3xl border-2 border-white',
-                            { 'scale-x-[-1]': !isRemoteShareScreen }
-                        )}
-                    >
-                        user2
-                    </video>
+                <div className="grid grid-cols-3 gap-x-2 gap-y-2">
+                    <div className="flex flex-1 justify-center px-5 pt-5">
+                        <video
+                            ref={localVideoRef}
+                            autoPlay
+                            muted
+                            className={cn(
+                                'h-full w-1/2 rounded-3xl border-2 border-white',
+                                { 'scale-x-[-1]': !isLocalShareScreen }
+                            )}
+                        >
+                            user1
+                        </video>
+                    </div>
+                    {Object.keys(peerConnectionList).length > 0 &&
+                        Object.keys(peerConnectionList).map((key) => (
+                            <div key={key} className="flex px-5 pt-5">
+                                <RemoteVideo remoteId={key} />
+                            </div>
+                        ))}
                 </div>
                 {isChatOpen && (
                     <div className="mr-5 mt-5 flex w-96 flex-col justify-between gap-2 rounded-lg bg-white p-5 pt-2">
@@ -239,22 +266,23 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
                     onClick={() => setIsChatOpen(!isChatOpen)}
                     className="h-14 w-14 rounded-full bg-gray-200 p-3"
                 />
-                <Link
-                    href={`/mentor-profile/${params.id}`}
-                    onClick={() => {
-                        if (localStream) {
-                            hangup({
-                                roomID: params.id,
-                                localStream: localStream,
-                            })
-                            runInAction(() => {
-                                rootStore.videoConferenceStore.localStream =
-                                    undefined
-                            })
-                        }
-                    }}
-                >
-                    <ImPhoneHangUp className="h-14 w-14 rounded-full bg-red-500 p-3" />
+                <Link href={`/mentor-profile/${params.id}`}>
+                    <ImPhoneHangUp
+                        onClick={() => {
+                            if (localStream && socket.id) {
+                                hangup({
+                                    roomId: params.id,
+                                    localStream: localStream,
+                                    remoteId: socket.id,
+                                    socket,
+                                })
+                                runInAction(() => {
+                                    videoConferenceStore.localStream = undefined
+                                })
+                            }
+                        }}
+                        className="h-14 w-14 rounded-full bg-red-600 p-3"
+                    />
                 </Link>
             </div>
         </div>

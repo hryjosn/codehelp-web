@@ -10,13 +10,18 @@ import Booking from './components/Booking/Booking'
 import { runInAction } from 'mobx'
 import rootStore from '~/store'
 import { useState } from 'react'
-import { HiPhone } from 'react-icons/hi2'
+import { HiPhone, HiChatBubbleLeftEllipsis } from 'react-icons/hi2'
 import { createLocalStream } from '../VideoConference/utils'
 import LoadingModal from '~/components/LoadingModal/LoadingModal'
-
-import { useGetMentorInfo } from '~/api/mentor'
+import { observer } from 'mobx-react-lite'
+import { useGetMentorInfo } from '~/api/mentor/mentor'
 import React from 'react'
+import { useChatroomStore } from '../Chat/store/ChatStore'
+import { RESPONSE_CODE } from '../Login/store/types'
 const MentorProfile = ({ params }: { params: { id: string } }) => {
+    const {
+        videoConferenceStore: { connectSocket },
+    } = rootStore
     const currentMentor: Mentor | undefined = MOCK_MENTOR_LIST.find(
         (mentor) => mentor.id === params.id
     )
@@ -26,6 +31,7 @@ const MentorProfile = ({ params }: { params: { id: string } }) => {
     const { data, isPending } = useGetMentorInfo(
         '0415338d-95be-4977-8b2a-74029e64ca25'
     ) // temporary
+    const createChatroom = useChatroomStore((state) => state.createChatroom)
     if (!currentMentor) {
         router.back()
         return
@@ -43,20 +49,36 @@ const MentorProfile = ({ params }: { params: { id: string } }) => {
                     company={currentMentor.company}
                     title={currentMentor.title}
                 />
-                <div className="flex justify-end">
+                <div className="flex justify-end gap-5">
+                    <HiChatBubbleLeftEllipsis
+                        className="cursor-pointer"
+                        size={30}
+                        onClick={async () => {
+                            const res = await createChatroom(
+                                '66598522-1162-4a7c-9273-ca2f2b25767a'
+                            )
+                            if (
+                                res === RESPONSE_CODE.DATA_DUPLICATE ||
+                                res.chatroomId
+                            ) {
+                                router.push('/chat')
+                            }
+                        }}
+                    />
                     <HiPhone
                         className="cursor-pointer"
                         size={30}
                         onClick={async () => {
                             setModalVisible(true)
                             const localStream = await createLocalStream()
+                            connectSocket()
                             runInAction(() => {
                                 rootStore.videoConferenceStore.localStream =
                                     localStream
                             })
                             if (localStream) {
-                                setModalVisible(false)
                                 router.push(`/video-conference/${params.id}`)
+                                setModalVisible(false)
                             }
                         }}
                     />
@@ -75,4 +97,4 @@ const MentorProfile = ({ params }: { params: { id: string } }) => {
     )
 }
 
-export default MentorProfile
+export default observer(MentorProfile)

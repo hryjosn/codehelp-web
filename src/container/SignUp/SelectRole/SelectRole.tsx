@@ -10,12 +10,12 @@ const SelectRole = () => {
                     Welcome to Codehelp!
                     <p>What brings you to the community?</p>
                 </div>
-                <LinkText href={'/signup/mentor/step1'}>
+                <LinkText href={'/signup/mentor-signup'}>
                     <div className="px-20 py-10 shadow-lg rounded-xl">
                         GO TO MENTOR
                     </div>
                 </LinkText>
-                <LinkText href={'/signup/member/step1'}>
+                <LinkText href={'/signup/member-signup'}>
                     <div className="px-20 py-10 shadow-lg rounded-xl">
                         GO TO MEMBER
                     </div>

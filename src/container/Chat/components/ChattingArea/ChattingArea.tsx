@@ -1,27 +1,36 @@
 import Image from 'next/image'
-import ButtonInput from '../ButtonInput/ButtonInput'
-import { fakeList } from './FakeDataFile'
 import MessageBox from '../MessageBox/MessageBox'
-
+import { useChatroomStore } from '../../store/ChatStore'
+import { useEffect, useState } from 'react'
+import TextareaAutosize from 'react-textarea-autosize'
+import { IoSend } from 'react-icons/io5'
 const ChattingArea = () => {
-    const userName = 'teacher3'
+    const [content, setContent] = useState('')
+    const getChatroomInfo = useChatroomStore((state) => state.getChatroomInfo)
+    const createMessage = useChatroomStore((state) => state.createMessage)
+    const chatroomInfo = useChatroomStore((state) => state.chatroomInfo)
+    const chatroomId = useChatroomStore((state) => state.chatroomId)
+    useEffect(() => {
+        getChatroomInfo('a1b04991-a6b0-4fc1-bbbb-2e099e99680f')
+    }, [getChatroomInfo])
+
     return (
         <div className="flex h-screen min-w-[300px] flex-1 flex-col px-5 py-5">
-            <div className="custom-scrollbar mt-5 overflow-x-hidden overflow-y-scroll">
-                {fakeList.map((data) => (
-                    <>
-                        {data.userName === userName ? (
+            <div className="custom-scrollbar mt-5 flex-1 overflow-x-hidden overflow-y-scroll">
+                {chatroomInfo.messages.map((data) => (
+                    <div key={data.id}>
+                        {chatroomInfo.member.id === data.userId ? (
                             <div className="my-3 ml-20 flex justify-end">
                                 <MessageBox
                                     key={data.id}
-                                    message={data.message}
+                                    message={data.content}
                                 />
                             </div>
                         ) : (
                             <div className="my-3 flex items-center">
                                 <Image
                                     className="max-h-12 max-w-12 rounded-full"
-                                    src={data.avatar}
+                                    src={chatroomInfo.mentor.avatar}
                                     alt=""
                                     width="48"
                                     height="48"
@@ -29,16 +38,34 @@ const ChattingArea = () => {
                                 <div className="ml-5 mr-3">
                                     <MessageBox
                                         key={data.id}
-                                        message={data.message}
+                                        message={data.content}
                                     />
                                 </div>
                             </div>
                         )}
-                    </>
+                    </div>
                 ))}
             </div>
             <div className="flex justify-center pr-3">
-                <ButtonInput maxRows={17} placeholder="Write something..." />
+                <div className="flex min-w-[200px] flex-1 items-center rounded-lg bg-gray-100 px-3">
+                    <TextareaAutosize
+                        className="ml-3 w-full resize-none bg-transparent py-3 font-bold outline-none"
+                        maxRows={17}
+                        placeholder="Write something..."
+                        onChange={(e) => {
+                            setContent(e.target.value)
+                        }}
+                    />
+                    <button
+                        className="rounded-full p-2 hover:bg-gray-200"
+                        onClick={() => {
+                            createMessage(content, chatroomId)
+                            setContent('')
+                        }}
+                    >
+                        <IoSend className="h-6 w-6" />
+                    </button>
+                </div>
             </div>
         </div>
     )

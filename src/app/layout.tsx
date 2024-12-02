@@ -1,6 +1,10 @@
 import { Metadata } from 'next'
 import { ReactQueryClientProvider } from '~/components/ReactQueryClientProvider/ReactQueryClientProvider'
 import '~/styles/globals.css'
+import { server } from '~/../mocks/node'
+import { MSWProvider } from '~/../mocks/msw-provider'
+
+server.listen()
 
 export const metadata: Metadata = {
     title: 'Home',
@@ -14,10 +18,12 @@ export default function RootLayout({
     children: React.ReactNode
 }) {
     return (
-        <ReactQueryClientProvider>
-            <html lang="en">
-                <body>{children}</body>
-            </html>
-        </ReactQueryClientProvider>
+        <html lang="en">
+            <body>
+                <ReactQueryClientProvider>
+                    <MSWProvider>{children}</MSWProvider>
+                </ReactQueryClientProvider>
+            </body>
+        </html>
     )
 }

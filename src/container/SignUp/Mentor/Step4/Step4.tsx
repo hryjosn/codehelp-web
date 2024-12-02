@@ -1,50 +1,27 @@
 'use client'
-import { runInAction } from 'mobx'
 import { observer } from 'mobx-react-lite'
-import { useRouter } from 'next/navigation'
-import rootStore from '~/store'
 import FormInput from '../../components/FormInput/FormInput'
-import { Form } from '../../components/Form'
-import FormButton from '../../components/FormButton/FormButton'
-import Joi from 'joi/lib'
 
 const Step4 = () => {
-    const router = useRouter()
-    const schema = Joi.object({
-        introduction: Joi.string().required().messages({
-            'string.empty': 'Introduction is a required field',
-        }),
-    })
-    const onSubmit = ({ introduction }: { introduction: string }) => {
-        runInAction(() => {
-            rootStore.signUpStore.introduction = introduction
-            rootStore.signUpStore.role = 'mentor'
-        })
-        router.push('/')
-    }
     return (
         <div className="flex h-full items-center justify-center">
-            <div className="flex flex-col gap-5 rounded-xl p-10 shadow-lg">
-                <div className="text-3xl font-bold">
+            <div className="flex flex-col rounded-xl">
+                <div className="text-3xl font-bold mb-10">
                     {"Lastly, what's your introduction?"}
                 </div>
-                <Form onSubmit={onSubmit} schema={schema}>
+                <div className="flex flex-col items-center">
+                    <FormInput
+                        label="LinkedIn URL"
+                        registerName={'linkedIn'}
+                        placeholder="https://www.linkedin.com/in/"
+                    />
                     <FormInput
                         label="Introduction"
                         registerName={'introduction'}
                         multiline
+                        rows={5}
                     />
-                    <div className="flex w-full justify-between">
-                        <button
-                            type="button"
-                            className="font-bold"
-                            onClick={() => router.back()}
-                        >
-                            {'< back'}
-                        </button>
-                        <FormButton variant={'nextButton'}>Complete</FormButton>
-                    </div>
-                </Form>
+                </div>
             </div>
         </div>
     )

@@ -32,8 +32,11 @@ const FormSelect = ({
     }, [registerName, setValue, getFromData])
     const errorMessage = errors[registerName]?.message as string
     return (
-        <div className="w-80 flex flex-col gap-1">
-            <p className="font-bold">{label}</p>
+        <div className="flex w-80 flex-col gap-1">
+            <p className="font-bold">
+                {label}
+                <span className="text-red-500"> *</span>
+            </p>
             <Controller
                 name={registerName}
                 control={control}
@@ -45,7 +48,7 @@ const FormSelect = ({
                             value={value || (multiple ? [] : '')}
                             onChange={onChange}
                             onBlur={onBlur}
-                            className="min-h-10 rounded-lg w-full"
+                            className="min-h-10 w-full rounded-lg"
                             multiple={multiple}
                             {...restField}
                             {...props}
@@ -65,7 +68,7 @@ const FormSelect = ({
                     )
                 }}
             />
-            <div className="text-red-500 min-h-6 text-center">
+            <div className="min-h-6 text-center text-red-500">
                 {errorMessage}
             </div>
         </div>

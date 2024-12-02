@@ -24,9 +24,12 @@ const FormInput = ({ label, registerName, ...restProps }: FormInputProps) => {
     }, [registerName, setValue, getFromData])
     const errorMessage = errors[registerName]?.message as string
     return (
-        <div className="w-full flex flex-col items-center gap-1">
+        <div className="flex w-full flex-col items-center gap-1">
             <div>
-                <p className="font-bold">{label}</p>
+                <p className="font-bold">
+                    {label}
+                    <span className="text-red-500"> *</span>
+                </p>
                 <Controller
                     name={registerName}
                     control={control}
@@ -40,7 +43,7 @@ const FormInput = ({ label, registerName, ...restProps }: FormInputProps) => {
                     )}
                 />
             </div>
-            <div className="text-red-500 min-h-6 text-center text-sm">
+            <div className="min-h-6 text-center text-sm text-red-500">
                 {errorMessage}
             </div>
         </div>

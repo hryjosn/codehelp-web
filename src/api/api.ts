@@ -1,4 +1,4 @@
-import axios, { AxiosInstance, AxiosResponse } from 'axios'
+import axios, { AxiosInstance, AxiosResponse, isAxiosError } from 'axios'
 
 export const baseURL = process.env.NEXT_PUBLIC_API_URL
 // Create a new Axios instance
@@ -36,9 +36,11 @@ instance.interceptors.response.use(
     (error) => {
         if (error.response?.status === 401) {
             localStorage.removeItem('token')
-        } else {
-            return Promise.reject(error)
         }
+        if (isAxiosError(error)) {
+            return Promise.reject(error.response?.data.code)
+        }
+        return Promise.reject(error)
     }
 )
 

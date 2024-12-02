@@ -7,6 +7,22 @@ const nextConfig = {
         // your project has ESLint errors.
         ignoreDuringBuilds: true,
     },
+    images: {
+        remotePatterns: [
+            {
+                protocol: 'https',
+                hostname: 'codehelp-backend-production.up.railway.app',
+            },
+        ],
+    },
+    webpack: (config, { isServer }) => {
+        if (isServer) {
+            config.externals = [...(config.externals || []), '_http_common']
+            config.target = 'node'
+        }
+
+        return config
+    },
 }
 
 export default nextConfig
