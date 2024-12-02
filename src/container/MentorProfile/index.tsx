@@ -18,10 +18,14 @@ import { useGetMentorInfo } from '~/api/mentor/mentor'
 import React from 'react'
 import { useChatroomStore } from '../Chat/store/ChatStore'
 import { RESPONSE_CODE } from '../Login/store/types'
+import { Header } from '~/components/Header/Header'
+
 const MentorProfile = ({ params }: { params: { id: string } }) => {
     const {
         videoConferenceStore: { connectSocket },
+        homeStore: { isAuth },
     } = rootStore
+
     const currentMentor: Mentor | undefined = MOCK_MENTOR_LIST.find(
         (mentor) => mentor.id === params.id
     )
@@ -42,6 +46,7 @@ const MentorProfile = ({ params }: { params: { id: string } }) => {
 
     return (
         <>
+            <Header isAuth={isAuth} />
             <div className="p-6 md:p-16">
                 <Bio
                     avatar={currentMentor.avatar}
