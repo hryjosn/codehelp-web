@@ -7,6 +7,7 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 import Calendar from './components/Calendar/Calendar'
 import BookingModal from './components/BookingModal/BookingModal'
 import TimeSlot from './components/TimeSlot/TimeSlot'
+import BookingButton from './components/BookingButton/BookingButton'
 
 const Booking = ({ mentorId }: { mentorId: string }) => {
     const [visibleTimes, setVisibleTimes] = useState<MOCK_TIME_OPTIONS_T[]>(
@@ -127,15 +128,13 @@ const Booking = ({ mentorId }: { mentorId: string }) => {
                     </TimeSlot>
                 ))}
             </ul>
-            <button
-                className="my-6 h-10 w-full rounded-md bg-teal-700 font-bold text-white"
-                disabled={!selectedTime}
+            <BookingButton
+                title="BOOK"
+                isDisable={!selectedTime}
                 onClick={() => {
                     setIsBookingModalOpen(true)
                 }}
-            >
-                BOOK
-            </button>
+            />
         </div>
     )
 }
