@@ -1,8 +1,8 @@
-import React, { useEffect, useRef } from 'react'
-import { Props } from './types'
-import rootStore from '~/store'
-import { cn } from '~/lib/utils'
 import { observer } from 'mobx-react-lite'
+import { useEffect, useRef } from 'react'
+import { cn } from '~/lib/utils'
+import rootStore from '~/store'
+import { Props } from './types'
 
 const RemoteVideo = ({ remoteId }: Props) => {
     const {
@@ -29,7 +29,6 @@ const RemoteVideo = ({ remoteId }: Props) => {
                 'scale-x-[-1]': !peerConnectionList[remoteId].isScreenSharing,
             })}
             autoPlay
-            muted
             id={remoteId}
         />
     )
