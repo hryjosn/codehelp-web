@@ -21,12 +21,17 @@ class VideoConferenceStore {
     removeConnectionMember = (remoteId: string) => {
         if (this.peerConnectionList[remoteId]) {
             runInAction(() => {
-                this.peerConnectionList[remoteId].onicecandidate = null
-                this.peerConnectionList[remoteId].onnegotiationneeded = null
-                this.peerConnectionList[remoteId].oniceconnectionstatechange =
-                    null
+                this.peerConnectionList[
+                    remoteId
+                ].peerConnection.onicecandidate = null
+                this.peerConnectionList[
+                    remoteId
+                ].peerConnection.onnegotiationneeded = null
+                this.peerConnectionList[
+                    remoteId
+                ].peerConnection.oniceconnectionstatechange = null
 
-                this.peerConnectionList[remoteId].close()
+                this.peerConnectionList[remoteId].peerConnection.close()
                 delete this.peerConnectionList[remoteId]
             })
         }

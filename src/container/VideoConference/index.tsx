@@ -36,8 +36,6 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
     const [isCamOpen, setIsCamOpen] = useState(true)
     const [isChatOpen, setIsChatOpen] = useState(false)
     const [isLocalShareScreen, setIsLocalShareScreen] = useState(false)
-    const [isRemoteShareScreen, setIsRemoteShareScreen] = useState(false)
-    const remoteVideoRef = useRef<HTMLVideoElement>(null)
     const localVideoRef = useRef<HTMLVideoElement>(null)
 
     const router = useRouter()
@@ -90,7 +88,7 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
             runInAction(() => {
                 videoConferenceStore.peerConnectionList[
                     remoteId
-                ].setRemoteDescription(desc)
+                ].peerConnection.setRemoteDescription(desc)
             })
         })
 
@@ -105,16 +103,24 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
             runInAction(() => {
                 videoConferenceStore.peerConnectionList[
                     remoteId
-                ].addIceCandidate(candidate)
+                ].peerConnection.addIceCandidate(candidate)
             })
         })
 
-        socket.on('remoteStartShare', async (isScreenSharing: boolean) => {
-            setIsRemoteShareScreen(isScreenSharing)
+        socket?.on('remoteStartShare', (remoteId) => {
+            if (peerConnectionList[remoteId]) {
+                runInAction(() => {
+                    peerConnectionList[remoteId].isScreenSharing = true
+                })
+            }
         })
 
-        socket.on('remoteStopShare', async (isScreenSharing: boolean) => {
-            setIsRemoteShareScreen(isScreenSharing)
+        socket?.on('remoteStopShare', (remoteId) => {
+            if (peerConnectionList[remoteId]) {
+                runInAction(() => {
+                    peerConnectionList[remoteId].isScreenSharing = false
+                })
+            }
         })
 
         return () => {
@@ -237,12 +243,13 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
                                 localVideoRef,
                                 setIsLocalShareScreen
                             )
-
-                            socket.emit(
-                                'remoteStartShare',
-                                params.id,
-                                isLocalShareScreen
-                            )
+                            if (socket.id) {
+                                socket.emit(
+                                    'remoteStartShare',
+                                    params.id,
+                                    socket.id
+                                )
+                            }
                         }}
                     />
                 ) : (
@@ -254,11 +261,13 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
                                 setIsLocalShareScreen
                             )
 
-                            socket.emit(
-                                'remoteStopShare',
-                                params.id,
-                                isLocalShareScreen
-                            )
+                            if (socket.id) {
+                                socket.emit(
+                                    'remoteStopShare',
+                                    params.id,
+                                    socket.id
+                                )
+                            }
                         }}
                     />
                 )}

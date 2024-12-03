@@ -1,6 +1,8 @@
 import React, { useEffect, useRef } from 'react'
 import { Props } from './types'
 import rootStore from '~/store'
+import { cn } from '~/lib/utils'
+import { observer } from 'mobx-react-lite'
 
 const RemoteVideo = ({ remoteId }: Props) => {
     const {
@@ -11,7 +13,7 @@ const RemoteVideo = ({ remoteId }: Props) => {
     useEffect(() => {
         if (!peerConnectionList[remoteId]) return
 
-        peerConnectionList[remoteId].ontrack = (event) => {
+        peerConnectionList[remoteId].peerConnection.ontrack = (event) => {
             console.log('監聽到遠端媒體軌道')
             const [stream] = event.streams
 
@@ -20,11 +22,12 @@ const RemoteVideo = ({ remoteId }: Props) => {
             }
         }
     }, [peerConnectionList])
-
     return (
         <video
             ref={videoRef}
-            className="scale-x-[-1] rounded-3xl border-2 border-white"
+            className={cn('h-full w-1/2 rounded-3xl border-2 border-white', {
+                'scale-x-[-1]': !peerConnectionList[remoteId].isScreenSharing,
+            })}
             autoPlay
             muted
             id={remoteId}
@@ -32,4 +35,4 @@ const RemoteVideo = ({ remoteId }: Props) => {
     )
 }
 
-export default RemoteVideo
+export default observer(RemoteVideo)

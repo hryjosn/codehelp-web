@@ -15,7 +15,7 @@ import Decimal from 'decimal.js'
 import { runInAction } from 'mobx'
 import rootStore from '~/store'
 
-export let peerConnection: RTCPeerConnection
+// export let peerConnection: RTCPeerConnection
 let connectionQualityInterval: NodeJS.Timeout | null = null
 
 const { videoConferenceStore } = rootStore
@@ -93,7 +93,10 @@ export const createPeerConnection = async ({
     }
 
     runInAction(() => {
-        videoConferenceStore.peerConnectionList[remoteId] = peerConnection
+        videoConferenceStore.peerConnectionList[remoteId] = {
+            peerConnection,
+            isScreenSharing: false,
+        }
     })
 
     return peerConnection
@@ -170,56 +173,56 @@ export const sendAnswerSDP = async ({
     }
 }
 
-const adjustMaxBitrate = async (
-    localStream: MediaStream,
-    maxBitrate: number
-) => {
-    try {
-        const videoTrack = localStream.getVideoTracks()[0]
-        const sender: RTCRtpSender | undefined = peerConnection
-            .getSenders()
-            .find((sender) => sender.track === videoTrack)
+// const adjustMaxBitrate = async (
+//     localStream: MediaStream,
+//     maxBitrate: number
+// ) => {
+//     try {
+//         const videoTrack = localStream.getVideoTracks()[0]
+//         const sender: RTCRtpSender | undefined = peerConnection
+//             .getSenders()
+//             .find((sender) => sender.track === videoTrack)
 
-        if (sender) {
-            const params = sender.getParameters()
-            params.encodings[0].maxBitrate = maxBitrate
-            sender.setParameters(params)
-        } else {
-            console.log('local video stream is not found.')
-        }
-    } catch (error) {
-        console.log('error', error)
-    }
-}
+//         if (sender) {
+//             const params = sender.getParameters()
+//             params.encodings[0].maxBitrate = maxBitrate
+//             sender.setParameters(params)
+//         } else {
+//             console.log('local video stream is not found.')
+//         }
+//     } catch (error) {
+//         console.log('error', error)
+//     }
+// }
 
-const checkConnectionQuality = async (): Promise<IConnectionQuality> => {
-    const stats: RTCStatsReport = await peerConnection.getStats()
-    let highestPacketLoss = 0
-    let highestJitter = 0
+// const checkConnectionQuality = async (): Promise<IConnectionQuality> => {
+//     const stats: RTCStatsReport = await peerConnection.getStats()
+//     let highestPacketLoss = 0
+//     let highestJitter = 0
 
-    stats.forEach((report) => {
-        if (report.type === REPORT_TYPE.INBOUND_RTP) {
-            const packetLoss =
-                new Decimal(report.packetsLost)
-                    .div(report.packetsReceived + report.packetsLost)
-                    .toFixed(2) || 0
-            const jitter = report.jitter || 0
+//     stats.forEach((report) => {
+//         if (report.type === REPORT_TYPE.INBOUND_RTP) {
+//             const packetLoss =
+//                 new Decimal(report.packetsLost)
+//                     .div(report.packetsReceived + report.packetsLost)
+//                     .toFixed(2) || 0
+//             const jitter = report.jitter || 0
 
-            if (
-                Number(packetLoss) > highestPacketLoss ||
-                jitter > highestJitter
-            ) {
-                highestPacketLoss = Number(packetLoss)
-                highestJitter = jitter
-            }
-        }
-    })
+//             if (
+//                 Number(packetLoss) > highestPacketLoss ||
+//                 jitter > highestJitter
+//             ) {
+//                 highestPacketLoss = Number(packetLoss)
+//                 highestJitter = jitter
+//             }
+//         }
+//     })
 
-    return {
-        highestPacketLoss,
-        highestJitter,
-    }
-}
+//     return {
+//         highestPacketLoss,
+//         highestJitter,
+//     }
+// }
 
 const getMaxBitrate = ({
     highestPacketLoss,
@@ -285,10 +288,15 @@ const changeVideoTrack = (
     if (localVideoRef.current) {
         localVideoRef.current.srcObject = localStream
     }
-    const videoSender = peerConnection
-        .getSenders()
-        .find((sender) => sender.track!.kind === 'video')
-    if (videoSender) {
-        videoSender.replaceTrack(localStream!.getVideoTracks()[0])
-    }
+
+    Object.values(videoConferenceStore.peerConnectionList).map(
+        (peerConnection) => {
+            const videoSender = peerConnection.peerConnection
+                .getSenders()
+                .find((sender) => sender.track!.kind === 'video')
+            if (videoSender) {
+                videoSender.replaceTrack(localStream!.getVideoTracks()[0])
+            }
+        }
+    )
 }
