@@ -7,3 +7,6 @@ export const getChatroomInfoURL = (chatroomId: string) =>
     `${baseURL}chatroom/info/${chatroomId}`
 
 export const createChatroomURL = `${baseURL}chatroom/create`
+
+export const getChatroomListURL = (pageParam: number, pageSize: number) =>
+    `/chatroom/list?page=${pageParam}&count=${pageSize}`

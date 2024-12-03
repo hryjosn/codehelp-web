@@ -1,16 +1,17 @@
+import { useInfiniteQuery } from '@tanstack/react-query'
 import apiHandler from '../api'
 import {
-    NewMessageResT,
-    ChatroomInfoResT,
-    CreateChatroomResT,
-    ChatroomListResT,
-} from './types'
-import {
-    createMessageURL,
     createChatroomURL,
+    createMessageURL,
     getChatroomInfoURL,
+    getChatroomListURL,
 } from './api_url'
-import { useInfiniteQuery } from '@tanstack/react-query'
+import {
+    ChatroomInfoResT,
+    ChatroomListResT,
+    CreateChatroomResT,
+    NewMessageResT,
+} from './types'
 
 export const callCreateChatroom = (data: any) => {
     return apiHandler<CreateChatroomResT>({
@@ -47,9 +48,10 @@ export const useGetChatroomList = () => {
             const {
                 data: { total, chatroomList },
             } = await apiHandler<ChatroomListResT>({
-                url: `/chatroom/list?page=${pageParam}&count=${pageSize}`,
+                url: getChatroomListURL(pageParam, pageSize),
                 method: 'get',
             })
+
             return { chatroomList, total, pageParam, pageSize }
         },
         getNextPageParam: (res) => {
