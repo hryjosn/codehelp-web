@@ -7,7 +7,10 @@ export interface CreatePeerConnectionT {
 }
 
 export interface PeerConnectionListT {
-    [remoteId: string]: RTCPeerConnection
+    [remoteId: string]: {
+        peerConnection: RTCPeerConnection
+        isScreenSharing: boolean
+    }
 }
 
 export interface HangupT {

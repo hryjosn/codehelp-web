@@ -1,19 +1,26 @@
 'use client'
 import { runInAction } from 'mobx'
-import { observer } from 'mobx-react-lite'
-import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 import { ImPhoneHangUp } from 'react-icons/im'
 import { IoMdMic, IoMdMicOff } from 'react-icons/io'
-import { IoSend } from 'react-icons/io5'
+import { IoSend, IoVideocam, IoVideocamOff } from 'react-icons/io5'
 import { MdOutlineScreenShare } from 'react-icons/md'
 import { PiChatCircleText } from 'react-icons/pi'
+import { cn } from '~/lib/utils'
+import Link from 'next/link'
+import { observer } from 'mobx-react-lite'
 import rootStore from '~/store'
 import MessageBox from './components/MessageBox'
 import RemoteVideo from './components/RemoteVideo/RemoteVideo'
 import { MOCK_MESSAGE_LIST } from './constant'
-import { hangup, sendAnswerSDP, sendOfferSDP } from './utils'
+import {
+    hangup,
+    sendAnswerSDP,
+    sendOfferSDP,
+    shareScreen,
+    stopShareScreen,
+} from './utils'
 
 const VideoConference = ({ params }: { params: { id: string } }) => {
     const {
@@ -25,8 +32,10 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
         },
         videoConferenceStore,
     } = rootStore
-    const [isMicOpen, setIsMicOpen] = useState(false)
+    const [isMicOpen, setIsMicOpen] = useState(true)
+    const [isCamOpen, setIsCamOpen] = useState(true)
     const [isChatOpen, setIsChatOpen] = useState(false)
+    const [isLocalShareScreen, setIsLocalShareScreen] = useState(false)
     const localVideoRef = useRef<HTMLVideoElement>(null)
 
     const router = useRouter()
@@ -79,7 +88,7 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
             runInAction(() => {
                 videoConferenceStore.peerConnectionList[
                     remoteId
-                ].setRemoteDescription(desc)
+                ].peerConnection.setRemoteDescription(desc)
             })
         })
 
@@ -94,8 +103,24 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
             runInAction(() => {
                 videoConferenceStore.peerConnectionList[
                     remoteId
-                ].addIceCandidate(candidate)
+                ].peerConnection.addIceCandidate(candidate)
             })
+        })
+
+        socket?.on('remoteStartShare', (remoteId) => {
+            if (peerConnectionList[remoteId]) {
+                runInAction(() => {
+                    peerConnectionList[remoteId].isScreenSharing = true
+                })
+            }
+        })
+
+        socket?.on('remoteStopShare', (remoteId) => {
+            if (peerConnectionList[remoteId]) {
+                runInAction(() => {
+                    peerConnectionList[remoteId].isScreenSharing = false
+                })
+            }
         })
 
         return () => {
@@ -110,6 +135,23 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
         }
     }, [])
 
+    const audioSwitch = () => {
+        if (localVideoRef.current && localVideoRef.current.srcObject) {
+            const mediaStream = localVideoRef.current.srcObject as MediaStream
+            const audioTracks = mediaStream.getAudioTracks()
+            setIsMicOpen(!audioTracks[0].enabled)
+            audioTracks[0].enabled = !audioTracks[0].enabled
+        }
+    }
+
+    const camSwitch = () => {
+        if (localVideoRef.current && localVideoRef.current.srcObject) {
+            const mediaStream = localVideoRef.current.srcObject as MediaStream
+            const videoTracks = mediaStream.getVideoTracks()
+            setIsCamOpen(!videoTracks[0].enabled)
+            videoTracks[0].enabled = !videoTracks[0].enabled
+        }
+    }
     return (
         <div className="flex h-screen flex-col bg-zinc-800">
             <div className="flex flex-1">
@@ -119,7 +161,10 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
                             ref={localVideoRef}
                             autoPlay
                             muted
-                            className="scale-x-[-1] rounded-3xl border-2 border-white"
+                            className={cn(
+                                'h-full w-1/2 rounded-3xl border-2 border-white',
+                                { 'scale-x-[-1]': !isLocalShareScreen }
+                            )}
                         >
                             user1
                         </video>
@@ -162,16 +207,70 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
             <div className="mt-5 flex h-20 justify-center gap-10">
                 {isMicOpen ? (
                     <IoMdMic
-                        onClick={() => setIsMicOpen(false)}
+                        onClick={() => {
+                            audioSwitch()
+                        }}
                         className="h-14 w-14 rounded-full bg-gray-200 p-3"
                     />
                 ) : (
                     <IoMdMicOff
-                        onClick={() => setIsMicOpen(true)}
-                        className="h-14 w-14 rounded-full bg-red-600 p-3"
+                        onClick={() => {
+                            audioSwitch()
+                        }}
+                        className="h-14 w-14 rounded-full bg-red-500 p-3"
                     />
                 )}
-                <MdOutlineScreenShare className="h-14 w-14 rounded-full bg-gray-200 p-3" />
+                {isCamOpen ? (
+                    <IoVideocam
+                        onClick={() => {
+                            camSwitch()
+                        }}
+                        className="h-14 w-14 rounded-full bg-gray-200 p-3"
+                    />
+                ) : (
+                    <IoVideocamOff
+                        onClick={() => {
+                            camSwitch()
+                        }}
+                        className="h-14 w-14 rounded-full bg-red-500 p-3"
+                    />
+                )}
+                {isLocalShareScreen === false ? (
+                    <MdOutlineScreenShare
+                        className={'h-14 w-14 rounded-full bg-gray-200 p-3'}
+                        onClick={async () => {
+                            await shareScreen(
+                                localVideoRef,
+                                setIsLocalShareScreen
+                            )
+                            if (socket.id) {
+                                socket.emit(
+                                    'remoteStartShare',
+                                    params.id,
+                                    socket.id
+                                )
+                            }
+                        }}
+                    />
+                ) : (
+                    <MdOutlineScreenShare
+                        className={'h-14 w-14 rounded-full bg-red-500 p-3'}
+                        onClick={async () => {
+                            await stopShareScreen(
+                                localVideoRef,
+                                setIsLocalShareScreen
+                            )
+
+                            if (socket.id) {
+                                socket.emit(
+                                    'remoteStopShare',
+                                    params.id,
+                                    socket.id
+                                )
+                            }
+                        }}
+                    />
+                )}
                 <PiChatCircleText
                     onClick={() => setIsChatOpen(!isChatOpen)}
                     className="h-14 w-14 rounded-full bg-gray-200 p-3"
