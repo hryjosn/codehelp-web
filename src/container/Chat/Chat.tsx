@@ -4,7 +4,7 @@ import SearchInput from './components/SearchInput/SearchInput'
 import Chatroom from './components/Chatroom/Chatroom'
 import ChattingArea from './components/ChattingArea/ChattingArea'
 import { useMemo } from 'react'
-import { useGetChatroomList } from '~/api/chatroom'
+import { useGetChatroomList } from '~/api/chatroom/chatroom'
 
 const Chat = () => {
     const { data: chatroomListData } = useGetChatroomList()
