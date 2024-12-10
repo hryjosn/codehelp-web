@@ -15,9 +15,6 @@ type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
     args: {
-        education: {
-            degree: 'degree',
-            major: 'major',
-        },
+       educationProps:'海事資訊科技系$%$高雄科技大學'
     },
 }

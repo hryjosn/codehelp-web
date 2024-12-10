@@ -7,11 +7,15 @@ interface MentorListResT {
     status: string
     total: number
 }
+interface MentorInfoResT {
+    mentor: MentorT
+    status: string
+}
 export const useGetMentorInfo = (mentorId: string) => {
     return useQuery({
         queryKey: ['mentorInfo', mentorId],
         queryFn: async () => {
-            const res = await apiHandler({
+            const res = await apiHandler<MentorInfoResT>({
                 url: `/mentor/info/${mentorId}`,
                 method: 'get',
             })

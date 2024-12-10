@@ -1,3 +1,5 @@
+import { Experience } from "../components/MentorList/types"
+
 export interface MentorT {
     id: string
     userName: string
@@ -15,6 +17,8 @@ export interface MentorT {
     primaryExpertise: string
     secondaryExpertise: string
     tertiaryExpertise: string
+    education: string
+    experience: Experience[]
     disciplines: string[]
     skills: string[]
     tools: string[]
