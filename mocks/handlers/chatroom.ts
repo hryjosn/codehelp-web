@@ -24,7 +24,7 @@ export const createChatroom = [
 
 export const getChatroomInfo = [
     http.get<ChatroomInfoReqT, ChatroomInfoResT>(
-        getChatroomInfoURL(process.env.NEXT_PUBLIC_TEST_CHATROOM_ID!),
+        getChatroomInfoURL('fakeId'),
         () => {
             return HttpResponse.json({
                 chatroom: {
@@ -50,7 +50,7 @@ export const getChatroomInfo = [
 
 export const createMessage = [
     http.post<NewMessageReqT, NewMessageResT>(
-        createMessageURL(process.env.NEXT_PUBLIC_TEST_CHATROOM_ID!),
+        createMessageURL('fakeId'),
         () => {
             return HttpResponse.json({
                 message: {

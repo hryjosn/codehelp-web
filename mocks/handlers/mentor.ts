@@ -4,13 +4,13 @@ import { GetMentorInfoReqT, GetMentorInfoResT } from '~/api/mentor/types'
 
 export const getMentorInfo = [
     http.get<GetMentorInfoReqT, GetMentorInfoResT>(
-        getMentorInfoURL(process.env.NEXT_PUBLIC_TEST_MENTOR_ID!),
+        getMentorInfoURL('fakeId'),
         () => {
             return HttpResponse.json({
                 status: 'ok',
                 mentor: {
                     id: '0415338d-95be-4977-8b2a-74029e64ca25',
-                    userName: 'test007',
+                    userName: 'justTest',
                     email: 'test007@gmail.com',
                     avatar: 'https://codehelp-backend-production.up.railway.app/image/f6a9ab3c-165d-4dae-b102-8501aadcb8c9',
                     gender: 'm',
