@@ -25,7 +25,7 @@ const RemoteVideo = ({ remoteId }: Props) => {
     return (
         <video
             ref={videoRef}
-            className={cn('h-full w-1/2 rounded-3xl border-2 border-white', {
+            className={cn('w-full rounded-3xl border-2 border-white', {
                 'scale-x-[-1]': !peerConnectionList[remoteId].isScreenSharing,
             })}
             autoPlay

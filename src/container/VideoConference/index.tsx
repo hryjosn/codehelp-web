@@ -155,15 +155,20 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
     return (
         <div className="flex h-screen flex-col bg-zinc-800">
             <div className="flex flex-1">
-                <div className="grid grid-cols-3 gap-x-2 gap-y-2">
+                <div className="flex flex-1">
                     <div className="flex flex-1 justify-center px-5 pt-5">
                         <video
                             ref={localVideoRef}
                             autoPlay
                             muted
                             className={cn(
-                                'h-full w-1/2 rounded-3xl border-2 border-white',
-                                { 'scale-x-[-1]': !isLocalShareScreen }
+                                'w-2/3 rounded-3xl border-2 border-white',
+                                {
+                                    'scale-x-[-1]': !isLocalShareScreen,
+                                    'w-full':
+                                        Object.keys(peerConnectionList).length >
+                                        0,
+                                }
                             )}
                         >
                             user1
@@ -171,7 +176,10 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
                     </div>
                     {Object.keys(peerConnectionList).length > 0 &&
                         Object.keys(peerConnectionList).map((key) => (
-                            <div key={key} className="flex px-5 pt-5">
+                            <div
+                                key={key}
+                                className="flex flex-1 justify-center px-5 pt-5"
+                            >
                                 <RemoteVideo remoteId={key} />
                             </div>
                         ))}
