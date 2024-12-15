@@ -77,19 +77,20 @@ export const createPeerConnection = async ({
             }
             removeConnectionMember(remoteId)
         }
-        // if (
-        //     (state === ICE_CONNECTION_STATE.CONNECTED ||
-        //         state === ICE_CONNECTION_STATE.COMPLETED) &&
-        //     !connectionQualityInterval
-        // ) {
-        //     connectionQualityInterval = setInterval(async () => {
-        //         const connectionQuality = await checkConnectionQuality()
-        //         if (connectionQuality) {
-        //             const maxBitrate = getMaxBitrate(connectionQuality)
-        //             await adjustMaxBitrate(localStream, maxBitrate)
-        //         }
-        //     }, 1000)
-        // }
+        if (
+            (state === ICE_CONNECTION_STATE.CONNECTED ||
+                state === ICE_CONNECTION_STATE.COMPLETED) &&
+            !connectionQualityInterval
+        ) {
+            connectionQualityInterval = setInterval(async () => {
+                const connectionQuality =
+                    await checkConnectionQuality(peerConnection)
+                if (connectionQuality) {
+                    const maxBitrate = getMaxBitrate(connectionQuality)
+                    await adjustMaxBitrate(peerConnection, maxBitrate)
+                }
+            }, 1000)
+        }
     }
 
     runInAction(() => {
@@ -173,56 +174,56 @@ export const sendAnswerSDP = async ({
     }
 }
 
-// const adjustMaxBitrate = async (
-//     localStream: MediaStream,
-//     maxBitrate: number
-// ) => {
-//     try {
-//         const videoTrack = localStream.getVideoTracks()[0]
-//         const sender: RTCRtpSender | undefined = peerConnection
-//             .getSenders()
-//             .find((sender) => sender.track === videoTrack)
+const adjustMaxBitrate = async (
+    peerConnection: RTCPeerConnection,
+    maxBitrate: number
+) => {
+    try {
+        const sender: RTCRtpSender | undefined = peerConnection
+            .getSenders()
+            .find((sender) => sender.track?.kind === 'video')
 
-//         if (sender) {
-//             const params = sender.getParameters()
-//             params.encodings[0].maxBitrate = maxBitrate
-//             sender.setParameters(params)
-//         } else {
-//             console.log('local video stream is not found.')
-//         }
-//     } catch (error) {
-//         console.log('error', error)
-//     }
-// }
+        if (sender) {
+            const params = sender.getParameters()
+            params.encodings[0].maxBitrate = maxBitrate
+            sender.setParameters(params)
+        } else {
+            console.log('local video stream is not found.')
+        }
+    } catch (error) {
+        console.log('error', error)
+    }
+}
 
-// const checkConnectionQuality = async (): Promise<IConnectionQuality> => {
-//     const stats: RTCStatsReport = await peerConnection.getStats()
-//     let highestPacketLoss = 0
-//     let highestJitter = 0
+const checkConnectionQuality = async (
+    peerConnection: RTCPeerConnection
+): Promise<IConnectionQuality> => {
+    const stats: RTCStatsReport = await peerConnection.getStats()
+    let highestPacketLoss = 0
+    let highestJitter = 0
+    stats.forEach((report) => {
+        if (report.type === REPORT_TYPE.INBOUND_RTP) {
+            const packetLoss =
+                new Decimal(report.packetsLost)
+                    .div(report.packetsReceived + report.packetsLost)
+                    .toFixed(2) || 0
+            const jitter = report.jitter || 0
 
-//     stats.forEach((report) => {
-//         if (report.type === REPORT_TYPE.INBOUND_RTP) {
-//             const packetLoss =
-//                 new Decimal(report.packetsLost)
-//                     .div(report.packetsReceived + report.packetsLost)
-//                     .toFixed(2) || 0
-//             const jitter = report.jitter || 0
+            if (
+                Number(packetLoss) > highestPacketLoss ||
+                jitter > highestJitter
+            ) {
+                highestPacketLoss = Number(packetLoss)
+                highestJitter = jitter
+            }
+        }
+    })
 
-//             if (
-//                 Number(packetLoss) > highestPacketLoss ||
-//                 jitter > highestJitter
-//             ) {
-//                 highestPacketLoss = Number(packetLoss)
-//                 highestJitter = jitter
-//             }
-//         }
-//     })
-
-//     return {
-//         highestPacketLoss,
-//         highestJitter,
-//     }
-// }
+    return {
+        highestPacketLoss,
+        highestJitter,
+    }
+}
 
 const getMaxBitrate = ({
     highestPacketLoss,
