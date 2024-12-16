@@ -19,7 +19,6 @@ import { useChatroomStore } from '../Chat/store/ChatStore'
 import { RESPONSE_CODE } from '../Login/store/types'
 import Link from 'next/link'
 import { BackgroundItem } from './components/BackgroundItem/BackgroundItem'
-
 const MentorProfile = ({ params }: { params: { id: string } }) => {
     const {
         videoConferenceStore: { connectSocket },
@@ -34,15 +33,18 @@ const MentorProfile = ({ params }: { params: { id: string } }) => {
     if (isPending) {
         return
     }
+    if (!MentorInfo) {
+        return <h1>Error: Mentor information not found</h1>
+    }
     return (
         <>
             <div className="p-6 md:p-16">
                 <Bio
-                    avatar={MentorInfo!.avatar}
-                    name={MentorInfo!.userName}
-                    company={MentorInfo!.company}
-                    title={MentorInfo!.title}
-                    country={MentorInfo!.country}
+                    avatar={MentorInfo.avatar}
+                    name={MentorInfo.userName}
+                    company={MentorInfo.company}
+                    title={MentorInfo.title}
+                    country={MentorInfo.country}
                 />
                 <div className="flex justify-end gap-5">
                     <HiChatBubbleLeftEllipsis
@@ -85,7 +87,7 @@ const MentorProfile = ({ params }: { params: { id: string } }) => {
                         </p>
                         <div>
                             <Link
-                                href={MentorInfo!.url}
+                                href={MentorInfo.url}
                                 target="_blank"
                                 className="inline-flex"
                             >
@@ -100,24 +102,24 @@ const MentorProfile = ({ params }: { params: { id: string } }) => {
                             <BackgroundItem
                                 title={'Expertise'}
                                 content={[
-                                    MentorInfo!.primaryExpertise,
-                                    MentorInfo!.secondaryExpertise,
-                                    MentorInfo!.tertiaryExpertise,
+                                    MentorInfo.primaryExpertise,
+                                    MentorInfo.secondaryExpertise,
+                                    MentorInfo.tertiaryExpertise,
                                 ]}
                             />
                             <BackgroundItem
                                 title={'Disciplines'}
-                                content={MentorInfo!.disciplines}
+                                content={MentorInfo.disciplines}
                             />
                         </div>
-                        {MentorInfo!.experience.length > 0 && (
-                            <Experience experiences={MentorInfo!.experience} />
+                        {MentorInfo.experience.length > 0 && (
+                            <Experience experiences={MentorInfo.experience} />
                         )}
 
-                        <Education educationProps={MentorInfo!.education} />
+                        <Education educationProps={MentorInfo.education} />
                     </div>
                     <div className="px-6 lg:px-0">
-                        <Booking mentorId={MentorInfo!.id} />
+                        <Booking mentorId={MentorInfo.id} />
                     </div>
                 </div>
             </div>

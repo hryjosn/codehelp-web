@@ -34,7 +34,7 @@ const BookingModal = ({
                 <div className="flex flex-col gap-3 p-5">
                     <div className="flex items-center gap-3">
                         <Image
-                            src={data!.avatar}
+                            src={data?.avatar || '/Login/User.png'}
                             width={0}
                             height={0}
                             sizes="100%"
@@ -42,7 +42,7 @@ const BookingModal = ({
                             alt="avatar"
                         />
                         <div className="flex flex-col">
-                            <p className="text-sm">{data!.userName}</p>
+                            <p className="text-sm">{data?.userName}</p>
                             <p className="text-sm text-zinc-500">
                                 {data!.title}
                             </p>

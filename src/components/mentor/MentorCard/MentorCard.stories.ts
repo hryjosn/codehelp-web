@@ -17,16 +17,18 @@ const MOCK_MENTOR_LIST: MentorT[] = [
         introduction: 'hello',
         level: 0,
         url: 'linked url',
-        experience:[{
-            title: 'First Experience Title',
-            company: 'First Company',
-            description: 'First Description',
-        },
-        {
-            title: 'Second Experience Title',
-            company: 'Second Company',
-            description: 'Second Description',
-        },],
+        experience: [
+            {
+                title: 'First Experience Title',
+                company: 'First Company',
+                description: 'First Description',
+            },
+            {
+                title: 'Second Experience Title',
+                company: 'Second Company',
+                description: 'Second Description',
+            },
+        ],
         primaryExpertise: 'Sleep',
         secondaryExpertise: '',
         tertiaryExpertise: '',
@@ -35,7 +37,7 @@ const MOCK_MENTOR_LIST: MentorT[] = [
         tools: ['Sleep'],
         createdAt: '2024-11-24T06:44:51.411Z',
         updatedAt: '2024-11-24T06:44:51.411Z',
-        education:"海事資訊科技系$%$高雄科技大學'"
+        education: "海事資訊科技系$%$高雄科技大學'",
     },
 ]
 
