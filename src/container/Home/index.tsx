@@ -3,6 +3,7 @@ import { useEffect } from 'react'
 import { Header } from '~/components/Header/Header'
 import rootStore from '~/store'
 import MentorList from './components/MentorList'
+import { observer } from 'mobx-react-lite'
 
 const Home = () => {
     const {
@@ -20,4 +21,4 @@ const Home = () => {
     )
 }
 
-export default Home
+export default observer(Home)

@@ -1,4 +1,5 @@
 import { PC_CONFIG } from './constant'
+import { Dispatch, RefObject, SetStateAction } from 'react'
 import {
     HangupT,
     ICE_CONNECTION_STATE,
@@ -14,7 +15,7 @@ import Decimal from 'decimal.js'
 import { runInAction } from 'mobx'
 import rootStore from '~/store'
 
-export let peerConnection: RTCPeerConnection
+// export let peerConnection: RTCPeerConnection
 let connectionQualityInterval: NodeJS.Timeout | null = null
 
 const { videoConferenceStore } = rootStore
@@ -74,6 +75,7 @@ export const createPeerConnection = async ({
                 clearInterval(connectionQualityInterval)
                 connectionQualityInterval = null
             }
+            removeConnectionMember(remoteId)
         }
         if (
             (state === ICE_CONNECTION_STATE.CONNECTED ||
@@ -81,18 +83,21 @@ export const createPeerConnection = async ({
             !connectionQualityInterval
         ) {
             connectionQualityInterval = setInterval(async () => {
-                const connectionQuality = await checkConnectionQuality()
+                const connectionQuality =
+                    await checkConnectionQuality(peerConnection)
                 if (connectionQuality) {
                     const maxBitrate = getMaxBitrate(connectionQuality)
-                    await adjustMaxBitrate(localStream, maxBitrate)
+                    await adjustMaxBitrate(peerConnection, maxBitrate)
                 }
             }, 1000)
         }
-        removeConnectionMember(remoteId)
     }
 
     runInAction(() => {
-        videoConferenceStore.peerConnectionList[remoteId] = peerConnection
+        videoConferenceStore.peerConnectionList[remoteId] = {
+            peerConnection,
+            isScreenSharing: false,
+        }
     })
 
     return peerConnection
@@ -170,14 +175,13 @@ export const sendAnswerSDP = async ({
 }
 
 const adjustMaxBitrate = async (
-    localStream: MediaStream,
+    peerConnection: RTCPeerConnection,
     maxBitrate: number
 ) => {
     try {
-        const videoTrack = localStream.getVideoTracks()[0]
         const sender: RTCRtpSender | undefined = peerConnection
             .getSenders()
-            .find((sender) => sender.track === videoTrack)
+            .find((sender) => sender.track?.kind === 'video')
 
         if (sender) {
             const params = sender.getParameters()
@@ -191,11 +195,12 @@ const adjustMaxBitrate = async (
     }
 }
 
-const checkConnectionQuality = async (): Promise<IConnectionQuality> => {
+const checkConnectionQuality = async (
+    peerConnection: RTCPeerConnection
+): Promise<IConnectionQuality> => {
     const stats: RTCStatsReport = await peerConnection.getStats()
     let highestPacketLoss = 0
     let highestJitter = 0
-
     stats.forEach((report) => {
         if (report.type === REPORT_TYPE.INBOUND_RTP) {
             const packetLoss =
@@ -231,4 +236,68 @@ const getMaxBitrate = ({
     } else {
         return MAX_BITRATE[CONNECTION_QUALITY.HIGH] // 良好的網絡，保持高品質
     }
+}
+
+export const shareScreen = async (
+    localVideoRef: RefObject<HTMLVideoElement>,
+    setIsLocalShareScreen: Dispatch<SetStateAction<boolean>>
+) => {
+    try {
+        const mediaStream = await navigator.mediaDevices.getDisplayMedia({
+            video: true,
+        })
+
+        clearCurrentVideo(localVideoRef)
+
+        if (mediaStream) changeVideoTrack(localVideoRef, mediaStream)
+        mediaStream.getVideoTracks()[0].onended = () => {
+            stopShareScreen(localVideoRef, setIsLocalShareScreen)
+        }
+        setIsLocalShareScreen(true)
+    } catch (err) {
+        console.log(err)
+        setIsLocalShareScreen(false)
+    }
+}
+
+export const stopShareScreen = async (
+    localVideoRef: RefObject<HTMLVideoElement>,
+    setIsLocalShareScreen: Dispatch<SetStateAction<boolean>>
+) => {
+    try {
+        const localStream = await createLocalStream()
+
+        clearCurrentVideo(localVideoRef)
+
+        if (localStream) changeVideoTrack(localVideoRef, localStream)
+        setIsLocalShareScreen(false)
+    } catch (err) {
+        console.log(err)
+        setIsLocalShareScreen(false)
+    }
+}
+
+const clearCurrentVideo = (localVideoRef: RefObject<HTMLVideoElement>) => {
+    const currentStream = localVideoRef.current?.srcObject as MediaStream
+    currentStream?.getVideoTracks().forEach((track) => track.stop())
+}
+
+const changeVideoTrack = (
+    localVideoRef: RefObject<HTMLVideoElement>,
+    localStream: MediaStream
+) => {
+    if (localVideoRef.current) {
+        localVideoRef.current.srcObject = localStream
+    }
+
+    Object.values(videoConferenceStore.peerConnectionList).map(
+        (peerConnection) => {
+            const videoSender = peerConnection.peerConnection
+                .getSenders()
+                .find((sender) => sender.track!.kind === 'video')
+            if (videoSender) {
+                videoSender.replaceTrack(localStream!.getVideoTracks()[0])
+            }
+        }
+    )
 }

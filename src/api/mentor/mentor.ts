@@ -1,6 +1,7 @@
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query'
-import apiHandler from './api'
 import { MentorT } from '~/container/Home/store/type'
+import apiHandler from '../api'
+import { getMentorInfoURL } from './api_url'
 
 interface MentorListResT {
     mentorList: MentorT[]
@@ -16,7 +17,7 @@ export const useGetMentorInfo = (mentorId: string) => {
         queryKey: ['mentorInfo', mentorId],
         queryFn: async () => {
             const res = await apiHandler<MentorInfoResT>({
-                url: `/mentor/info/${mentorId}`,
+                url: getMentorInfoURL(mentorId),
                 method: 'get',
             })
             return res.data.mentor

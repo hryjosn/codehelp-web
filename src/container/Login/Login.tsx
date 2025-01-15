@@ -6,7 +6,7 @@ import Button from './components/Button/Button'
 import FormInput from './components/FormInput/FormInput'
 import LinkText from './components/LinkText/LinkText'
 import { LoginDataT, RESPONSE_CODE } from './store/types'
-import { callLogin } from '~/api/user'
+import { callLogin } from '~/api/user/user'
 import { useRouter } from 'next/navigation'
 import { isAxiosError } from 'axios'
 import { useState } from 'react'
@@ -39,6 +39,7 @@ const Login = () => {
         try {
             const res = await callLogin(data)
             if (res.data.token) {
+                localStorage.setItem('token', res.data.token)
                 router.push('/')
             }
         } catch (error) {

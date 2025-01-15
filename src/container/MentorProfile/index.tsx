@@ -13,15 +13,18 @@ import { BsLinkedin } from 'react-icons/bs'
 import { createLocalStream } from '../VideoConference/utils'
 import LoadingModal from '~/components/LoadingModal/LoadingModal'
 import { observer } from 'mobx-react-lite'
-import { useGetMentorInfo } from '~/api/mentor'
+import { useGetMentorInfo } from '~/api/mentor/mentor'
 import React from 'react'
 import { useChatroomStore } from '../Chat/store/ChatStore'
 import { RESPONSE_CODE } from '../Login/store/types'
 import Link from 'next/link'
 import { BackgroundItem } from './components/BackgroundItem/BackgroundItem'
+import { Header } from '~/components/Header/Header'
+
 const MentorProfile = ({ params }: { params: { id: string } }) => {
     const {
         videoConferenceStore: { connectSocket },
+        homeStore: { isAuth },
     } = rootStore
 
     const [modalVisible, setModalVisible] = useState(false)
@@ -38,6 +41,7 @@ const MentorProfile = ({ params }: { params: { id: string } }) => {
     }
     return (
         <>
+            <Header isAuth={isAuth} />
             <div className="p-6 md:p-16">
                 <Bio
                     avatar={MentorInfo.avatar}

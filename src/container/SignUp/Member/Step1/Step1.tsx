@@ -8,7 +8,7 @@ import FormPhoneInput from '../../components/FormPhoneInput/FormPhoneInput'
 const Step1 = () => {
     return (
         <div className="flex h-full items-center justify-center">
-            <div className="flex flex-col gap-10 items-center">
+            <div className="flex flex-col items-center gap-10">
                 <div className="text-3xl font-bold">
                     {"Hello! What's your origin story?"}
                 </div>
