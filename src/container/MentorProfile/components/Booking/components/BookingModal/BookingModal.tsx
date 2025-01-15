@@ -4,6 +4,7 @@ import CalendarMonthIcon from '@mui/icons-material/CalendarMonth'
 import AccessTimeIcon from '@mui/icons-material/AccessTime'
 import { Button } from '~/components/Button/Button'
 import { Modal } from '@mui/material'
+import Image from 'next/image'
 import { useGetMentorInfo } from '~/api/mentor/mentor'
 interface BookingModalProps {
     mentorId: string
@@ -23,7 +24,6 @@ const BookingModal = ({
     const confirmBooking = () => {
         onClose()
     }
-
     return (
         <Modal
             open={isOpen}
@@ -33,18 +33,18 @@ const BookingModal = ({
             <div className="relative flex gap-5 rounded-lg bg-white p-7 shadow-xl">
                 <div className="flex flex-col gap-3 p-5">
                     <div className="flex items-center gap-3">
-                        {/* <Image
-                            src={data.avatar} // Waiting for backend fix avatar URL problem
+                        <Image
+                            src={data?.avatar || '/Login/User.png'}
                             width={0}
                             height={0}
                             sizes="100%"
                             className="h-12 w-12 rounded-full"
                             alt="avatar"
-                        /> */}
+                        />
                         <div className="flex flex-col">
-                            <p className="text-sm">{data.userName}</p>
+                            <p className="text-sm">{data?.userName}</p>
                             <p className="text-sm text-zinc-500">
-                                {data.title}
+                                {data!.title}
                             </p>
                         </div>
                     </div>

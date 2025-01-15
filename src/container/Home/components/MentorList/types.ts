@@ -1,7 +1,4 @@
-export type Education = {
-    degree: string
-    major: string
-}
+export type Education = string
 
 export type Experience = {
     title: string

@@ -1,61 +1,40 @@
 import Image from 'next/image'
-import type { Mentor } from '~/container/Home/components/MentorList/types'
+
+import { MentorT } from '~/container/Home/store/type'
 
 type Props = {
-    mentor: Mentor
+    mentor: MentorT
 }
 
 const MentorCard = ({ mentor }: Props) => {
-    const {
-        avatar,
-        name,
-        title,
-        company,
-        country,
-        yearOfExperience,
-        totalSessions,
-        totalReviews,
-    } = mentor
-
+    const { avatar, userName, title, company, country } = mentor
     return (
-        <div className="h-full flex flex-col p-2 border border-solid border-stone-200 rounded-2xl cursor-pointer">
-            <div className="overflow-hidden h-64 w-full rounded-xl mb-2">
+        <div className="flex h-full cursor-pointer flex-col rounded-2xl border border-solid border-stone-200 p-2">
+            <div className="mb-2 h-64 w-full overflow-hidden rounded-xl">
                 <Image
                     src={avatar}
-                    alt={name}
+                    alt={userName}
                     width={0}
                     height={0}
                     sizes="100vw"
                     style={{ width: '100%', height: 'auto' }}
                 />
             </div>
-            <div className="flex flex-col gap-2 text-slate-800 mb-4">
+            <div className="mb-4 flex flex-col gap-2 text-slate-800">
                 <div className="flex gap-1">
-                    <p className="font-semibold	truncate">{name}</p>
+                    <p className="truncate font-semibold">{userName}</p>
                     <span>{country}</span>
                 </div>
-                <p className="text-sm line-clamp-2">
+                <p className="line-clamp-2 text-sm">
                     <span>{title}</span>
                     <span className="mx-1 text-gray-500">at</span>
                     <span>{company}</span>
                 </p>
-                <p className="text-sm">
-                    <span>{totalSessions} sessions</span>
-                    <span className="ml-1 text-gray-500">
-                        {totalReviews} reviews
-                    </span>
-                </p>
             </div>
-            <div className="flex justify-between rounded-lg	bg-zinc-50 mt-auto p-3 text-xs text-stone-500">
-                <div>
-                    <p>Experience</p>
-                    <p className="text-sm text-cyan-950 font-bold">
-                        {yearOfExperience}
-                    </p>
-                </div>
+            <div className="mt-auto flex justify-between rounded-lg bg-zinc-50 p-3 text-xs text-stone-500">
                 <div>
                     <p>Avg. Attendance</p>
-                    <p className="text-sm text-cyan-950 font-bold">100%</p>
+                    <p className="text-sm font-bold text-cyan-950">100%</p>
                 </div>
             </div>
         </div>
