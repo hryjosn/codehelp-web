@@ -55,9 +55,7 @@ const MentorProfile = ({ params }: { params: { id: string } }) => {
                         className="cursor-pointer"
                         size={30}
                         onClick={async () => {
-                            const res = await createChatroom(
-                                '66598522-1162-4a7c-9273-ca2f2b25767a'
-                            )
+                            const res = await createChatroom(params.id)
                             if (
                                 res === RESPONSE_CODE.DATA_DUPLICATE ||
                                 res.chatroomId

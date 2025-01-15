@@ -1,7 +1,7 @@
 'use client'
 import Link from 'next/link'
 import { useMemo } from 'react'
-import { useGetMentorList } from '~/api/mentor'
+import { useGetMentorList } from '~/api/mentor/mentor'
 import { MentorCard } from '~/components/mentor/MentorCard/MentorCard'
 
 const MentorList = () => {
