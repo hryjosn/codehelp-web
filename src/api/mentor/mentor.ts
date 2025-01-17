@@ -28,7 +28,7 @@ export const useGetMentorList = () => {
     return useInfiniteQuery({
         initialPageParam: 1,
         queryKey: ['mentorList'],
-        queryFn: async ({ pageParam }) => {
+        queryFn: async ({ pageParam }: { pageParam: number }) => {
             const pageSize = 10
             const {
                 data: { total, mentorList },
