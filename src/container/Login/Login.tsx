@@ -6,7 +6,7 @@ import Button from './components/Button/Button'
 import FormInput from './components/FormInput/FormInput'
 import LinkText from './components/LinkText/LinkText'
 import { LoginDataT, RESPONSE_CODE } from './store/types'
-import { callLogin } from '~/api/user/user'
+import { useLogin } from '~/api/user/user'
 import { useRouter } from 'next/navigation'
 import { isAxiosError } from 'axios'
 import { useState } from 'react'
@@ -35,28 +35,33 @@ const Login = () => {
         reset,
         formState: { errors },
     } = methods
+
+    const { mutate } = useLogin()
+
     const onSubmit = async (data: LoginDataT) => {
-        try {
-            const res = await callLogin(data)
-            if (res.data.token) {
-                localStorage.setItem('token', res.data.token)
-                router.push('/')
-            }
-        } catch (error) {
-            if (isAxiosError(error)) {
-                reset()
-                switch (error.response?.data.code) {
-                    case RESPONSE_CODE.VALIDATE_ERROR:
-                        setErrorText('Validate error')
-                        break
-                    case RESPONSE_CODE.USER_DATA_ERROR:
-                        setErrorText('Email or password is wrong')
-                        break
-                    default:
-                        setErrorText('Unknown error')
+        mutate(data, {
+            onSuccess(res) {
+                if (res.data.token) {
+                    localStorage.setItem('token', res.data.token)
+                    router.push('/')
                 }
-            }
-        }
+            },
+            onError: (error) => {
+                reset()
+                if (isAxiosError(error)) {
+                    switch (error.response?.data.code) {
+                        case RESPONSE_CODE.VALIDATE_ERROR:
+                            setErrorText('Validate error')
+                            break
+                        case RESPONSE_CODE.USER_DATA_ERROR:
+                            setErrorText('Email or password is wrong')
+                            break
+                        default:
+                            setErrorText('Unknown error')
+                    }
+                }
+            },
+        })
     }
 
     return (
