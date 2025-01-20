@@ -2,7 +2,7 @@ import { IoIosRemoveCircle } from 'react-icons/io'
 import React from 'react'
 import { Props } from './types'
 
-const ImageWithButton = ({ onClick, children }: Props) => {
+const ImageRemoveButton = ({ onClick, children }: Props) => {
     return (
         <div className="relative flex items-start">
             <button onClick={onClick} className="absolute right-0 top-0">
@@ -13,4 +13,4 @@ const ImageWithButton = ({ onClick, children }: Props) => {
     )
 }
 
-export default ImageWithButton
+export default ImageRemoveButton

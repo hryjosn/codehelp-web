@@ -9,7 +9,7 @@ import { useGetMentorInfo } from '~/api/mentor/mentor'
 import UploadImage from '~/components/UploadImage/UploadImage'
 import { Props } from './types'
 import { useStore } from '~/store/rootStoreProvider'
-import ImageWithButton from '~/components/ImageWithButton/ImageWithButton'
+import ImageRemoveButton from '~/components/ImageRemoveButton/ImageRemoveButton'
 
 const BookingModal = ({
     mentorId,
@@ -111,7 +111,7 @@ const BookingModal = ({
                         <div className="mt-1 flex">
                             {imageList.map((image, index) => (
                                 <div className="mr-3" key={index}>
-                                    <ImageWithButton
+                                    <ImageRemoveButton
                                         onClick={() => {
                                             removeImage(image)
                                         }}
@@ -122,7 +122,7 @@ const BookingModal = ({
                                             width={100}
                                             height={100}
                                         />
-                                    </ImageWithButton>
+                                    </ImageRemoveButton>
                                 </div>
                             ))}
                         </div>
