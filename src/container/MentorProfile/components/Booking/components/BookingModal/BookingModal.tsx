@@ -6,20 +6,16 @@ import { Button } from '~/components/Button/Button'
 import { Modal } from '@mui/material'
 import Image from 'next/image'
 import { useGetMentorInfo } from '~/api/mentor/mentor'
-interface BookingModalProps {
-    mentorId: string
-    selectedDate: Date
-    selectedTime: string
-    isOpen: boolean
-    onClose: () => void
-}
+import UploadImage from '~/components/UploadImage/UploadImage'
+import { Props } from './types'
+
 const BookingModal = ({
     mentorId,
     selectedDate,
     selectedTime,
     isOpen,
     onClose,
-}: BookingModalProps) => {
+}: Props) => {
     const { data } = useGetMentorInfo(mentorId)
     const confirmBooking = () => {
         onClose()
@@ -101,6 +97,9 @@ const BookingModal = ({
                             className="w-full resize-none rounded-lg border border-zinc-300 p-2 outline-none focus:border-sky-600"
                             rows={5}
                         />
+                    </div>
+                    <div className="mt-2">
+                        <UploadImage onChange={(event) => {}} />
                     </div>
 
                     <Button
