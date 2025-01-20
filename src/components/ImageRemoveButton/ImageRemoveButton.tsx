@@ -4,7 +4,7 @@ import { Props } from './types'
 
 const ImageRemoveButton = ({ onClick, children }: Props) => {
     return (
-        <div className="relative flex items-start">
+        <div className="relative flex">
             <button onClick={onClick} className="absolute right-0 top-0">
                 <IoIosRemoveCircle color="red" />
             </button>
