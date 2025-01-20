@@ -6,7 +6,7 @@ const UploadImage = (props: Props) => {
     return (
         <>
             <label htmlFor="uploadImage">
-                <FaImages />
+                <FaImages className="cursor-pointer" />
             </label>
             <input
                 id="uploadImage"

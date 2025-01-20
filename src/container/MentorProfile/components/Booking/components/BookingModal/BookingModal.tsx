@@ -8,6 +8,8 @@ import Image from 'next/image'
 import { useGetMentorInfo } from '~/api/mentor/mentor'
 import UploadImage from '~/components/UploadImage/UploadImage'
 import { Props } from './types'
+import { useStore } from '~/store/rootStoreProvider'
+import ImageWithButton from '~/components/ImageWithButton/ImageWithButton'
 
 const BookingModal = ({
     mentorId,
@@ -16,6 +18,9 @@ const BookingModal = ({
     isOpen,
     onClose,
 }: Props) => {
+    const {
+        bookingStore: { imageList, uploadImage, removeImage },
+    } = useStore()
     const { data } = useGetMentorInfo(mentorId)
     const confirmBooking = () => {
         onClose()
@@ -99,7 +104,28 @@ const BookingModal = ({
                         />
                     </div>
                     <div className="mt-2">
-                        <UploadImage onChange={(event) => {}} />
+                        {imageList.length < 3 && (
+                            <UploadImage onChange={uploadImage} />
+                        )}
+
+                        <div className="mt-1 flex">
+                            {imageList.map((image, index) => (
+                                <div className="mr-3" key={index}>
+                                    <ImageWithButton
+                                        onClick={() => {
+                                            removeImage(image)
+                                        }}
+                                    >
+                                        <Image
+                                            src={image}
+                                            alt=""
+                                            width={100}
+                                            height={100}
+                                        />
+                                    </ImageWithButton>
+                                </div>
+                            ))}
+                        </div>
                     </div>
 
                     <Button
