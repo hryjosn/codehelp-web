@@ -1,13 +1,13 @@
 'use client'
 import { observer } from 'mobx-react-lite'
-import SearchInput from '../../components/SearchInput/SearchInput'
+import SearchInput from '~/components/SearchInput/SearchInput'
 import Chatroom from './components/Chatroom/Chatroom'
 import ChattingArea from './components/ChattingArea/ChattingArea'
 import { useMemo, useState } from 'react'
 import { useGetChatroomList } from '~/api/chatroom/chatroom'
 
 const Chat = () => {
-    const [searchingValue, setSearchingValue] = useState('')
+    const [searchingValue, setSearchingValue] = useState('') //temporary
     const { data: chatroomListData } = useGetChatroomList()
     const chatroomList = useMemo(() => {
         const queriedChatroom = chatroomListData?.pages.flatMap(
@@ -29,7 +29,6 @@ const Chat = () => {
                         }}
                         onSubmit={(e) => {
                             e.preventDefault()
-                            console.log(searchingValue)
                             setSearchingValue('')
                         }}
                     />
