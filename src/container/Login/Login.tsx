@@ -36,10 +36,10 @@ const Login = () => {
         formState: { errors },
     } = methods
 
-    const { mutate } = useLogin()
+    const { mutate: login } = useLogin()
 
     const onSubmit = async (data: LoginDataT) => {
-        mutate(data, {
+        login(data, {
             onSuccess(res) {
                 if (res.data.token) {
                     localStorage.setItem('token', res.data.token)
