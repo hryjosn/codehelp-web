@@ -1,9 +1,8 @@
 import type { NextRequest } from 'next/server'
-
 // This function can be marked `async` if using `await` inside
 export function middleware(request: NextRequest) {
     console.log('middleware')
 }
 export const config = {
-    matcher: ['/'],
+    matcher: '/:path*', // Apply middleware to all paths
 }
