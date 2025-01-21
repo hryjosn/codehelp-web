@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react'
 import SearchInput from './SearchInput'
 
 const meta = {
-    title: 'Chat/SearchInput',
+    title: 'SearchInput',
     component: SearchInput,
     parameters: {
         layout: 'centered',
@@ -14,4 +14,11 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-export const Default: Story = {}
+export const Default: Story = {
+    args: {
+        value: '',
+        placeholder: 'Search members',
+        onChange(e) {},
+        onSubmit() {},
+    },
+}
