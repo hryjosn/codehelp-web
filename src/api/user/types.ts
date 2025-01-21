@@ -1,4 +1,4 @@
-export interface MemberT {
+export interface User {
     id: string
     userName: string
     email: string
@@ -11,9 +11,18 @@ export interface MemberT {
     emailOtp: boolean
     introduction: string
     level: number
-    fieldOfWork: string[]
+    url: string
+    primaryExpertise: string
+    secondaryExpertise: string
+    tertiaryExpertise: string
+    disciplines: string[]
+    skills: string[]
+    tools: string[]
     createdAt: string
     updatedAt: string
+    quickReply: boolean
+    experience: any[]
+    education: string
 }
 
 export interface LoginReqT {
@@ -22,7 +31,13 @@ export interface LoginReqT {
 }
 
 export interface LoginResT {
-    data: { status: string; msg: string; token: string; member: MemberT }
+    data: {
+        status: string
+        msg: string
+        identity: string
+        token: string
+        user: User
+    }
 }
 
 export interface MemberSignUpT {
@@ -58,4 +73,12 @@ export interface MentorSignUpReqT {}
 
 export interface MentorSignUpResT {
     data: MentorSignUpT
+}
+export interface UserInfoReqT {}
+export interface UserInfoResT {
+    status: string
+    msg: string
+    identity: string
+    token: string
+    user: User
 }

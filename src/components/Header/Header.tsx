@@ -1,17 +1,18 @@
-import { DetailsHTMLAttributes, FC } from 'react'
+import { FC } from 'react'
 import rootStore from '~/store'
 import { Button } from '../Button/Button'
 import { NavButton } from '../NavButton/NavButton'
 
 import Link from 'next/link'
-interface HeaderProps extends DetailsHTMLAttributes<HTMLDivElement> {
-    isAuth: boolean
-}
+import { runInAction } from 'mobx'
+import { observer } from 'mobx-react-lite'
+interface HeaderProps {}
 
-const Header: FC<HeaderProps> = ({ isAuth, ...props }) => {
+const Header: FC<HeaderProps> = ({ ...props }) => {
     const {
-        homeStore: { checkIsAuth },
+        homeStore: { isAuth },
     } = rootStore
+
     return (
         <div
             className="g-white flex items-center justify-between border-b border-gray-100 px-6 py-2 shadow-md"
@@ -24,8 +25,10 @@ const Header: FC<HeaderProps> = ({ isAuth, ...props }) => {
                 <div>
                     <Button
                         onClick={() => {
+                            runInAction(() => {
+                                rootStore.homeStore.isAuth = false
+                            })
                             localStorage.removeItem('token')
-                            checkIsAuth()
                         }}
                         variant={'secondary'}
                         size={'default'}
@@ -54,4 +57,4 @@ const Header: FC<HeaderProps> = ({ isAuth, ...props }) => {
         </div>
     )
 }
-export { Header }
+export default observer(Header)

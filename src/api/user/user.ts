@@ -1,7 +1,13 @@
 import apiHandler from '../api'
 import { LoginDataT } from '~/container/Login/store/types'
-import { LoginReqT, LoginResT } from './types'
-import { mentorSignUpURL, memberSignUpURL, loginURL } from './api_url'
+import { LoginReqT, LoginResT, UserInfoResT } from './types'
+import {
+    mentorSignUpURL,
+    memberSignUpURL,
+    loginURL,
+    userInfoURL,
+} from './api_url'
+import { useQuery } from '@tanstack/react-query'
 
 export const callMentorSignUp = (data: any) => {
     return apiHandler({
@@ -24,5 +30,18 @@ export const callLogin = (data: LoginDataT) => {
         url: loginURL,
         method: 'post',
         data,
+    })
+}
+
+export const useGetUserInfo = () => {
+    return useQuery({
+        queryKey: ['userInfo'],
+        queryFn: async () => {
+            const res = await apiHandler<UserInfoResT>({
+                url: userInfoURL,
+                method: 'get',
+            })
+            return res.data
+        },
     })
 }

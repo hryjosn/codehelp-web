@@ -1,3 +1,5 @@
+import { ScheduleT } from '~/container/ScheduleSetting/store/types'
+
 export interface MentorT {
     id: string
     userName: string
@@ -28,4 +30,11 @@ export interface GetMentorInfoReqT {}
 export interface GetMentorInfoResT {
     status: string
     mentor: MentorT
+}
+export interface ScheduleReqT {
+    data: ScheduleT[]
+}
+
+export interface ScheduleResT {
+    data: { message: string; status: string }
 }

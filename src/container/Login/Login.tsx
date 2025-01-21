@@ -12,6 +12,8 @@ import { isAxiosError } from 'axios'
 import { useState } from 'react'
 import { joiResolver } from '@hookform/resolvers/joi'
 import Joi from 'joi/lib'
+import rootStore from '~/store'
+import { runInAction } from 'mobx'
 
 const Login = () => {
     const [errorText, setErrorText] = useState('')
@@ -35,11 +37,15 @@ const Login = () => {
         reset,
         formState: { errors },
     } = methods
+
     const onSubmit = async (data: LoginDataT) => {
         try {
             const res = await callLogin(data)
             if (res.data.token) {
                 localStorage.setItem('token', res.data.token)
+                runInAction(() => {
+                    rootStore.homeStore.isAuth = true
+                })
                 router.push('/')
             }
         } catch (error) {
