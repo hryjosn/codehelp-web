@@ -41,7 +41,7 @@ const MentorProfile = ({ params }: { params: { id: string } }) => {
     }
     return (
         <>
-            <Header isAuth={isAuth} />
+            <Header />
             <div className="p-6 md:p-16">
                 <Bio
                     avatar={MentorInfo.avatar}

@@ -24,6 +24,19 @@ export const useGetMentorInfo = (mentorId: string) => {
         },
     })
 }
+export const getMentorList = async ({
+    pageParam,
+    pageSize,
+}: {
+    pageParam: number
+    pageSize: number
+}) => {
+    const { data } = await apiHandler<MentorListResT>({
+        url: `/mentor/list?page=${pageParam}&count=${pageSize}`,
+        method: 'get',
+    })
+    return data
+}
 export const useGetMentorList = () => {
     return useInfiniteQuery({
         initialPageParam: 1,
