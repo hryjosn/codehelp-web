@@ -6,7 +6,7 @@ import TimeZoneGrid from './components/TimeZoneGrid/TimeZoneGrid'
 import WeekGrid from './components/WeekGrid/WeekGrid'
 import HourGrid from './components/HourGrid/HourGrid'
 import Header from '~/components/Header/Header'
-import { Appointment, Days, SelectedItem } from './store/types'
+import { AppointmentT, Days, SelectedItem } from './store/types'
 import { Button } from '~/components/Button/Button'
 import { useGetUserInfo } from '~/api/user/user'
 import { useSaveAppointment } from '~/api/mentor/mentor'
@@ -38,7 +38,7 @@ const Appointment = () => {
     }
     const save = () => {
         const selectedList = Object.values(selectedItems)
-        let appointment: Appointment[] = []
+        let appointment: AppointmentT[] = []
 
         selectedList.forEach(({ day, time }) => {
             const matchedDay = appointment.find(

@@ -1,4 +1,4 @@
-export interface Appointment {
+export interface AppointmentT {
     day: string
     timeCode: number[]
 }
