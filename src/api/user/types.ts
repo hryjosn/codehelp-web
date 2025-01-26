@@ -1,3 +1,5 @@
+import { Experience } from '~/container/Home/components/MentorList/types'
+
 export interface User {
     id: string
     userName: string
@@ -21,7 +23,7 @@ export interface User {
     createdAt: string
     updatedAt: string
     quickReply: boolean
-    experience: any[]
+    experience: Experience[]
     education: string
 }
 
