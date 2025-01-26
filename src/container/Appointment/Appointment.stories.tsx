@@ -1,5 +1,5 @@
 import type { Meta, StoryFn, StoryObj } from '@storybook/react'
-import ScheduleSetting from './ScheduleSetting'
+import Appointment from './Appointment'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
 const queryClient = new QueryClient()
@@ -13,8 +13,8 @@ const decorators = [
 ]
 
 const meta = {
-    title: 'ScheduleSetting/ScheduleSetting',
-    component: ScheduleSetting,
+    title: 'Appointment/Appointment',
+    component: Appointment,
     parameters: {
         layout: 'centered',
         nextjs: {
@@ -22,7 +22,7 @@ const meta = {
         },
     },
     decorators,
-} satisfies Meta<typeof ScheduleSetting>
+} satisfies Meta<typeof Appointment>
 
 export default meta
 type Story = StoryObj<typeof meta>

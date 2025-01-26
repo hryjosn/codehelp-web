@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react'
 import WeekGrid from './WeekGrid'
 
 const meta = {
-    title: 'ScheduleSetting/Components/WeekGrid',
+    title: 'Appointment/Components/WeekGrid',
     component: WeekGrid,
     parameters: {
         layout: 'centered',

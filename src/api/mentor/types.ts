@@ -1,4 +1,4 @@
-import { ScheduleT } from '~/container/ScheduleSetting/store/types'
+import { Appointment } from '~/container/Appointment/store/types'
 
 export interface MentorT {
     id: string
@@ -31,10 +31,16 @@ export interface GetMentorInfoResT {
     status: string
     mentor: MentorT
 }
-export interface ScheduleReqT {
-    data: ScheduleT[]
+export interface AppointmentParam {}
+
+export interface AppointmentReq {
+    data: Appointment[]
 }
 
-export interface ScheduleResT {
+export interface AppointmentRes {
+    message: string
+    status: string
+}
+export interface AppointmentResWrapData {
     data: { message: string; status: string }
 }

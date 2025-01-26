@@ -6,55 +6,56 @@ import TimeZoneGrid from './components/TimeZoneGrid/TimeZoneGrid'
 import WeekGrid from './components/WeekGrid/WeekGrid'
 import HourGrid from './components/HourGrid/HourGrid'
 import Header from '~/components/Header/Header'
-import { ScheduleT, weekly } from './store/types'
+import { Appointment, Days, SelectedItem } from './store/types'
 import { Button } from '~/components/Button/Button'
 import { useGetUserInfo } from '~/api/user/user'
-import { useSaveSchedule } from '~/api/mentor/mentor'
+import { useSaveAppointment } from '~/api/mentor/mentor'
 import { useRouter } from 'next/navigation'
 
-const weeks = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-const timeCode = [...Array(24)]
+const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+const TIMECODES = [...Array(24)]
 
-const ScheduleSetting = () => {
-    const [schedule, setSchedule] = useState<ScheduleT[]>([])
+const Appointment = () => {
+    const [selectedItems, setSelectedItems] = useState<SelectedItem>({})
     const router = useRouter()
     const { data: userData } = useGetUserInfo()
-    const { mutate: saveSchedule } = useSaveSchedule()
-    const setting = (week: number, hour: number) => {
-        const weekName = weekly[week]
+    const { mutate: saveAppointment } = useSaveAppointment()
 
-        setSchedule((prev) => {
-            const findWeekIndex = prev.findIndex(
-                (item) => item.weekly === weekName
-            )
-
-            if (findWeekIndex >= 0) {
-                const existingHours = prev[findWeekIndex].timeCode
-                const updatedHours = existingHours.includes(hour)
-                    ? existingHours.filter((h) => h !== hour)
-                    : [...existingHours, hour]
-
-                const updatedWeek = {
-                    ...prev[findWeekIndex],
-                    timeCode: updatedHours,
-                }
-
-                return [
-                    ...prev.slice(0, findWeekIndex),
-                    updatedWeek,
-                    ...prev.slice(findWeekIndex + 1),
-                ]
+    const setting = (day: number, time: number) => {
+        setSelectedItems((prevState) => {
+            const newItems = { ...prevState }
+            const key = `${day}-${time}`
+            if (newItems[key]) {
+                delete newItems[key]
             } else {
-                return [...prev, { weekly: weekName, timeCode: [hour] }]
+                newItems[key] = { day, time }
             }
+            return newItems
         })
     }
-    const resetSchedule = () => {
-        setSchedule([])
+    const reset = () => {
+        setSelectedItems({})
     }
-    const savingTimes = () => {
-        saveSchedule(
-            { data: schedule },
+    const save = () => {
+        const selectedList = Object.values(selectedItems)
+        let appointment: Appointment[] = []
+
+        selectedList.forEach(({ day, time }) => {
+            const matchedDay = appointment.find(
+                (data) => data.day === Days[day]
+            )
+
+            if (matchedDay) {
+                matchedDay.timeCode.push(time)
+            } else {
+                appointment.push({
+                    day: Days[day],
+                    timeCode: [time],
+                })
+            }
+        })
+        saveAppointment(
+            { data: appointment },
             {
                 onSuccess(res) {
                     alert(res.message)
@@ -74,28 +75,22 @@ const ScheduleSetting = () => {
                     <thead>
                         <tr className="flex">
                             <TimeZoneGrid />
-                            {weeks.map((week, index) => (
+                            {DAYS.map((week, index) => (
                                 <WeekGrid key={index} week={week} />
                             ))}
                         </tr>
                     </thead>
                     <tbody>
-                        {timeCode.map((_, rowIndex) => (
+                        {TIMECODES.map((_, rowIndex) => (
                             <tr key={rowIndex} className="flex">
                                 <HourGrid hour={rowIndex} />
-                                {weeks.map((_, colIndex) => (
+                                {DAYS.map((_, colIndex) => (
                                     <ButtonGrid
                                         key={colIndex}
                                         variant={
-                                            schedule.some(
-                                                (value) =>
-                                                    value.weekly ===
-                                                        weekly[colIndex + 1] &&
-                                                    value.timeCode.some(
-                                                        (value) =>
-                                                            value === rowIndex
-                                                    )
-                                            )
+                                            selectedItems[
+                                                `${colIndex + 1}-${rowIndex}`
+                                            ]
                                                 ? 'primary'
                                                 : 'secondary'
                                         }
@@ -112,13 +107,10 @@ const ScheduleSetting = () => {
                     <p className="mb-5 text-3xl">
                         Select your availability Times
                     </p>
-                    <Button
-                        className="min-w-40 max-w-80"
-                        onClick={resetSchedule}
-                    >
+                    <Button className="min-w-40 max-w-80" onClick={reset}>
                         Reset All
                     </Button>
-                    <Button className="min-w-40 max-w-80" onClick={savingTimes}>
+                    <Button className="min-w-40 max-w-80" onClick={save}>
                         Save
                     </Button>
                 </div>
@@ -127,4 +119,4 @@ const ScheduleSetting = () => {
     )
 }
 
-export default ScheduleSetting
+export default Appointment

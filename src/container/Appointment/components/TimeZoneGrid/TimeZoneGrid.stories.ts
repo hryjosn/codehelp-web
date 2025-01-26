@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react'
 import TimeZoneGrid from './TimeZoneGrid'
 
 const meta = {
-    title: 'ScheduleSetting/Components/TimeZoneGrid',
+    title: 'Appointment/Components/TimeZoneGrid',
     component: TimeZoneGrid,
     parameters: {
         layout: 'centered',

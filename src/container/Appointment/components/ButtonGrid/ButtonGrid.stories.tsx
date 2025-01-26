@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react'
 import ButtonGrid from './ButtonGrid'
 
 const meta = {
-    title: 'ScheduleSetting/Components/ButtonGrid',
+    title: 'Appointment/Components/ButtonGrid',
     component: ButtonGrid,
     parameters: {
         layout: 'centered',

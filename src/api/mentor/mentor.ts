@@ -1,8 +1,8 @@
 import { useInfiniteQuery, useMutation, useQuery } from '@tanstack/react-query'
 import { MentorT } from '~/container/Home/store/type'
 import apiHandler from '../api'
-import { getMentorInfoURL, saveScheduleURL } from './api_url'
-import { ScheduleReqT, ScheduleResT } from './types'
+import { getMentorInfoURL, saveAppointmentURL } from './api_url'
+import { AppointmentReq, AppointmentResWrapData } from './types'
 
 interface MentorListResT {
     mentorList: MentorT[]
@@ -49,13 +49,16 @@ export const useGetMentorList = () => {
     })
 }
 
-export const useSaveSchedule = () => {
+export const useSaveAppointment = () => {
     return useMutation({
-        mutationFn: async (data: ScheduleReqT) => {
-            const res = await apiHandler<ScheduleReqT, ScheduleResT>({
-                url: saveScheduleURL,
+        mutationFn: async (data: AppointmentReq) => {
+            const res = await apiHandler<
+                AppointmentReq,
+                AppointmentResWrapData
+            >({
+                url: saveAppointmentURL,
                 method: 'post',
-                data: data.data,
+                data,
             })
             return res.data
         },

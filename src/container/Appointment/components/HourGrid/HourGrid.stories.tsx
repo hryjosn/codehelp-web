@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react'
 import HourGrid from './HourGrid'
 
 const meta = {
-    title: 'ScheduleSetting/Components/HourGrid',
+    title: 'Appointment/Components/HourGrid',
     component: HourGrid,
     parameters: {
         layout: 'centered',

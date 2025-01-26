@@ -1,10 +1,11 @@
 import { http, HttpResponse } from 'msw'
-import { getMentorInfoURL, saveScheduleURL } from '~/api/mentor/api_url'
+import { getMentorInfoURL, saveAppointmentURL } from '~/api/mentor/api_url'
 import {
     GetMentorInfoReqT,
     GetMentorInfoResT,
-    ScheduleReqT,
-    ScheduleResT,
+    AppointmentReq,
+    AppointmentRes,
+    AppointmentParam,
 } from '~/api/mentor/types'
 
 export const getMentorInfo = [
@@ -46,13 +47,16 @@ export const getMentorInfo = [
     ),
 ]
 
-export const saveSchedule = [
-    http.post<any, ScheduleResT>(saveScheduleURL, () => {
-        return HttpResponse.json({
-            message: 'Save successfully',
-            status: 'ok',
-        })
-    }),
+export const saveAppointment = [
+    http.post<AppointmentParam, AppointmentReq, AppointmentRes>(
+        saveAppointmentURL,
+        () => {
+            return HttpResponse.json({
+                message: 'Save successfully',
+                status: 'ok',
+            })
+        }
+    ),
 ]
 
-export const mentorHandlers = [...getMentorInfo, ...saveSchedule]
+export const mentorHandlers = [...getMentorInfo, ...saveAppointment]
