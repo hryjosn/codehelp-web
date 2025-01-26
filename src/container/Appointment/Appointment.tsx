@@ -21,7 +21,7 @@ const Appointment = () => {
     const { data: userData } = useGetUserInfo()
     const { mutate: saveAppointment } = useSaveAppointment()
 
-    const setting = (day: number, time: number) => {
+    const onClick = (day: number, time: number) => {
         setSelectedItems((prevState) => {
             const newItems = { ...prevState }
             const key = `${day}-${time}`
@@ -95,7 +95,7 @@ const Appointment = () => {
                                                 : 'secondary'
                                         }
                                         onClick={() => {
-                                            setting(colIndex + 1, rowIndex)
+                                            onClick(colIndex + 1, rowIndex)
                                         }}
                                     />
                                 ))}
