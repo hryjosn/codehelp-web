@@ -1,3 +1,4 @@
+'use client'
 import { FC } from 'react'
 import rootStore from '~/store'
 import { Button } from '../Button/Button'

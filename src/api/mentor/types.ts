@@ -1,4 +1,4 @@
-import { AppointmentT } from '~/container/Appointment/store/types'
+import { Appointment } from '~/container/Appointment/store/types'
 
 export interface MentorT {
     id: string
@@ -34,7 +34,7 @@ export interface GetMentorInfoResT {
 export interface AppointmentParam {}
 
 export interface AppointmentReq {
-    data: AppointmentT[]
+    data: Appointment[]
 }
 
 export interface AppointmentRes {
