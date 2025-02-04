@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { getMentorList } from '~/api/mentor/mentor'
-import { Header } from '~/components/Header/Header'
+import Header from '~/components/Header/Header'
 import { MentorCard } from '~/components/mentor/MentorCard/MentorCard'
 import Pagination from './components/Pagination'
 const PAGE_SIZE = 10

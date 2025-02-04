@@ -19,7 +19,7 @@ import { useChatroomStore } from '../Chat/store/ChatStore'
 import { RESPONSE_CODE } from '../Login/store/types'
 import Link from 'next/link'
 import { BackgroundItem } from './components/BackgroundItem/BackgroundItem'
-import { Header } from '~/components/Header/Header'
+import Header from '~/components/Header/Header'
 
 const MentorProfile = ({ params }: { params: { id: string } }) => {
     const {

@@ -4,12 +4,15 @@ import rootStore from '~/store'
 import { Button } from '../Button/Button'
 import { NavButton } from '../NavButton/NavButton'
 
+import { runInAction } from 'mobx'
+import { observer } from 'mobx-react-lite'
 import Link from 'next/link'
 
 const Header: FC = () => {
     const {
         homeStore: { checkIsAuth, isAuth },
     } = rootStore
+
     return (
         <div className="g-white flex items-center justify-between border-b border-gray-100 px-6 py-2 shadow-md">
             <Link className="rounded-lg border px-3 py-2" href="/">
@@ -19,8 +22,10 @@ const Header: FC = () => {
                 <div>
                     <Button
                         onClick={() => {
+                            runInAction(() => {
+                                rootStore.homeStore.isAuth = false
+                            })
                             localStorage.removeItem('token')
-                            checkIsAuth()
                         }}
                         variant={'secondary'}
                         size={'default'}
@@ -49,4 +54,4 @@ const Header: FC = () => {
         </div>
     )
 }
-export { Header }
+export default observer(Header)
