@@ -1,15 +1,14 @@
-import React from 'react'
-import Input from '~/components/Input/Input'
-import CalendarMonthIcon from '@mui/icons-material/CalendarMonth'
 import AccessTimeIcon from '@mui/icons-material/AccessTime'
-import { Button } from '~/components/Button/Button'
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth'
 import { Modal } from '@mui/material'
 import Image from 'next/image'
 import { useGetMentorInfo } from '~/api/mentor/mentor'
-import UploadImage from '~/components/UploadImage/UploadImage'
-import { Props } from './types'
-import { useStore } from '~/store/rootStoreProvider'
+import { Button } from '~/components/Button/Button'
 import ImageRemoveButton from '~/components/ImageRemoveButton/ImageRemoveButton'
+import Input from '~/components/Input/Input'
+import UploadImage from '~/components/UploadImage/UploadImage'
+import { useStore } from '~/store/rootStoreProvider'
+import { Props } from './types'
 
 const BookingModal = ({
     mentorId,
@@ -25,6 +24,7 @@ const BookingModal = ({
     const confirmBooking = () => {
         onClose()
     }
+
     return (
         <Modal
             open={isOpen}
@@ -105,7 +105,17 @@ const BookingModal = ({
                     </div>
                     <div className="mt-2">
                         {imageList.length < 3 && (
-                            <UploadImage onChange={uploadImage} />
+                            <UploadImage
+                                onChange={(event) => {
+                                    const file = event.target.files![0]
+                                    if (!file.type.startsWith('image/')) {
+                                        alert('Only can upload image files')
+                                        return
+                                    }
+                                    const fileURL = URL.createObjectURL(file)
+                                    uploadImage(fileURL)
+                                }}
+                            />
                         )}
 
                         <div className="mt-1 flex">

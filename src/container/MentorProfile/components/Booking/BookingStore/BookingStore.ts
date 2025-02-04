@@ -1,21 +1,21 @@
-import { create, createStore } from 'zustand'
-import { BookingStore } from './types'
+import { create } from 'zustand'
 
-export const useBookingStore = create<BookingStore>()((set) => ({
+type State = {
+    imageList: string[]
+}
+type Actions = {
+    uploadImage: (imageURL: string) => void
+    removeImage: (imageURL: string) => void
+}
+export type BookingStore = State & Actions
+
+export const useBookingStore = create<State & Actions>()((set) => ({
     imageList: [],
-    set,
-    uploadImage: (event) => {
-        const file = event.target.files![0]
-        if (!file.type.startsWith('image/')) {
-            alert('Only can upload image files')
-            return
-        }
-        const fileURL = URL.createObjectURL(file)
-        set((state) => ({
-            imageList: [...state.imageList, fileURL],
-        }))
-    },
-    removeImage: (imageURL) => {
+
+    uploadImage: (imageURL: string) =>
+        set((state) => ({ imageList: [...state.imageList, imageURL] })),
+
+    removeImage: (imageURL: string) => {
         set((state) => ({
             imageList: state.imageList.filter((url) => url !== imageURL),
         }))
