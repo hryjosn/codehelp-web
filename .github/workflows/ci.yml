@@ -1,0 +1,31 @@
+name: Build Next.js App
+
+on:
+  push:
+    branches:
+      - main  # Replace with your default branch
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Checkout the repository
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    # Set up Node.js
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18  # Use the Node.js version compatible with your Next.js app
+        cache: 'yarn'     # If you use npm, replace this with 'npm'
+
+    # Install dependencies
+    - name: Install Dependencies
+      run: yarn install  # Replace with `npm install` if using npm
+
+    # Run the Next.js build
+    - name: Build Next.js App
+      run: yarn build    # Replace with `npm run build` if using npm
