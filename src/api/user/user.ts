@@ -1,13 +1,13 @@
-import apiHandler from '../api'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { LoginDataT } from '~/container/Login/store/types'
-import { LoginReqT, LoginResT, UserInfoResT } from './types'
+import apiHandler from '../api'
 import {
-    mentorSignUpURL,
-    memberSignUpURL,
     loginURL,
+    memberSignUpURL,
+    mentorSignUpURL,
     userInfoURL,
 } from './api_url'
-import { useQuery } from '@tanstack/react-query'
+import { LoginReqT, LoginResT, UserInfoResT } from './types'
 
 export const callMentorSignUp = (data: any) => {
     return apiHandler({
@@ -25,11 +25,16 @@ export const callMemberSignUp = (data: any) => {
     })
 }
 
-export const callLogin = (data: LoginDataT) => {
-    return apiHandler<LoginReqT, LoginResT>({
-        url: loginURL,
-        method: 'post',
-        data,
+export const useLogin = () => {
+    return useMutation({
+        mutationFn: async (data: LoginDataT) => {
+            const res = await apiHandler<LoginReqT, LoginResT>({
+                url: loginURL,
+                method: 'post',
+                data,
+            })
+            return res
+        },
     })
 }
 
