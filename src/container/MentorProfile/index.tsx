@@ -1,20 +1,22 @@
+import Link from 'next/link'
+import { BsLinkedin } from 'react-icons/bs'
+import { getMentorInfo } from '~/api/mentor/mentor'
+import Header from '~/components/Header/Header'
 import Bio from '~/components/mentor/Bio'
 import Education from '~/components/mentor/Education'
 import Experience from '~/components/mentor/Experience'
-import Booking from './components/Booking/Booking'
-import { BsLinkedin } from 'react-icons/bs'
-import { getMentorInfo } from '~/api/mentor/mentor'
-import React from 'react'
-import Link from 'next/link'
 import { BackgroundItem } from './components/BackgroundItem/BackgroundItem'
-import Header from '~/components/Header/Header'
+import Booking from './components/Booking/Booking'
 import ChatIcon from './components/ChatIcon/ChatIcon'
 import PhoneIcon from './components/PhoneIcon/PhoneIcon'
 
-const MentorProfile = async ({ params }: { params: { id: string } }) => {
+const MentorProfile = async ({
+    params,
+}: {
+    params: Promise<{ id: string }>
+}) => {
     const mentorId = (await params).id
-    const res = getMentorInfo(mentorId)
-    const mentorInfo = await res
+    const mentorInfo = await getMentorInfo(mentorId)
 
     return (
         <>
@@ -34,7 +36,7 @@ const MentorProfile = async ({ params }: { params: { id: string } }) => {
                 <div className="mt-6 flex flex-col items-start gap-4 border-t border-solid border-gray-200 pt-6 lg:flex-row lg:gap-32">
                     <div className="flex flex-1 flex-col gap-4 px-6">
                         <p className="line-clamp-3 font-bold">
-                            {mentorInfo!.introduction}
+                            {mentorInfo.introduction}
                         </p>
                         <div>
                             <Link
