@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react'
 import ButtonInput from './ButtonInput'
 
 const meta = {
-    title: 'Chat/ButtonInput',
+    title: 'ButtonInput',
     component: ButtonInput,
     parameters: {
         layout: 'centered',
@@ -14,4 +14,10 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-export const Default: Story = {}
+export const Default: Story = {
+    args: {
+        placeholder: 'Write something...',
+        onClick() {},
+        onChange(e) {},
+    },
+}

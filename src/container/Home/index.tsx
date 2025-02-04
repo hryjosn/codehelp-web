@@ -1,16 +1,43 @@
-'use client'
-
+import Link from 'next/link'
+import { getMentorList } from '~/api/mentor/mentor'
 import Header from '~/components/Header/Header'
-import MentorList from './components/MentorList'
-import { observer } from 'mobx-react-lite'
+import { MentorCard } from '~/components/mentor/MentorCard/MentorCard'
+import Pagination from './components/Pagination'
+const PAGE_SIZE = 10
+const Home = async (props: {
+    searchParams?: Promise<{
+        page?: string
+    }>
+}) => {
+    const params = await props.searchParams
+    const pageParam = params?.page ? Number(params?.page) : 1
+    const data = await getMentorList({
+        pageParam: pageParam,
+        pageSize: PAGE_SIZE,
+    })
 
-const Home = () => {
+    const mentorList = data.mentorList
+    const total = data.total
     return (
         <div>
             <Header />
-            <MentorList />
+            <div>
+                <div className="grid gap-4 p-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
+                    {mentorList?.map((mentor) => (
+                        <Link
+                            key={mentor.id}
+                            href={`/mentor-profile/${mentor.id}`}
+                        >
+                            <MentorCard mentor={mentor} />
+                        </Link>
+                    ))}
+                </div>
+                <div className="flex items-center justify-center">
+                    <Pagination count={Math.ceil(total / PAGE_SIZE)} />
+                </div>
+            </div>
         </div>
     )
 }
 
-export default observer(Home)
+export default Home
