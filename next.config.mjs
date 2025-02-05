@@ -1,3 +1,6 @@
+import createNextIntlPlugin from 'next-intl/plugin'
+const withNextIntl = createNextIntlPlugin()
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     reactStrictMode: false,
@@ -18,11 +21,10 @@ const nextConfig = {
     webpack: (config, { isServer }) => {
         if (isServer) {
             config.externals = [...(config.externals || []), '_http_common']
-            config.target = 'node'
         }
 
         return config
     },
 }
 
-export default nextConfig
+export default withNextIntl(nextConfig)
