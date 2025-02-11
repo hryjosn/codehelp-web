@@ -3,6 +3,7 @@ import { ReactQueryClientProvider } from '~/components/ReactQueryClientProvider/
 import '~/styles/globals.css'
 import { server } from '~/../mocks/node'
 import { MSWProvider } from '~/../mocks/msw-provider'
+import { RootStoreProvider } from '~/store/rootStoreProvider'
 
 server.listen()
 
@@ -21,7 +22,9 @@ export default function RootLayout({
         <html lang="en">
             <body>
                 <ReactQueryClientProvider>
-                    <MSWProvider>{children}</MSWProvider>
+                    <MSWProvider>
+                        <RootStoreProvider>{children}</RootStoreProvider>
+                    </MSWProvider>
                 </ReactQueryClientProvider>
             </body>
         </html>
