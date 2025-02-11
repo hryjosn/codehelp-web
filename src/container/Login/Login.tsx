@@ -107,14 +107,6 @@ const Login = () => {
                     height={622}
                 />
             </div>
-            <button
-                className="h-10 w-10"
-                onClick={() => {
-                    fetch('/api/auth/logout', { method: 'GET' })
-                }}
-            >
-                Login
-            </button>
         </div>
     )
 }
