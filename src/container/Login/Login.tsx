@@ -42,8 +42,12 @@ const Login = () => {
         login(data, {
             onSuccess(res) {
                 if (res.data.token) {
-                    localStorage.setItem('token', res.data.token)
-                    router.push('/')
+                    const token = res.data.token.split(' ')[1]
+                    fetch('/api/auth/store-token', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ token }),
+                    })
                 }
             },
             onError: (error) => {
@@ -103,6 +107,14 @@ const Login = () => {
                     height={622}
                 />
             </div>
+            <button
+                className="h-10 w-10"
+                onClick={() => {
+                    fetch('/api/auth/logout', { method: 'GET' })
+                }}
+            >
+                Login
+            </button>
         </div>
     )
 }

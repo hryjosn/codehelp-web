@@ -4,7 +4,7 @@ import '~/styles/globals.css'
 import { server } from '~/../mocks/node'
 import { MSWProvider } from '~/../mocks/msw-provider'
 
-server.listen()
+// server.listen()
 
 export const metadata: Metadata = {
     title: 'Home',
@@ -21,7 +21,8 @@ export default function RootLayout({
         <html lang="en">
             <body>
                 <ReactQueryClientProvider>
-                    <MSWProvider>{children}</MSWProvider>
+                    {/* <MSWProvider>{children}</MSWProvider> */}
+                    {children}
                 </ReactQueryClientProvider>
             </body>
         </html>

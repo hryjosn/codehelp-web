@@ -22,10 +22,7 @@ const Header: FC = () => {
                 <div>
                     <Button
                         onClick={() => {
-                            runInAction(() => {
-                                rootStore.homeStore.isAuth = false
-                            })
-                            localStorage.removeItem('token')
+                            fetch('/api/auth/logout')
                         }}
                         variant={'secondary'}
                         size={'default'}
