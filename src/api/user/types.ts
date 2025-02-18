@@ -84,3 +84,22 @@ export interface UserInfoResT {
     token: string
     user: User
 }
+
+export interface BookingInfoReqT {}
+export interface BookingTime {
+    id: string
+    host: string
+    memberList: string[]
+    startAt: string
+    duration: string
+    topic: string
+    question: string
+    pictureList: string[]
+    createdAt: string
+    updatedAt: string
+}
+export interface BookingInfoResT {
+    status: string
+    msg: string
+    bookingTime: BookingTime[]
+}
