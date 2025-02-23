@@ -1,21 +1,16 @@
 'use client'
 
+import { addDays, format } from 'date-fns'
 import React from 'react'
 import { useGetBookingInfo } from '~/api/user/user'
 
 import Header from '~/components/Header/Header'
 
-const WEEK_DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-
+const upcoming7Days = Array.from({ length: 7 }, (_, i) => {
+    return addDays(new Date(), i)
+})
 const BookingInfo = () => {
     const { data: BookingInfo } = useGetBookingInfo()
-
-    const today = new Date()
-    const upcoming7Days = Array.from({ length: 7 }, (_, i) => {
-        const date = new Date(today)
-        date.setDate(today.getDate() + i)
-        return date
-    })
 
     return (
         <>
@@ -26,7 +21,7 @@ const BookingInfo = () => {
                         <tr className="bg-gray-100">
                             {upcoming7Days.map((date, index) => (
                                 <th key={index} className="w-1/7 border p-2">
-                                    {`${date.getMonth() + 1}/${date.getDate()} (${WEEK_DAYS[date.getDay()]})`}
+                                    {format(date, 'M/d (EEE)')}
                                 </th>
                             ))}
                         </tr>
@@ -34,15 +29,14 @@ const BookingInfo = () => {
                     <tbody>
                         <tr>
                             {upcoming7Days.map((date, index) => {
-                                const formattedDate = date
-                                    .toISOString()
-                                    .split('T')[0]
+                                const formattedDate = format(date, 'yyyy-MM-dd')
                                 const bookingsForDay =
                                     BookingInfo?.bookingTime?.filter(
                                         (booking) =>
-                                            new Date(booking.startAt)
-                                                .toISOString()
-                                                .split('T')[0] === formattedDate
+                                            format(
+                                                new Date(booking.startAt),
+                                                'yyyy-MM-dd'
+                                            ) === formattedDate
                                     ) || []
                                 return (
                                     <td
