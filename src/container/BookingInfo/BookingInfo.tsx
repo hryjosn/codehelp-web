@@ -18,16 +18,16 @@ const BookingInfo = () => {
             <div className="mx-10 mt-10 overflow-x-auto md:mx-20">
                 <table className="w-full table-auto border-collapse border border-gray-300">
                     <thead>
-                        <tr className="bg-gray-100">
+                        <tr className="flex bg-gray-100">
                             {upcoming7Days.map((date, index) => (
-                                <th key={index} className="w-1/7 border p-2">
+                                <th key={index} className="flex-1 border p-2">
                                     {format(date, 'M/d (EEE)')}
                                 </th>
                             ))}
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
+                        <tr className="flex">
                             {upcoming7Days.map((date, index) => {
                                 const formattedDate = format(date, 'yyyy-MM-dd')
                                 const bookingsForDay =
@@ -41,7 +41,7 @@ const BookingInfo = () => {
                                 return (
                                     <td
                                         key={index}
-                                        className="w-1/7 border p-2 align-top"
+                                        className="flex-1 border p-2 align-top"
                                     >
                                         {bookingsForDay.length > 0 ? (
                                             bookingsForDay.map(
