@@ -12,11 +12,12 @@ instance.interceptors.request.use(
     async (config) => {
         // config can be modified before sending the request
         // Add an authentication token to the request
-        const token = 'asdasd'
 
-        if (token) {
-            config.headers.Authorization = token
-        }
+        // const token = 'asdasd'
+
+        // if (token) {
+        //     config.headers.Authorization = token
+        // }
 
         return config
     },

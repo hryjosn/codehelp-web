@@ -43,9 +43,13 @@ export const useGetUserInfo = () => {
         queryKey: ['userInfo'],
         queryFn: async () => {
             const res = await apiHandler<UserInfoResT>({
-                url: userInfoURL,
+                url: '/api/user/get-user-info',
                 method: 'get',
             })
+            // const res = await fetch('/api/user/get-user-info', {
+            //     method: 'GET',
+            //     headers: { 'Content-Type': 'application/json' },
+            // })
             return res.data
         },
     })
