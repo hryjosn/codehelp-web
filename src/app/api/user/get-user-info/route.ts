@@ -14,18 +14,10 @@ export async function GET(req: Request) {
 
     try {
         const res = await apiHandler({
-            url: userInfoURL + '/a192638c-ec69-411f-9512-2fae86d8fdc4',
+            url: `${userInfoURL}/a192638c-ec69-411f-9512-2fae86d8fdc4`,
             method: 'GET',
             // headers: { Authorization: `Bearer${token}` },
         })
-        // const res = await fetch(
-        //     userInfoURL + '/a192638c-ec69-411f-9512-2fae86d8fdc4',
-        //     {
-        //         method: 'GET',
-        //         headers: { Authorization: `Bearer ${token}` },
-        //         mode: 'cors',
-        //     }
-        // )
 
         if (!res) {
             return NextResponse.json(
@@ -34,8 +26,7 @@ export async function GET(req: Request) {
             )
         }
 
-        // const user = await res.json()
-        return NextResponse.json(res)
+        return NextResponse.json(res.data)
     } catch (error) {
         console.log('error >>', error)
     }

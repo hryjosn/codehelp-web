@@ -8,6 +8,8 @@ import {
     userInfoURL,
 } from './api_url'
 import { LoginReqT, LoginResT, UserInfoResT } from './types'
+import { NextResponse } from 'next/server'
+import axios from 'axios'
 
 export const callMentorSignUp = (data: any) => {
     return apiHandler({
@@ -42,15 +44,8 @@ export const useGetUserInfo = () => {
     return useQuery({
         queryKey: ['userInfo'],
         queryFn: async () => {
-            const res = await apiHandler<UserInfoResT>({
-                url: '/api/user/get-user-info',
-                method: 'get',
-            })
-            // const res = await fetch('/api/user/get-user-info', {
-            //     method: 'GET',
-            //     headers: { 'Content-Type': 'application/json' },
-            // })
-            return res.data
+            const res = await axios.get('/api/user/get-user-info')
+            return res
         },
     })
 }

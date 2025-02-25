@@ -64,9 +64,9 @@ const Appointment = () => {
         )
     }
 
-    if (userData && userData.identity !== 'mentor') {
-        router.back()
-    }
+    // if (userData && userData.identity !== 'mentor') {
+    //     router.back()
+    // }
     return (
         <>
             <Header />
