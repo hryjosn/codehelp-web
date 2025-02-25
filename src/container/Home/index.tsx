@@ -1,8 +1,8 @@
-import Link from 'next/link'
 import { getMentorList } from '~/api/mentor/mentor'
-import { Header } from '~/components/Header/Header'
+import Header from '~/components/Header/Header'
 import { MentorCard } from '~/components/mentor/MentorCard/MentorCard'
 import Pagination from './components/Pagination'
+import { Link } from '~/i18n/routing'
 const PAGE_SIZE = 10
 const Home = async (props: {
     searchParams?: Promise<{
@@ -18,6 +18,7 @@ const Home = async (props: {
 
     const mentorList = data.mentorList
     const total = data.total
+
     return (
         <div>
             <Header />

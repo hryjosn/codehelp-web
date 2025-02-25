@@ -45,7 +45,7 @@ const BookingModal = ({
                         <div className="flex flex-col">
                             <p className="text-sm">{data?.userName}</p>
                             <p className="text-sm text-zinc-500">
-                                {data!.title}
+                                {data?.title}
                             </p>
                         </div>
                     </div>

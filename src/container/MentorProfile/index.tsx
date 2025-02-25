@@ -1,95 +1,46 @@
-'use client'
-import { useRouter } from 'next/navigation'
-
+import Link from 'next/link'
+import { BsLinkedin } from 'react-icons/bs'
+import { getMentorInfo } from '~/api/mentor/mentor'
+import Header from '~/components/Header/Header'
 import Bio from '~/components/mentor/Bio'
 import Education from '~/components/mentor/Education'
 import Experience from '~/components/mentor/Experience'
-import Booking from './components/Booking/Booking'
-import { runInAction } from 'mobx'
-import rootStore from '~/store'
-import { useState } from 'react'
-import { HiPhone, HiChatBubbleLeftEllipsis } from 'react-icons/hi2'
-import { BsLinkedin } from 'react-icons/bs'
-import { createLocalStream } from '../VideoConference/utils'
-import LoadingModal from '~/components/LoadingModal/LoadingModal'
-import { observer } from 'mobx-react-lite'
-import { useGetMentorInfo } from '~/api/mentor/mentor'
-import React from 'react'
-import { useChatroomStore } from '../Chat/store/ChatStore'
-import { RESPONSE_CODE } from '../Login/store/types'
-import Link from 'next/link'
 import { BackgroundItem } from './components/BackgroundItem/BackgroundItem'
-import { Header } from '~/components/Header/Header'
+import Booking from './components/Booking/Booking'
+import ChatIcon from './components/ChatIcon/ChatIcon'
+import PhoneIcon from './components/PhoneIcon/PhoneIcon'
 
-const MentorProfile = ({ params }: { params: { id: string } }) => {
-    const {
-        videoConferenceStore: { connectSocket },
-        homeStore: { isAuth },
-    } = rootStore
+const MentorProfile = async ({
+    params,
+}: {
+    params: Promise<{ id: string }>
+}) => {
+    const mentorId = (await params).id
+    const mentorInfo = await getMentorInfo(mentorId)
 
-    const [modalVisible, setModalVisible] = useState(false)
-
-    const router = useRouter()
-    const { data: MentorInfo, isPending } = useGetMentorInfo(params.id)
-    const createChatroom = useChatroomStore((state) => state.createChatroom)
-
-    if (isPending) {
-        return
-    }
-    if (!MentorInfo) {
-        return <h1>Error: Mentor information not found</h1>
-    }
     return (
         <>
             <Header />
             <div className="p-6 md:p-16">
                 <Bio
-                    avatar={MentorInfo.avatar}
-                    name={MentorInfo.userName}
-                    company={MentorInfo.company}
-                    title={MentorInfo.title}
-                    country={MentorInfo.country}
+                    avatar={mentorInfo.avatar}
+                    name={mentorInfo.userName}
+                    company={mentorInfo.company}
+                    title={mentorInfo.title}
+                    country={mentorInfo.country}
                 />
                 <div className="flex justify-end gap-5">
-                    <HiChatBubbleLeftEllipsis
-                        className="cursor-pointer"
-                        size={30}
-                        onClick={async () => {
-                            const res = await createChatroom(params.id)
-                            if (
-                                res === RESPONSE_CODE.DATA_DUPLICATE ||
-                                res.chatroomId
-                            ) {
-                                router.push('/chat')
-                            }
-                        }}
-                    />
-                    <HiPhone
-                        className="cursor-pointer"
-                        size={30}
-                        onClick={async () => {
-                            setModalVisible(true)
-                            const localStream = await createLocalStream()
-                            connectSocket()
-                            runInAction(() => {
-                                rootStore.videoConferenceStore.localStream =
-                                    localStream
-                            })
-                            if (localStream) {
-                                router.push(`/video-conference/${params.id}`)
-                                setModalVisible(false)
-                            }
-                        }}
-                    />
+                    <ChatIcon mentorId={mentorId} />
+                    <PhoneIcon mentorId={mentorId} />
                 </div>
                 <div className="mt-6 flex flex-col items-start gap-4 border-t border-solid border-gray-200 pt-6 lg:flex-row lg:gap-32">
                     <div className="flex flex-1 flex-col gap-4 px-6">
                         <p className="line-clamp-3 font-bold">
-                            {MentorInfo!.introduction}
+                            {mentorInfo.introduction}
                         </p>
                         <div>
                             <Link
-                                href={MentorInfo.url}
+                                href={mentorInfo.url}
                                 target="_blank"
                                 className="inline-flex"
                             >
@@ -104,30 +55,29 @@ const MentorProfile = ({ params }: { params: { id: string } }) => {
                             <BackgroundItem
                                 title={'Expertise'}
                                 content={[
-                                    MentorInfo.primaryExpertise,
-                                    MentorInfo.secondaryExpertise,
-                                    MentorInfo.tertiaryExpertise,
+                                    mentorInfo.primaryExpertise,
+                                    mentorInfo.secondaryExpertise,
+                                    mentorInfo.tertiaryExpertise,
                                 ]}
                             />
                             <BackgroundItem
                                 title={'Disciplines'}
-                                content={MentorInfo.disciplines}
+                                content={mentorInfo.disciplines}
                             />
                         </div>
-                        {MentorInfo.experience.length > 0 && (
-                            <Experience experiences={MentorInfo.experience} />
+                        {mentorInfo.experience.length > 0 && (
+                            <Experience experiences={mentorInfo.experience} />
                         )}
 
-                        <Education educationProps={MentorInfo.education} />
+                        <Education educationProps={mentorInfo.education} />
                     </div>
                     <div className="px-6 lg:px-0">
-                        <Booking mentorId={MentorInfo.id} />
+                        <Booking mentorId={mentorInfo.id} />
                     </div>
                 </div>
             </div>
-            <LoadingModal visible={modalVisible} />
         </>
     )
 }
 
-export default observer(MentorProfile)
+export default MentorProfile
