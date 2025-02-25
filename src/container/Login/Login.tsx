@@ -1,6 +1,6 @@
 'use client'
 import { joiResolver } from '@hookform/resolvers/joi'
-import { isAxiosError } from 'axios'
+import axios, { isAxiosError } from 'axios'
 import Joi from 'joi/lib'
 import { observer } from 'mobx-react-lite'
 import Image from 'next/image'
@@ -40,14 +40,15 @@ const Login = () => {
 
     const onSubmit = async (data: LoginDataT) => {
         login(data, {
-            onSuccess(res) {
+            onSuccess: async (res) => {
                 if (res.data.token) {
                     const token = res.data.token.split(' ')[1]
-                    fetch('/api/auth/store-token', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ token }),
-                    })
+                    try {
+                        await axios.post('/api/auth/store-token', { token })
+                        router.push('/')
+                    } catch (error) {
+                        console.log(error)
+                    }
                 }
             },
             onError: (error) => {

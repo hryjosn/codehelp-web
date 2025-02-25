@@ -1,29 +1,47 @@
 'use client'
-import { FC } from 'react'
-import rootStore from '~/store'
+import { FC, useEffect, useState } from 'react'
+
 import { Button } from '../Button/Button'
 import { NavButton } from '../NavButton/NavButton'
-
-import { runInAction } from 'mobx'
-import { observer } from 'mobx-react-lite'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import axios from 'axios'
 
 const Header: FC = () => {
-    const {
-        homeStore: { checkIsAuth, isAuth },
-    } = rootStore
+    const [token, setToken] = useState<string | null>(null)
+    const router = useRouter()
 
+    useEffect(() => {
+        const fetchToken = async () => {
+            try {
+                const { data } = await axios.get('/api/auth/store-token')
+                setToken(data.token)
+            } catch (error) {
+                console.error('Failed to fetch token:', error)
+                setToken(null)
+            }
+        }
+
+        fetchToken()
+    }, [])
+    const Logout = async () => {
+        try {
+            await axios.delete('/api/auth/store-token')
+            setToken(null)
+            router.refresh()
+        } catch (error) {
+            console.error('Logout failed:', error)
+        }
+    }
     return (
         <div className="g-white flex items-center justify-between border-b border-gray-100 px-6 py-2 shadow-md">
             <Link className="rounded-lg border px-3 py-2" href="/">
-                <text>Code Help Icon</text>
+                <p>Code Help Icon</p>
             </Link>
-            {isAuth ? (
+            {token ? (
                 <div>
                     <Button
-                        onClick={() => {
-                            fetch('/api/auth/logout')
-                        }}
+                        onClick={Logout}
                         variant={'secondary'}
                         size={'default'}
                     >
@@ -51,4 +69,4 @@ const Header: FC = () => {
         </div>
     )
 }
-export default observer(Header)
+export default Header
