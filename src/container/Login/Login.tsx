@@ -44,7 +44,7 @@ const Login = () => {
                 if (res.data.token) {
                     const token = res.data.token.split(' ')[1]
                     try {
-                        await axios.post('/api/auth/store-token', { token })
+                        await axios.post('/api/auth/token', { token })
                         router.push('/')
                     } catch (error) {
                         console.log(error)

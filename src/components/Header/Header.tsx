@@ -1,11 +1,11 @@
 'use client'
 import { FC, useEffect, useState } from 'react'
 
-import { Button } from '../Button/Button'
-import { NavButton } from '../NavButton/NavButton'
+import axios from 'axios'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import axios from 'axios'
+import { Button } from '../Button/Button'
+import { NavButton } from '../NavButton/NavButton'
 
 const Header: FC = () => {
     const [token, setToken] = useState<string | null>(null)
@@ -14,7 +14,7 @@ const Header: FC = () => {
     useEffect(() => {
         const fetchToken = async () => {
             try {
-                const { data } = await axios.get('/api/auth/store-token')
+                const { data } = await axios.get('/api/auth/token')
                 setToken(data.token)
             } catch (error) {
                 console.error('Failed to fetch token:', error)
@@ -26,7 +26,7 @@ const Header: FC = () => {
     }, [])
     const Logout = async () => {
         try {
-            await axios.delete('/api/auth/store-token')
+            await axios.delete('/api/auth/token')
             setToken(null)
             router.refresh()
         } catch (error) {
