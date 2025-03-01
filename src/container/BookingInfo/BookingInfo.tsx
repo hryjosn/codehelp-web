@@ -5,13 +5,13 @@ import React from 'react'
 import { useGetBookingInfo } from '~/api/user/user'
 
 import Header from '~/components/Header/Header'
+import BookingInfoCard from './components/BookingInfoCard'
 
 const upcoming7Days = Array.from({ length: 7 }, (_, i) => {
     return addDays(new Date(), i)
 })
 const BookingInfo = () => {
     const { data: BookingInfo } = useGetBookingInfo()
-
     return (
         <>
             <Header />
@@ -44,55 +44,12 @@ const BookingInfo = () => {
                                         className="flex-1 border p-2 align-top"
                                     >
                                         {bookingsForDay.length > 0 ? (
-                                            bookingsForDay.map(
-                                                ({
-                                                    id,
-                                                    topic,
-                                                    host,
-                                                    startAt,
-                                                    memberList,
-                                                }) => (
-                                                    <div
-                                                        key={id}
-                                                        className="mb-2 rounded-md bg-lime-100 p-2"
-                                                    >
-                                                        <div>
-                                                            <span className="font-black">
-                                                                Topic:
-                                                            </span>{' '}
-                                                            {topic}
-                                                        </div>
-                                                        <div>
-                                                            <span className="font-black">
-                                                                Host:{' '}
-                                                            </span>
-                                                            {host}
-                                                        </div>
-                                                        <div>
-                                                            <span className="font-black">
-                                                                Start Time:{' '}
-                                                            </span>
-                                                            {new Date(
-                                                                startAt
-                                                            ).toLocaleTimeString(
-                                                                'en-US',
-                                                                {
-                                                                    hour: '2-digit',
-                                                                    minute: '2-digit',
-                                                                }
-                                                            )}
-                                                        </div>
-                                                        <div>
-                                                            <span className="font-black">
-                                                                Member:{' '}
-                                                            </span>
-                                                            {memberList.join(
-                                                                ', '
-                                                            )}
-                                                        </div>
-                                                    </div>
-                                                )
-                                            )
+                                            bookingsForDay.map((data) => (
+                                                <BookingInfoCard
+                                                    key={index}
+                                                    data={data}
+                                                />
+                                            ))
                                         ) : (
                                             <p className="text-center text-gray-500">
                                                 No booking
