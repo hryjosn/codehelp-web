@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { Button } from '../Button/Button'
 import { NavButton } from '../NavButton/NavButton'
+import { signOut } from 'next-auth/react'
 
 const Header: FC = () => {
     const [token, setToken] = useState<string | null>(null)
@@ -26,9 +27,10 @@ const Header: FC = () => {
     }, [])
     const Logout = async () => {
         try {
+            signOut({ callbackUrl: '/', redirect: false })
             await axios.delete('/api/auth/token')
             setToken(null)
-            router.refresh()
+            router.push('/')
         } catch (error) {
             console.error('Logout failed:', error)
         }

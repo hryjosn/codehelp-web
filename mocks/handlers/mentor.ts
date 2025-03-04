@@ -7,6 +7,11 @@ import {
     AppointmentRes,
     AppointmentParam,
 } from '~/api/mentor/types'
+import {
+    MENTOR_DISCIPLINES,
+    MENTOR_SKILLS,
+    MENTOR_TOOLS,
+} from '~/container/SignUp/store/types'
 
 export const getMentorInfo = [
     http.get<GetMentorInfoReqT, GetMentorInfoResT>(
@@ -32,12 +37,14 @@ export const getMentorInfo = [
                     secondaryExpertise: 'Fullstack Development',
                     tertiaryExpertise: 'Mobile Development',
                     disciplines: [
-                        'Business Administration',
-                        'Design',
-                        'Economics',
+                        MENTOR_DISCIPLINES.BIOLOGY,
+                        MENTOR_DISCIPLINES.BUSINESS_ADMINISTRATION,
                     ],
-                    skills: ['PHP', 'ASP.NET'],
-                    tools: ['GraphQL', 'Spring', 'Django'],
+                    skills: [
+                        MENTOR_SKILLS.ADOBE_PHOTOSHOP,
+                        MENTOR_SKILLS.ANGULAR,
+                    ],
+                    tools: [MENTOR_TOOLS.ADOBE_PHOTOSHOP],
                     createdAt: '2024-11-05T07:37:10.922Z',
                     updatedAt: '2024-11-05T07:37:10.922Z',
                     quickReply: false,

@@ -12,6 +12,7 @@ import Button from './components/Button/Button'
 import FormInput from './components/FormInput/FormInput'
 import LinkText from './components/LinkText/LinkText'
 import { LoginDataT, RESPONSE_CODE } from './store/types'
+import { signIn } from 'next-auth/react'
 
 const Login = () => {
     const [errorText, setErrorText] = useState('')
@@ -36,37 +37,62 @@ const Login = () => {
         formState: { errors },
     } = methods
 
-    const { mutate: login } = useLogin()
+    // const { mutate: login } = useLogin()
 
     const onSubmit = async (data: LoginDataT) => {
-        login(data, {
-            onSuccess: async (res) => {
-                if (res.data.token) {
-                    const token = res.data.token.split(' ')[1]
-                    try {
-                        await axios.post('/api/auth/token', { token })
-                        router.push('/')
-                    } catch (error) {
-                        console.log(error)
-                    }
+        try {
+            const res = await signIn('credentials', {
+                email: data.email,
+                password: data.password,
+                redirect: false,
+            })
+            if (res) {
+                router.push('/')
+            }
+        } catch (error) {
+            reset()
+            if (isAxiosError(error)) {
+                switch (error.response?.data.code) {
+                    case RESPONSE_CODE.VALIDATE_ERROR:
+                        setErrorText('Validate error')
+                        break
+                    case RESPONSE_CODE.USER_DATA_ERROR:
+                        setErrorText('Email or password is wrong')
+                        break
+                    default:
+                        setErrorText('Unknown error')
                 }
-            },
-            onError: (error) => {
-                reset()
-                if (isAxiosError(error)) {
-                    switch (error.response?.data.code) {
-                        case RESPONSE_CODE.VALIDATE_ERROR:
-                            setErrorText('Validate error')
-                            break
-                        case RESPONSE_CODE.USER_DATA_ERROR:
-                            setErrorText('Email or password is wrong')
-                            break
-                        default:
-                            setErrorText('Unknown error')
-                    }
-                }
-            },
-        })
+            }
+        }
+
+        // login(data, {
+        //     onSuccess: async (res) => {
+        //         if (res.data.token) {
+        //             const token = res.data.token.split(' ')[1]
+        //             try {
+        //                 await axios.post('/api/auth/token', { token })
+        //                 router.push('/')
+        //             } catch (error) {
+        //                 console.log(error)
+        //             }
+        //         }
+        //     },
+        //     onError: (error) => {
+        //         reset()
+        //         if (isAxiosError(error)) {
+        //             switch (error.response?.data.code) {
+        //                 case RESPONSE_CODE.VALIDATE_ERROR:
+        //                     setErrorText('Validate error')
+        //                     break
+        //                 case RESPONSE_CODE.USER_DATA_ERROR:
+        //                     setErrorText('Email or password is wrong')
+        //                     break
+        //                 default:
+        //                     setErrorText('Unknown error')
+        //             }
+        //         }
+        //     },
+        // })
     }
 
     return (
