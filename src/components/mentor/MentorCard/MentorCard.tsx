@@ -1,6 +1,6 @@
 import Image from 'next/image'
 
-import { MentorT } from '~/container/Home/store/type'
+import { MentorT } from '~/api/mentor/types'
 
 type Props = {
     mentor: MentorT

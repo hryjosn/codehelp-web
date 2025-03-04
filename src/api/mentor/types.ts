@@ -1,4 +1,10 @@
+import Experience from '~/components/mentor/Experience'
 import { AppointmentT } from '~/container/Appointment/store/types'
+import {
+    MENTOR_SKILLS,
+    MENTOR_DISCIPLINES,
+    MENTOR_TOOLS,
+} from '~/container/SignUp/store/types'
 
 export interface MentorT {
     id: string
@@ -17,12 +23,13 @@ export interface MentorT {
     primaryExpertise: string
     secondaryExpertise: string
     tertiaryExpertise: string
-    disciplines: string[]
-    skills: string[]
-    tools: string[]
+    experience: Experience[]
+    disciplines: MENTOR_DISCIPLINES[]
+    skills: MENTOR_SKILLS[]
+    tools: MENTOR_TOOLS[]
+    education: string
     createdAt: string
     updatedAt: string
-    quickReply: boolean
 }
 
 export interface GetMentorInfoReqT {}
