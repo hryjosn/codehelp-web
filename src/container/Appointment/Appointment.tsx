@@ -10,7 +10,7 @@ import { AppointmentT, Days, SelectedItem } from './store/types'
 import { Button } from '~/components/Button/Button'
 import { useGetUserInfo } from '~/api/user/user'
 import { useSaveAppointment } from '~/api/mentor/mentor'
-import { useRouter } from 'next/navigation'
+import { useRouter } from '~/i18n/routing'
 
 const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
 const TIMECODES = [...Array(24)]

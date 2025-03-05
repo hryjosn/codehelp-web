@@ -1,11 +1,14 @@
 import { http, HttpResponse } from 'msw'
 import {
+    bookingInfoURL,
     loginURL,
     memberSignUpURL,
     mentorSignUpURL,
     userInfoURL,
 } from '~/api/user/api_url'
 import {
+    BookingInfoReqT,
+    BookingInfoResT,
     LoginReqT,
     LoginResT,
     MemberSignUpReqT,
@@ -111,5 +114,90 @@ export const getUserInfo = [
         })
     }),
 ]
+export const getBookingInfo = [
+    http.get<BookingInfoReqT, BookingInfoResT>(bookingInfoURL, () => {
+        return HttpResponse.json({
+            status: 'ok',
+            msg: 'Get booking info successful',
+            bookingTime: [
+                {
+                    id: '1',
+                    host: 'test002',
+                    memberList: ['test001', 'test003', 'test004'],
+                    startAt: '2025-03-01T09:22:49.379Z',
+                    duration: '30',
+                    topic: 'A topic',
+                    question: 'A question',
+                    pictureList: [
+                        'https://codehelp-backend-production.up.railway.app/image/9ff9deca-4cce-486d-9010-6b8e36eb219e',
+                    ],
+                    createdAt: '2024-11-05T09:22:49.379Z',
+                    updatedAt: '2024-11-05T09:22:49.379Z',
+                },
+                {
+                    id: '2',
+                    host: 'test002',
+                    memberList: ['test001', 'test003', 'test004'],
+                    startAt: '2025-03-01T09:22:49.379Z',
+                    duration: '30',
+                    topic: 'A topic',
+                    question: 'A question',
+                    pictureList: [
+                        'https://codehelp-backend-production.up.railway.app/image/9ff9deca-4cce-486d-9010-6b8e36eb219e',
+                    ],
+                    createdAt: '2024-11-05T09:22:49.379Z',
+                    updatedAt: '2024-11-05T09:22:49.379Z',
+                },
+                {
+                    id: '4',
+                    host: 'test002',
+                    memberList: ['test001', 'test003', 'test004'],
+                    startAt: '2025-03-02T09:22:49.379Z',
+                    duration: '30',
+                    topic: 'A topic',
+                    question: 'A question',
+                    pictureList: [
+                        'https://codehelp-backend-production.up.railway.app/image/9ff9deca-4cce-486d-9010-6b8e36eb219e',
+                    ],
+                    createdAt: '2024-11-05T09:22:49.379Z',
+                    updatedAt: '2024-11-05T09:22:49.379Z',
+                },
+                {
+                    id: '5',
+                    host: 'test002',
+                    memberList: ['test001', 'test003', 'test004'],
+                    startAt: '2025-03-01T09:22:49.379Z',
+                    duration: '30',
+                    topic: 'A topic',
+                    question: 'A question',
+                    pictureList: [
+                        'https://codehelp-backend-production.up.railway.app/image/9ff9deca-4cce-486d-9010-6b8e36eb219e',
+                    ],
+                    createdAt: '2024-11-05T09:22:49.379Z',
+                    updatedAt: '2024-11-05T09:22:49.379Z',
+                },
+                {
+                    id: '7',
+                    host: 'test002',
+                    memberList: ['test001', 'test003', 'test004'],
+                    startAt: '2025-03-03T09:22:49.379Z',
+                    duration: '30',
+                    topic: 'A topic',
+                    question: 'A question',
+                    pictureList: [
+                        'https://codehelp-backend-production.up.railway.app/image/9ff9deca-4cce-486d-9010-6b8e36eb219e',
+                    ],
+                    createdAt: '2024-11-05T09:22:49.379Z',
+                    updatedAt: '2024-11-05T09:22:49.379Z',
+                },
+            ],
+        })
+    }),
+]
 
-export const userHandlers = [...login, ...memberSignUp, ...getUserInfo]
+export const userHandlers = [
+    ...login,
+    ...memberSignUp,
+    ...getUserInfo,
+    ...getBookingInfo,
+]

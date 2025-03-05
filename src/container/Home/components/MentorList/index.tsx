@@ -1,5 +1,5 @@
 'use client'
-import Link from 'next/link'
+import { Link } from '~/i18n/routing'
 import { useMemo } from 'react'
 import { useGetMentorList } from '~/api/mentor/mentor'
 import { MentorCard } from '~/components/mentor/MentorCard/MentorCard'

@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import { Link } from '~/i18n/routing'
 import { BsLinkedin } from 'react-icons/bs'
 import { getMentorInfo } from '~/api/mentor/mentor'
 import Header from '~/components/Header/Header'
