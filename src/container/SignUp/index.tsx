@@ -1,7 +1,7 @@
 'use client'
 
 import { observer } from 'mobx-react-lite'
-import { useRouter } from 'next/navigation'
+import { useRouter } from '~/i18n/routing'
 import { Form } from './components/Form'
 import LinkText from './components/LinkText/LinkText'
 import FormButton from './components/FormButton/FormButton'
