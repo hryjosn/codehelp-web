@@ -2,11 +2,13 @@
 import { FC, useEffect, useState } from 'react'
 
 import axios from 'axios'
-import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { Button } from '../Button/Button'
 import { NavButton } from '../NavButton/NavButton'
 import { signOut } from 'next-auth/react'
+import { runInAction } from 'mobx'
+import { observer } from 'mobx-react-lite'
+import { Link } from '~/i18n/routing'
 
 const Header: FC = () => {
     const [token, setToken] = useState<string | null>(null)

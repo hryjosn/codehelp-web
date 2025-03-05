@@ -1,29 +1,30 @@
-import React from 'react'
-import Input from '~/components/Input/Input'
-import CalendarMonthIcon from '@mui/icons-material/CalendarMonth'
 import AccessTimeIcon from '@mui/icons-material/AccessTime'
-import { Button } from '~/components/Button/Button'
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth'
 import { Modal } from '@mui/material'
 import Image from 'next/image'
 import { useGetMentorInfo } from '~/api/mentor/mentor'
-interface BookingModalProps {
-    mentorId: string
-    selectedDate: Date
-    selectedTime: string
-    isOpen: boolean
-    onClose: () => void
-}
+import { Button } from '~/components/Button/Button'
+import ImageRemoveButton from '~/components/ImageRemoveButton/ImageRemoveButton'
+import Input from '~/components/Input/Input'
+import UploadImage from '~/components/UploadImage/UploadImage'
+import { useStore } from '~/store/rootStoreProvider'
+import { Props } from './types'
+
 const BookingModal = ({
     mentorId,
     selectedDate,
     selectedTime,
     isOpen,
     onClose,
-}: BookingModalProps) => {
+}: Props) => {
+    const {
+        bookingStore: { imageList, uploadImage, removeImage },
+    } = useStore()
     const { data } = useGetMentorInfo(mentorId)
     const confirmBooking = () => {
         onClose()
     }
+
     return (
         <Modal
             open={isOpen}
@@ -101,6 +102,40 @@ const BookingModal = ({
                             className="w-full resize-none rounded-lg border border-zinc-300 p-2 outline-none focus:border-sky-600"
                             rows={5}
                         />
+                    </div>
+                    <div className="mt-2">
+                        {imageList.length < 3 && (
+                            <UploadImage
+                                onChange={(event) => {
+                                    const file = event.target.files![0]
+                                    if (!file.type.startsWith('image/')) {
+                                        alert('Only can upload image files')
+                                        return
+                                    }
+                                    const fileURL = URL.createObjectURL(file)
+                                    uploadImage(fileURL)
+                                }}
+                            />
+                        )}
+
+                        <div className="mt-1 flex">
+                            {imageList.map((image, index) => (
+                                <div className="mr-3" key={index}>
+                                    <ImageRemoveButton
+                                        onClick={() => {
+                                            removeImage(image)
+                                        }}
+                                    >
+                                        <Image
+                                            src={image}
+                                            alt=""
+                                            width={100}
+                                            height={100}
+                                        />
+                                    </ImageRemoveButton>
+                                </div>
+                            ))}
+                        </div>
                     </div>
 
                     <Button

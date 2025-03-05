@@ -1,5 +1,5 @@
 import { cva, VariantProps } from 'class-variance-authority'
-import Link from 'next/link'
+import { Link } from '~/i18n/routing'
 import { AnchorHTMLAttributes, FC } from 'react'
 import { cn } from '~/lib/utils'
 

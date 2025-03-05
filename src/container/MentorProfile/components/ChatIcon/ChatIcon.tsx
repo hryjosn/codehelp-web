@@ -1,7 +1,7 @@
 'use client'
 
 import { HiChatBubbleLeftEllipsis } from 'react-icons/hi2'
-import { useRouter } from 'next/navigation'
+import { useRouter } from '~/i18n/routing'
 import { RESPONSE_CODE } from '~/container/Login/store/types'
 import { useChatroomStore } from '~/container/Chat/store/ChatStore'
 
