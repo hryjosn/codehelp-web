@@ -6,7 +6,7 @@ import { NavButton } from '../NavButton/NavButton'
 
 import { runInAction } from 'mobx'
 import { observer } from 'mobx-react-lite'
-import Link from 'next/link'
+import { Link } from '~/i18n/routing'
 
 const Header: FC = () => {
     const {
