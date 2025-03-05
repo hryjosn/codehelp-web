@@ -1,7 +1,7 @@
 'use client'
 
 import { HiPhone } from 'react-icons/hi2'
-import { useRouter } from 'next/navigation'
+import { useRouter } from '~/i18n/routing'
 import { createLocalStream } from '~/container/VideoConference/utils'
 import rootStore from '~/store'
 import { runInAction } from 'mobx'

@@ -1,5 +1,5 @@
 import React, { LinkHTMLAttributes } from 'react'
-import Link from 'next/link'
+import { Link } from '~/i18n/routing'
 import { cva, VariantProps } from 'class-variance-authority'
 import { cn } from '~/lib/utils'
 

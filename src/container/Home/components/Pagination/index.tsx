@@ -1,6 +1,7 @@
 'use client'
 import { Pagination as CustomPagination } from '@mui/material'
-import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import { usePathname, useSearchParams } from 'next/navigation'
+import { useRouter } from '~/i18n/routing'
 const Pagination = ({ count }: { count: number }) => {
     const searchParams = useSearchParams()
     const pathname = usePathname()
