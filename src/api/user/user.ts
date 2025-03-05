@@ -2,12 +2,12 @@ import { useMutation, useQuery } from '@tanstack/react-query'
 import { LoginDataT } from '~/container/Login/store/types'
 import apiHandler from '../api'
 import {
+    bookingInfoURL,
     loginURL,
     memberSignUpURL,
     mentorSignUpURL,
-    userInfoURL,
 } from './api_url'
-import { LoginReqT, LoginResT, UserInfoResT } from './types'
+import { BookingInfoResT, LoginReqT, LoginResT, UserInfoResT } from './types'
 import { NextResponse } from 'next/server'
 import axios from 'axios'
 
@@ -46,6 +46,18 @@ export const useGetUserInfo = () => {
         queryFn: async () => {
             const res = await axios.get('/api/user/get-user-info')
             return res
+        },
+    })
+}
+export const useGetBookingInfo = () => {
+    return useQuery({
+        queryKey: ['bookingInfo'],
+        queryFn: async () => {
+            const res = await apiHandler<BookingInfoResT>({
+                url: bookingInfoURL,
+                method: 'get',
+            })
+            return res.data
         },
     })
 }

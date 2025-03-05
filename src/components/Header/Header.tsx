@@ -30,7 +30,6 @@ const Header: FC = () => {
             signOut({ callbackUrl: '/', redirect: false })
             await axios.delete('/api/auth/token')
             setToken(null)
-            router.push('/')
         } catch (error) {
             console.error('Logout failed:', error)
         }

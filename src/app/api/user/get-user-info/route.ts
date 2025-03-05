@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { userInfoURL } from '~/api/user/api_url'
+import { mentorInfoURL } from '~/api/user/api_url'
 import apiHandler from '~/api/api'
 
 export async function GET(req: Request) {
@@ -14,7 +14,7 @@ export async function GET(req: Request) {
 
     try {
         const res = await apiHandler({
-            url: `${userInfoURL}/a192638c-ec69-411f-9512-2fae86d8fdc4`,
+            url: `${mentorInfoURL}/a192638c-ec69-411f-9512-2fae86d8fdc4`,
             method: 'GET',
             // headers: { Authorization: `Bearer${token}` },
         })

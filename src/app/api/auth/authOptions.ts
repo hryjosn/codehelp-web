@@ -1,5 +1,5 @@
 import axios from 'axios'
-import NextAuth, { Session, User, NextAuthOptions } from 'next-auth'
+import { Session, User, NextAuthOptions } from 'next-auth'
 import { JWT } from 'next-auth/jwt'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import { loginURL } from '~/api/user/api_url'
@@ -62,6 +62,3 @@ export const authOptions: NextAuthOptions = {
         signIn: '/login',
     },
 }
-
-const handler = NextAuth(authOptions)
-export { handler as GET, handler as POST }
