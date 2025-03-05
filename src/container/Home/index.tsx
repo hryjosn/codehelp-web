@@ -20,9 +20,9 @@ const Home = async (props: {
     const total = data.total
 
     return (
-        <div>
+        <div className="flex h-full flex-col">
             <Header />
-            <div>
+            <div className="flex flex-1 flex-col justify-between">
                 <div className="grid gap-4 p-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
                     {mentorList?.map((mentor) => (
                         <Link
@@ -33,7 +33,7 @@ const Home = async (props: {
                         </Link>
                     ))}
                 </div>
-                <div className="flex items-center justify-center">
+                <div className="mb-4 self-center">
                     <Pagination count={Math.ceil(total / PAGE_SIZE)} />
                 </div>
             </div>
