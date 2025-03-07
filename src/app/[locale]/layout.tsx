@@ -8,6 +8,7 @@ import { getMessages } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { routing } from '~/i18n/routing'
 import Provider from '~/app/Provider'
+import { RootStoreProvider } from '~/store/rootStoreProvider'
 
 // server.listen()
 
@@ -35,7 +36,9 @@ export default async function RootLayout({
                 <NextIntlClientProvider messages={messages}>
                     <ReactQueryClientProvider>
                         {/* <MSWProvider>{children}</MSWProvider> */}
-                        <Provider>{children}</Provider>
+                        <Provider>
+                            <RootStoreProvider>{children}</RootStoreProvider>
+                        </Provider>
                     </ReactQueryClientProvider>
                 </NextIntlClientProvider>
             </body>

@@ -17,25 +17,19 @@ export const authOptions: NextAuthOptions = {
                 },
                 password: { label: 'Password', type: 'password' },
             },
-            async authorize(credentials, req) {
+            async authorize(credentials) {
                 try {
                     const res = await axios.post(loginURL, {
                         email: credentials?.email,
                         password: credentials?.password,
                     })
-                    console.log('login res >', res.data)
                     if (res.data.token) {
                         const token = res.data.token.split(' ')[1]
-                        try {
-                            await axios.post(`${serverURL}/api/auth/token`, {
-                                token,
-                            })
-                        } catch (error) {
-                            console.log('here >>>>>>', error)
-                        }
+                        await axios.post(`${serverURL}/api/auth/token`, {
+                            token,
+                        })
                     }
                     res.data.user.identity = res.data.identity
-                    console.log('refactor res >', res.data)
 
                     return res.data.user || null
                 } catch (error) {
@@ -46,8 +40,6 @@ export const authOptions: NextAuthOptions = {
     ],
     callbacks: {
         async jwt({ token, user }: { token: JWT; user: User }) {
-            console.log('nextAuth jwt token >', token)
-
             if (user) token.user = user
             return token
         },
