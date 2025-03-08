@@ -4,19 +4,16 @@ import axios, { isAxiosError } from 'axios'
 import Joi from 'joi/lib'
 import { observer } from 'mobx-react-lite'
 import Image from 'next/image'
-import { useRouter } from '~/i18n/routing'
 import { useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
-import { useLogin } from '~/api/user/user'
 import Button from './components/Button/Button'
 import FormInput from './components/FormInput/FormInput'
 import LinkText from './components/LinkText/LinkText'
 import { LoginDataT, RESPONSE_CODE } from './store/types'
-import { signIn } from 'next-auth/react'
+import { getSession, signIn } from 'next-auth/react'
 
 const Login = () => {
     const [errorText, setErrorText] = useState('')
-    const router = useRouter()
     const schema = Joi.object({
         email: Joi.string().email().required(),
         password: Joi.string().min(8).max(30).required(),
@@ -37,17 +34,19 @@ const Login = () => {
         formState: { errors },
     } = methods
 
-    // const { mutate: login } = useLogin()
-
     const onSubmit = async (data: LoginDataT) => {
         try {
-            const res = await signIn('credentials', {
+            await signIn('credentials', {
                 email: data.email,
                 password: data.password,
-                redirect: false,
+                callbackUrl: '/',
             })
-            if (res) {
-                router.push('/')
+
+            const session = await getSession()
+            if (session?.accessToken) {
+                await axios.post('/api/auth/token', {
+                    token: session.accessToken,
+                })
             }
         } catch (error) {
             reset()
@@ -64,35 +63,6 @@ const Login = () => {
                 }
             }
         }
-
-        // login(data, {
-        //     onSuccess: async (res) => {
-        //         if (res.data.token) {
-        //             const token = res.data.token.split(' ')[1]
-        //             try {
-        //                 await axios.post('/api/auth/token', { token })
-        //                 router.push('/')
-        //             } catch (error) {
-        //                 console.log(error)
-        //             }
-        //         }
-        //     },
-        //     onError: (error) => {
-        //         reset()
-        //         if (isAxiosError(error)) {
-        //             switch (error.response?.data.code) {
-        //                 case RESPONSE_CODE.VALIDATE_ERROR:
-        //                     setErrorText('Validate error')
-        //                     break
-        //                 case RESPONSE_CODE.USER_DATA_ERROR:
-        //                     setErrorText('Email or password is wrong')
-        //                     break
-        //                 default:
-        //                     setErrorText('Unknown error')
-        //             }
-        //         }
-        //     },
-        // })
     }
 
     return (

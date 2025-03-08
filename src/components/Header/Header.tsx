@@ -2,17 +2,13 @@
 import { FC, useEffect, useState } from 'react'
 
 import axios from 'axios'
-import { useRouter } from 'next/navigation'
 import { Button } from '../Button/Button'
 import { NavButton } from '../NavButton/NavButton'
 import { signOut } from 'next-auth/react'
-import { runInAction } from 'mobx'
-import { observer } from 'mobx-react-lite'
 import { Link } from '~/i18n/routing'
 
 const Header: FC = () => {
     const [token, setToken] = useState<string | null>(null)
-    const router = useRouter()
 
     useEffect(() => {
         const fetchToken = async () => {
@@ -29,7 +25,7 @@ const Header: FC = () => {
     }, [])
     const Logout = async () => {
         try {
-            signOut({ callbackUrl: '/', redirect: false })
+            signOut({ callbackUrl: '/' })
             await axios.delete('/api/auth/token')
             setToken(null)
         } catch (error) {

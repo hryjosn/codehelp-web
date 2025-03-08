@@ -1,31 +1,31 @@
 import { NextResponse } from 'next/server'
-import { serialize } from 'cookie'
+import { cookies } from 'next/headers'
 
 export async function POST(req: Request) {
     const { token } = await req.json()
 
     if (!token) {
-        return NextResponse.json({ error: 'Token is required', status: 401 })
+        return NextResponse.json(
+            { error: 'Token is required' },
+            { status: 401 }
+        )
     }
 
-    const response = NextResponse.json({ message: 'Token stored' })
+    cookies().set({
+        name: 'auth_token',
+        value: token,
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        path: '/',
+        maxAge: 60 * 60 * 24 * 7,
+    })
 
-    response.headers.append(
-        'Set-Cookie',
-        serialize('token', token, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict',
-            path: '/',
-        })
-    )
-
-    return response
+    return NextResponse.json({ message: 'Token stored' })
 }
 
-export async function GET(req: Request) {
-    const cookies = req.headers.get('cookie')
-    const token = cookies?.split('token=')[1]?.split(';')[0]
+export async function GET() {
+    const token = cookies().get('auth_token')?.value
 
     if (!token) {
         return NextResponse.json({ error: 'Token not found' }, { status: 401 })
@@ -35,18 +35,7 @@ export async function GET(req: Request) {
 }
 
 export async function DELETE() {
-    const response = NextResponse.json({ message: 'Token deleted' })
+    cookies().delete('auth_token')
 
-    response.headers.append(
-        'Set-Cookie',
-        serialize('token', '', {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict',
-            path: '/',
-            maxAge: -1,
-        })
-    )
-
-    return response
+    return NextResponse.json({ message: 'Token deleted' })
 }

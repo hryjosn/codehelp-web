@@ -7,10 +7,12 @@ declare module 'next-auth' {
      */
     interface Session {
         user: User
+        accessToken: sting
     }
 
     interface User extends MentorT {
         identity: string
+        token: string
     }
 }
 

@@ -23,13 +23,8 @@ export const authOptions: NextAuthOptions = {
                         email: credentials?.email,
                         password: credentials?.password,
                     })
-                    if (res.data.token) {
-                        const token = res.data.token.split(' ')[1]
-                        await axios.post(`${serverURL}/api/auth/token`, {
-                            token,
-                        })
-                    }
                     res.data.user.identity = res.data.identity
+                    res.data.user.token = res.data.token
 
                     return res.data.user || null
                 } catch (error) {
@@ -40,17 +35,21 @@ export const authOptions: NextAuthOptions = {
     ],
     callbacks: {
         async jwt({ token, user }: { token: JWT; user: User }) {
-            if (user) token.user = user
+            if (user) {
+                token.user = user
+                token.accessToken = user.token
+            }
             return token
         },
         async session({ session, token }: { session: Session; token: JWT }) {
             if (token.user) {
                 session.user = token.user
+                session.accessToken = token.accessToken
             }
             return session
         },
     },
     pages: {
-        signIn: '/login',
+        signIn: '/en/login',
     },
 }

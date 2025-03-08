@@ -1,9 +1,10 @@
 import { NextResponse } from 'next/server'
 import { userInfoURL } from '~/api/user/api_url'
 import apiHandler from '~/api/api'
+import { cookies } from 'next/headers'
 
-export async function GET(req: Request) {
-    const token = req.headers.get('cookie')?.split('token=')[1]?.split(';')[0]
+export async function GET() {
+    const token = cookies().get('auth_token')?.value
 
     if (!token) {
         return NextResponse.json(
