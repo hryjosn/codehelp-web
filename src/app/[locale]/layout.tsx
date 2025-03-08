@@ -35,9 +35,10 @@ export default async function RootLayout({
             <body>
                 <NextIntlClientProvider messages={messages}>
                     <ReactQueryClientProvider>
-                        {/* <MSWProvider>{children}</MSWProvider> */}
                         <Provider>
-                            <RootStoreProvider>{children}</RootStoreProvider>
+                            <RootStoreProvider>
+                                <MSWProvider>{children}</MSWProvider>
+                            </RootStoreProvider>
                         </Provider>
                     </ReactQueryClientProvider>
                 </NextIntlClientProvider>
