@@ -3,9 +3,9 @@ import {
     bookingInfoURL,
     loginURL,
     memberSignUpURL,
-    mentorSignUpURL,
     mentorInfoURL,
-} from '~/api/user/api_url'
+    mentorSignUpURL,
+} from '~/api/user/route'
 import {
     BookingInfoReqT,
     BookingInfoResT,
@@ -19,8 +19,8 @@ import {
     UserInfoResT,
 } from '~/api/user/types'
 import {
-    MENTOR_SKILLS,
     MENTOR_DISCIPLINES,
+    MENTOR_SKILLS,
     MENTOR_TOOLS,
 } from '~/container/SignUp/store/types'
 

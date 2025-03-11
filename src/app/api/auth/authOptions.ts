@@ -1,8 +1,8 @@
 import axios from 'axios'
-import { Session, User, NextAuthOptions } from 'next-auth'
+import { NextAuthOptions, Session, User } from 'next-auth'
 import { JWT } from 'next-auth/jwt'
 import CredentialsProvider from 'next-auth/providers/credentials'
-import { loginURL } from '~/api/user/api_url'
+import { loginURL } from '~/api/user/route'
 
 const serverURL = 'http://localhost:3000'
 

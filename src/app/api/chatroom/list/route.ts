@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { getChatroomListURL } from '~/api/chatroom/api_url'
-import apiHandler from '~/api/api'
 import { cookies } from 'next/headers'
+import { NextRequest, NextResponse } from 'next/server'
+import apiHandler from '~/api/api'
+import { getChatroomListURL } from '~/api/chatroom/route'
 
 export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url)

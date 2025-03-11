@@ -1,17 +1,17 @@
 import { http, HttpResponse } from 'msw'
 import {
-    CreateChatroomResT,
-    CreateChatroomReqT,
+    createChatroomURL,
+    createMessageURL,
+    getChatroomInfoURL,
+} from '~/api/chatroom/route'
+import {
     ChatroomInfoReqT,
     ChatroomInfoResT,
+    CreateChatroomReqT,
+    CreateChatroomResT,
     NewMessageReqT,
     NewMessageResT,
 } from '~/api/chatroom/types'
-import {
-    createChatroomURL,
-    getChatroomInfoURL,
-    createMessageURL,
-} from '~/api/chatroom/api_url'
 
 export const createChatroom = [
     http.post<CreateChatroomReqT, CreateChatroomResT>(createChatroomURL, () => {

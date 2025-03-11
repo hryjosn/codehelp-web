@@ -1,4 +1,5 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
+import axios from 'axios'
 import { LoginDataT } from '~/container/Login/store/types'
 import apiHandler from '../api'
 import {
@@ -6,10 +7,8 @@ import {
     loginURL,
     memberSignUpURL,
     mentorSignUpURL,
-} from './api_url'
-import { BookingInfoResT, LoginReqT, LoginResT, UserInfoResT } from './types'
-import { NextResponse } from 'next/server'
-import axios from 'axios'
+} from './route'
+import { BookingInfoResT, LoginReqT, LoginResT } from './types'
 
 export const callMentorSignUp = (data: any) => {
     return apiHandler({
