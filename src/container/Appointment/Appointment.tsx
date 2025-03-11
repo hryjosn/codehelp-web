@@ -8,17 +8,13 @@ import HourGrid from './components/HourGrid/HourGrid'
 import Header from '~/components/Header/Header'
 import { AppointmentT, Days, SelectedItem } from './store/types'
 import { Button } from '~/components/Button/Button'
-import { useGetUserInfo } from '~/api/user/user'
 import { useSaveAppointment } from '~/api/mentor/mentor'
-import { useRouter } from '~/i18n/routing'
 
 const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
 const TIMECODES = [...Array(24)]
 
 const Appointment = () => {
     const [selectedItems, setSelectedItems] = useState<SelectedItem>({})
-    const router = useRouter()
-    const { data: userData } = useGetUserInfo()
     const { mutate: saveAppointment } = useSaveAppointment()
 
     const setting = (day: number, time: number) => {
@@ -64,9 +60,6 @@ const Appointment = () => {
         )
     }
 
-    if (userData && userData.identity !== 'mentor') {
-        router.back()
-    }
     return (
         <>
             <Header />

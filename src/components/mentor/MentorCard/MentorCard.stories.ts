@@ -1,6 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { MentorCard } from './MentorCard'
-import { MentorT } from '~/container/Home/store/type'
+import { MentorT } from '~/api/mentor/types'
+import {
+    MENTOR_SKILLS,
+    MENTOR_DISCIPLINES,
+    MENTOR_TOOLS,
+} from '~/container/SignUp/store/types'
 
 const MOCK_MENTOR_LIST: MentorT[] = [
     {
@@ -32,9 +37,12 @@ const MOCK_MENTOR_LIST: MentorT[] = [
         primaryExpertise: 'Sleep',
         secondaryExpertise: '',
         tertiaryExpertise: '',
-        disciplines: ['Sleep'],
-        skills: ['Sleep'],
-        tools: ['Sleep'],
+        disciplines: [
+            MENTOR_DISCIPLINES.BIOLOGY,
+            MENTOR_DISCIPLINES.BUSINESS_ADMINISTRATION,
+        ],
+        skills: [MENTOR_SKILLS.ADOBE_PHOTOSHOP, MENTOR_SKILLS.ANGULAR],
+        tools: [MENTOR_TOOLS.ADOBE_PHOTOSHOP],
         createdAt: '2024-11-24T06:44:51.411Z',
         updatedAt: '2024-11-24T06:44:51.411Z',
         education: "海事資訊科技系$%$高雄科技大學'",

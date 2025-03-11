@@ -1,15 +1,15 @@
 import { Metadata } from 'next'
-import { ReactQueryClientProvider } from '~/components/ReactQueryClientProvider/ReactQueryClientProvider'
-import '~/styles/globals.css'
-import { server } from '~/../mocks/node'
-import { MSWProvider } from '~/../mocks/msw-provider'
 import { NextIntlClientProvider } from 'next-intl'
 import { getMessages } from 'next-intl/server'
 import { notFound } from 'next/navigation'
+import { MSWProvider } from '~/../mocks/msw-provider'
+import Provider from '~/app/Provider'
+import { ReactQueryClientProvider } from '~/components/ReactQueryClientProvider/ReactQueryClientProvider'
 import { routing } from '~/i18n/routing'
 import { RootStoreProvider } from '~/store/rootStoreProvider'
+import '~/styles/globals.css'
 
-server.listen()
+// server.listen()
 
 export const metadata: Metadata = {
     title: 'Home',
@@ -34,9 +34,11 @@ export default async function RootLayout({
             <body>
                 <NextIntlClientProvider messages={messages}>
                     <ReactQueryClientProvider>
-                        <RootStoreProvider>
-                            <MSWProvider>{children}</MSWProvider>
-                        </RootStoreProvider>
+                        <Provider>
+                            <RootStoreProvider>
+                                <MSWProvider>{children}</MSWProvider>
+                            </RootStoreProvider>
+                        </Provider>
                     </ReactQueryClientProvider>
                 </NextIntlClientProvider>
             </body>

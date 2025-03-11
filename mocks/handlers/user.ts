@@ -4,7 +4,7 @@ import {
     loginURL,
     memberSignUpURL,
     mentorSignUpURL,
-    userInfoURL,
+    mentorInfoURL,
 } from '~/api/user/api_url'
 import {
     BookingInfoReqT,
@@ -18,6 +18,11 @@ import {
     UserInfoReqT,
     UserInfoResT,
 } from '~/api/user/types'
+import {
+    MENTOR_SKILLS,
+    MENTOR_DISCIPLINES,
+    MENTOR_TOOLS,
+} from '~/container/SignUp/store/types'
 
 export const login = [
     http.post<LoginReqT, LoginResT>(loginURL, () => {
@@ -79,7 +84,7 @@ export const mentorSignUp = [
     }),
 ]
 export const getUserInfo = [
-    http.get<UserInfoReqT, UserInfoResT>(userInfoURL, () => {
+    http.get<UserInfoReqT, UserInfoResT>(mentorInfoURL, () => {
         return HttpResponse.json({
             status: 'user_login',
             msg: 'Login successful',
@@ -102,9 +107,12 @@ export const getUserInfo = [
                 primaryExpertise: 'Backend Development',
                 secondaryExpertise: 'Data Science',
                 tertiaryExpertise: '',
-                disciplines: ['Business Administration', 'Design', 'Biology'],
-                skills: ['Swift', 'Laravel'],
-                tools: ['Sketch', 'LAMP Stack', 'Spring'],
+                disciplines: [
+                    MENTOR_DISCIPLINES.BIOLOGY,
+                    MENTOR_DISCIPLINES.BUSINESS_ADMINISTRATION,
+                ],
+                skills: [MENTOR_SKILLS.ADOBE_PHOTOSHOP, MENTOR_SKILLS.ANGULAR],
+                tools: [MENTOR_TOOLS.ADOBE_PHOTOSHOP],
                 createdAt: '2024-11-05T09:22:49.379Z',
                 updatedAt: '2024-11-05T09:22:49.379Z',
                 quickReply: false,
@@ -113,7 +121,7 @@ export const getUserInfo = [
             },
         })
     }),
-]
+] //this needs to refactor
 export const getBookingInfo = [
     http.get<BookingInfoReqT, BookingInfoResT>(bookingInfoURL, () => {
         return HttpResponse.json({

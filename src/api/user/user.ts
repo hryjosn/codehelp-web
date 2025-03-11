@@ -6,9 +6,10 @@ import {
     loginURL,
     memberSignUpURL,
     mentorSignUpURL,
-    userInfoURL,
 } from './api_url'
 import { BookingInfoResT, LoginReqT, LoginResT, UserInfoResT } from './types'
+import { NextResponse } from 'next/server'
+import axios from 'axios'
 
 export const callMentorSignUp = (data: any) => {
     return apiHandler({
@@ -43,11 +44,8 @@ export const useGetUserInfo = () => {
     return useQuery({
         queryKey: ['userInfo'],
         queryFn: async () => {
-            const res = await apiHandler<UserInfoResT>({
-                url: userInfoURL,
-                method: 'get',
-            })
-            return res.data
+            const res = await axios.get('/api/user/get-user-info')
+            return res
         },
     })
 }

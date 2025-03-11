@@ -1,5 +1,100 @@
 import Joi from 'joi'
 
+export enum MENTOR_DISCIPLINES {
+    COMPUTER_SCIENCE = 'Computer Science',
+    ENGINEERING = 'Engineering',
+    BUSINESS_ADMINISTRATION = 'Business Administration',
+    MEDICINE = 'Medicine',
+    LAW = 'Law',
+    DESIGN = 'Design',
+    PSYCHOLOGY = 'Psychology',
+    BIOLOGY = 'Biology',
+    ECONOMICS = 'Economics',
+    SOCIOLOGY = 'Sociology',
+}
+
+export enum MENTOR_SKILLS {
+    HTML = 'HTML',
+    CSS = 'CSS',
+    JAVASCRIPT = 'JavaScript',
+    TYPESCRIPT = 'TypeScript',
+    REACT = 'React',
+    VUE_JS = 'Vue.js',
+    ANGULAR = 'Angular',
+    NODE_JS = 'Node.js',
+    EXPRESS_JS = 'Express.js',
+    PYTHON = 'Python',
+    DJANGO = 'Django',
+    FLASK = 'Flask',
+    RUBY = 'Ruby',
+    RUBY_ON_RAILS = 'Ruby on Rails',
+    JAVA = 'Java',
+    SPRING = 'Spring',
+    PHP = 'PHP',
+    LARAVEL = 'Laravel',
+    C_SHARP = 'C#',
+    ASP_NET = 'ASP.NET',
+    SWIFT = 'Swift',
+    KOTLIN = 'Kotlin',
+    FLUTTER = 'Flutter',
+    REACT_NATIVE = 'React Native',
+    SQL = 'SQL',
+    NO_SQL = 'NoSQL',
+    GIT = 'Git',
+    DOCKER = 'Docker',
+    KUBERNETES = 'Kubernetes',
+    CI_CD = 'CI/CD',
+    MACHINE_LEARNING = 'Machine Learning',
+    DATA_ANALYSIS = 'Data Analysis',
+    UI_UX_DESIGN = 'UI/UX Design',
+    ADOBE_PHOTOSHOP = 'Adobe Photoshop',
+    SKETCH = 'Sketch',
+    FIGMA = 'Figma',
+    IN_VISION = 'InVision',
+    PROTOTYPING = 'Prototyping',
+    CYBERSECURITY = 'Cybersecurity',
+}
+
+export enum MENTOR_TOOLS {
+    REACT = 'React',
+    VUE_JS = 'Vue.js',
+    ANGULAR = 'Angular',
+    HTML = 'HTML',
+    CSS = 'CSS',
+    JAVASCRIPT = 'JavaScript',
+    NODE_JS = 'Node.js',
+    DJANGO = 'Django',
+    FLASK = 'Flask',
+    RUBY_ON_RAILS = 'Ruby on Rails',
+    SPRING = 'Spring',
+    EXPRESS_JS = 'Express.js',
+    MEAN_STACK = 'MEAN Stack',
+    MERN_STACK = 'MERN Stack',
+    LAMP_STACK = 'LAMP Stack',
+    GRAPHQL = 'GraphQL',
+    FIREBASE = 'Firebase',
+    FIGMA = 'Figma',
+    SKETCH = 'Sketch',
+    ADOBE_XD = 'Adobe XD',
+    IN_VISION = 'InVision',
+    AXURE_RP = 'Axure RP',
+    ADOBE_PHOTOSHOP = 'Adobe Photoshop',
+    ADOBE_ILLUSTRATOR = 'Adobe Illustrator',
+    COREL_DRAW = 'CorelDRAW',
+    AFFINITY_DESIGNER = 'Affinity Designer',
+    INKSCAPE = 'Inkscape',
+    DOCKER = 'Docker',
+    KUBERNETES = 'Kubernetes',
+    JENKINS = 'Jenkins',
+    ANSIBLE = 'Ansible',
+    TERRAFORM = 'Terraform',
+    REACT_NATIVE = 'React Native',
+    FLUTTER = 'Flutter',
+    SWIFT = 'Swift',
+    KOTLIN = 'Kotlin',
+    XAMARIN = 'Xamarin',
+}
+
 export type SignUpInputT = {
     avatar: File
     userName: string
@@ -15,9 +110,9 @@ export interface mentorSignUpT {
     years: string
     linkedIn: string
     expertise: string[]
-    disciplines: string[]
-    skills: string[]
-    tools: string[]
+    disciplines: MENTOR_DISCIPLINES[]
+    skills: MENTOR_SKILLS[]
+    tools: MENTOR_TOOLS[]
     level: string
     introduction: string
 }
