@@ -19,8 +19,12 @@ jobs:
     - name: Setup Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: 18  # Use the Node.js version compatible with your Next.js app
+        node-version: 20  # Use the Node.js version compatible with your Next.js app
         cache: 'yarn'     # If you use npm, replace this with 'npm'
+
+    # Enable Corepack
+    - name: Enable Corepack
+      run: corepack enable
 
     # Install dependencies
     - name: Install Dependencies
