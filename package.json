@@ -23,6 +23,7 @@
         "class-variance-authority": "^0.7.0",
         "classnames": "^2.5.1",
         "clsx": "^2.1.1",
+        "date-fns": "^4.1.0",
         "decimal.js": "^10.4.3",
         "joi": "^17.13.3",
         "lottie-react": "^2.4.0",
