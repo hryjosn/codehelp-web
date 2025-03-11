@@ -37,7 +37,8 @@ export default async function RootLayout({
                     <ReactQueryClientProvider>
                         <Provider>
                             <RootStoreProvider>
-                                <MSWProvider>{children}</MSWProvider>
+                                {/* <MSWProvider>{children}</MSWProvider> */}
+                                {children}
                             </RootStoreProvider>
                         </Provider>
                     </ReactQueryClientProvider>

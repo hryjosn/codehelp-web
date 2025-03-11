@@ -4,7 +4,7 @@ interface RoleInfoT {
     avatar: string
 }
 
-interface MessageT {
+export interface MessageT {
     id: string
     userId: string
     content: string
