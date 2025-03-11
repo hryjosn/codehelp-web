@@ -1,9 +1,14 @@
 import { NextResponse } from 'next/server'
-import { userInfoURL } from '~/api/user/api_url'
+import { getChatroomInfoURL } from '~/api/chatroom/api_url'
 import apiHandler from '~/api/api'
 import { cookies } from 'next/headers'
 
-export async function GET() {
+export async function GET(
+    request: Request,
+    context: { params: { chatroomId: string } }
+) {
+    const { chatroomId } = context.params
+
     const token = cookies().get('auth_token')?.value
 
     if (!token) {
@@ -13,9 +18,16 @@ export async function GET() {
         )
     }
 
+    if (!chatroomId) {
+        return NextResponse.json(
+            { error: 'chatroomId is required' },
+            { status: 400 }
+        )
+    }
+
     try {
         const res = await apiHandler({
-            url: userInfoURL,
+            url: getChatroomInfoURL(chatroomId),
             method: 'GET',
             headers: { Authorization: token },
         })
@@ -29,6 +41,6 @@ export async function GET() {
 
         return NextResponse.json(res.data)
     } catch (error) {
-        console.log('error >>', error)
+        return NextResponse.json(error)
     }
 }

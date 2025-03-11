@@ -1,9 +1,14 @@
-import { NextResponse } from 'next/server'
-import { userInfoURL } from '~/api/user/api_url'
+import { NextRequest, NextResponse } from 'next/server'
+import { getChatroomListURL } from '~/api/chatroom/api_url'
 import apiHandler from '~/api/api'
 import { cookies } from 'next/headers'
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+    const { searchParams } = new URL(req.url)
+
+    const page = Number(searchParams.get('page')) || 1
+    const count = Number(searchParams.get('count')) || 10
+
     const token = cookies().get('auth_token')?.value
 
     if (!token) {
@@ -15,7 +20,7 @@ export async function GET() {
 
     try {
         const res = await apiHandler({
-            url: userInfoURL,
+            url: getChatroomListURL({ pageParam: page, pageSize: count }),
             method: 'GET',
             headers: { Authorization: token },
         })
@@ -29,6 +34,6 @@ export async function GET() {
 
         return NextResponse.json(res.data)
     } catch (error) {
-        console.log('error >>', error)
+        return NextResponse.json(error)
     }
 }
