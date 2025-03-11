@@ -16,7 +16,7 @@ import {
 export const createChatroom = [
     http.post<CreateChatroomReqT, CreateChatroomResT>(createChatroomURL, () => {
         return HttpResponse.json({
-            chatroomId: '79b720c1-b496-4d61-b9a1-2279eae7bb36',
+            chatroomId: '8d7ec629-afa0-4728-a9a6-85e387f14c53',
             status: 'ok',
         })
     }),
