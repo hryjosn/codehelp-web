@@ -4,8 +4,6 @@ import { JWT } from 'next-auth/jwt'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import { loginURL } from '~/api/user/route'
 
-const serverURL = 'http://localhost:3000'
-
 export const authOptions: NextAuthOptions = {
     providers: [
         CredentialsProvider({
