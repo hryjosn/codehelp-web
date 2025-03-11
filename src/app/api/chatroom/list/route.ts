@@ -20,9 +20,10 @@ export async function GET(req: NextRequest) {
 
     try {
         const res = await apiHandler({
-            url: getChatroomListURL({ pageParam: page, pageSize: count }),
+            url: getChatroomListURL,
             method: 'GET',
             headers: { Authorization: token },
+            params: { pageParam: page, pageSize: count },
         })
 
         if (!res) {
