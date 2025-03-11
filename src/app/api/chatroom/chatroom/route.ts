@@ -22,13 +22,6 @@ export async function POST(req: Request) {
             data,
         })
 
-        if (!res) {
-            return NextResponse.json(
-                { error: 'Invalid token' },
-                { status: 401 }
-            )
-        }
-
         return NextResponse.json(res.data)
     } catch (error) {
         return NextResponse.json(error)

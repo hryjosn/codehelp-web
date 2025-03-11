@@ -20,13 +20,6 @@ export async function GET() {
             headers: { Authorization: token },
         })
 
-        if (!res) {
-            return NextResponse.json(
-                { error: 'Invalid token' },
-                { status: 401 }
-            )
-        }
-
         return NextResponse.json(res.data)
     } catch (error) {
         console.log('error >>', error)
