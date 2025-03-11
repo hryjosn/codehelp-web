@@ -28,17 +28,17 @@ export const getChatroomInfo = [
         () => {
             return HttpResponse.json({
                 chatroom: {
-                    id: '79b720c1-b496-4d61-b9a1-2279eae7bb36',
-                    createdAt: '2024-11-26T09:20:47.207Z',
+                    id: '8d7ec629-afa0-4728-a9a6-85e387f14c53',
+                    createdAt: '2025-03-09T03:39:36.023Z',
                     member: {
-                        id: '7f17f643-c79a-42a9-841c-ddc775f7a807',
-                        userName: 'test1',
-                        avatar: 'https://codehelp-backend-production.up.railway.app/image/89b927ba-9a39-4ec6-9679-10fee13d6e06',
+                        id: '94dd9ba9-6a72-4285-9e18-cff7b4e3479f',
+                        userName: 'testMember1',
+                        avatar: 'https://codehelp-backend-production.up.railway.app/image/eeba2d67-2244-4dbb-98f8-020a06053968',
                     },
                     mentor: {
-                        id: '0415338d-95be-4977-8b2a-74029e64ca25',
-                        userName: 'test007',
-                        avatar: 'https://codehelp-backend-production.up.railway.app/image/f6a9ab3c-165d-4dae-b102-8501aadcb8c9',
+                        id: '600fedbb-e44e-41f2-bd2e-0371de476b0c',
+                        userName: 'testMentor16',
+                        avatar: 'https://codehelp-backend-production.up.railway.app/image/eb658587-7fa9-4880-a1a2-dfcd3d993102',
                     },
                     messages: [],
                 },
@@ -55,24 +55,24 @@ export const createMessage = [
             return HttpResponse.json({
                 message: {
                     chatroom: {
-                        id: '79b720c1-b496-4d61-b9a1-2279eae7bb36',
-                        createdAt: '2024-11-26T09:20:47.207Z',
+                        id: '8d7ec629-afa0-4728-a9a6-85e387f14c53',
+                        createdAt: '2025-03-09T03:39:36.023Z',
                         member: {
-                            id: '7f17f643-c79a-42a9-841c-ddc775f7a807',
-                            userName: 'test1',
-                            avatar: 'https://codehelp-backend-production.up.railway.app/image/89b927ba-9a39-4ec6-9679-10fee13d6e06',
+                            id: '94dd9ba9-6a72-4285-9e18-cff7b4e3479f',
+                            userName: 'testMember1',
+                            avatar: 'https://codehelp-backend-production.up.railway.app/image/eeba2d67-2244-4dbb-98f8-020a06053968',
                         },
                         mentor: {
-                            id: '0415338d-95be-4977-8b2a-74029e64ca25',
-                            userName: 'test007',
-                            avatar: 'https://codehelp-backend-production.up.railway.app/image/f6a9ab3c-165d-4dae-b102-8501aadcb8c9',
+                            id: '600fedbb-e44e-41f2-bd2e-0371de476b0c',
+                            userName: 'testMentor16',
+                            avatar: 'https://codehelp-backend-production.up.railway.app/image/eb658587-7fa9-4880-a1a2-dfcd3d993102',
                         },
                         messages: [],
                     },
-                    userId: '7f17f643-c79a-42a9-841c-ddc775f7a807',
+                    userId: '94dd9ba9-6a72-4285-9e18-cff7b4e3479f',
                     content: 'new message for this chatroom',
                     id: 'b470260f-f646-4553-8c1e-b449f31b5741',
-                    createdAt: '2024-11-26T09:43:41.650Z',
+                    createdAt: '2025-03-09T03:39:36.023Z',
                 },
                 status: 'ok',
             })
