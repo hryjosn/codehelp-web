@@ -22,13 +22,12 @@ jobs:
         node-version: 20  # Use the Node.js version compatible with your Next.js app
         cache: 'yarn'     # If you use npm, replace this with 'npm'
 
-    # Enable Corepack
-    - name: Enable Corepack
-      run: corepack enable
-
-    # Set Yarn Version
-    - name: Set Yarn Version
-      run: corepack prepare yarn@4.7.0 --activate
+    # Install Corepack
+    - name: Install Corepack
+      run: |
+        corepack enable
+        corepack prepare yarn@4.7.0 --activate
+        yarn set version 4.7.0
 
     # Install dependencies
     - name: Install Dependencies
