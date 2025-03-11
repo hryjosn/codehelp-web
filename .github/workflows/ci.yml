@@ -14,20 +14,19 @@ jobs:
     # Checkout the repository
     - name: Checkout Code
       uses: actions/checkout@v3
-
-    # Set up Node.js
-    - name: Setup Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: 20  # Use the Node.js version compatible with your Next.js app
-        cache: 'yarn'     # If you use npm, replace this with 'npm'
-
     # Install Corepack
     - name: Install Corepack
       run: |
         corepack enable
         corepack prepare yarn@4.7.0 --activate
         yarn set version 4.7.0
+        
+    # Set up Node.js
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 20  # Use the Node.js version compatible with your Next.js app
+        cache: 'yarn'     # If you use npm, replace this with 'npm'
 
     # Install dependencies
     - name: Install Dependencies
