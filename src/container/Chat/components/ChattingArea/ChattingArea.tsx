@@ -49,6 +49,7 @@ const ChattingArea = () => {
             </div>
             <div className="flex justify-center pr-3">
                 <ButtonInput
+                    value={content}
                     maxRows={17}
                     placeholder="Write something..."
                     onChange={(e) => {

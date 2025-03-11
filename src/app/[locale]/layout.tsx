@@ -10,7 +10,7 @@ import { routing } from '~/i18n/routing'
 import Provider from '~/app/Provider'
 import { RootStoreProvider } from '~/store/rootStoreProvider'
 
-// server.listen()
+server.listen()
 
 export const metadata: Metadata = {
     title: 'Home',
@@ -37,8 +37,8 @@ export default async function RootLayout({
                     <ReactQueryClientProvider>
                         <Provider>
                             <RootStoreProvider>
-                                {/* <MSWProvider>{children}</MSWProvider> */}
-                                {children}
+                                <MSWProvider>{children}</MSWProvider>
+                                {/* {children} */}
                             </RootStoreProvider>
                         </Provider>
                     </ReactQueryClientProvider>
