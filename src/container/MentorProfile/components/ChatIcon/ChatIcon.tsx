@@ -19,7 +19,7 @@ const ChatIcon = ({ mentorId }: { mentorId: string }) => {
                     // Waiting Backend renew respond data
                     // Otherwise need to use mock data
                     getChatroomInfo(res.chatroomId)
-                    router.push('/chat')
+                    router.push(`/chat/${res.chatroomId}`)
                 }
             }}
         />

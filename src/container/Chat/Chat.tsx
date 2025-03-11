@@ -6,7 +6,7 @@ import ChattingArea from './components/ChattingArea/ChattingArea'
 import { useMemo, useState } from 'react'
 import { useGetChatroomList } from '~/api/chatroom/chatroom'
 
-const Chat = () => {
+const Chat = ({ params }: { params: Promise<{ id: string }> }) => {
     const [searchingValue, setSearchingValue] = useState('') //temporary
     const { data: chatroomListData } = useGetChatroomList()
     const chatroomList = useMemo(() => {
