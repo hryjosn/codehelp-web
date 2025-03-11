@@ -26,6 +26,10 @@ jobs:
     - name: Enable Corepack
       run: corepack enable
 
+    # Set Yarn Version
+    - name: Set Yarn Version
+      run: corepack prepare yarn@4.7.0 --activate
+
     # Install dependencies
     - name: Install Dependencies
       run: yarn install  # Replace with `npm install` if using npm
