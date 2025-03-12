@@ -1,7 +1,7 @@
-import { NextResponse } from 'next/server'
-import { createMessageURL } from '~/api/chatroom/api_url'
-import apiHandler from '~/api/api'
 import { cookies } from 'next/headers'
+import { NextResponse } from 'next/server'
+import apiHandler from '~/api/api'
+import { createMessageURL } from '~/api/chatroom/route'
 
 export async function POST(req: Request) {
     const { data } = await req.json()
@@ -24,13 +24,6 @@ export async function POST(req: Request) {
                 content,
             },
         })
-
-        if (!res) {
-            return NextResponse.json(
-                { error: 'Invalid token' },
-                { status: 401 }
-            )
-        }
 
         return NextResponse.json(res.data)
     } catch (error) {

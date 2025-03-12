@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { getChatroomListURL } from '~/api/chatroom/api_url'
-import apiHandler from '~/api/api'
 import { cookies } from 'next/headers'
+import { NextRequest, NextResponse } from 'next/server'
+import apiHandler from '~/api/api'
+import { getChatroomListURL } from '~/api/chatroom/route'
 
 export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url)
@@ -20,17 +20,11 @@ export async function GET(req: NextRequest) {
 
     try {
         const res = await apiHandler({
-            url: getChatroomListURL({ pageParam: page, pageSize: count }),
+            url: getChatroomListURL,
             method: 'GET',
             headers: { Authorization: token },
+            params: { pageParam: page, pageSize: count },
         })
-
-        if (!res) {
-            return NextResponse.json(
-                { error: 'Invalid token' },
-                { status: 401 }
-            )
-        }
 
         return NextResponse.json(res.data)
     } catch (error) {

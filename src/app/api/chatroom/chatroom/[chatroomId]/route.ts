@@ -1,7 +1,7 @@
-import { NextResponse } from 'next/server'
-import { getChatroomInfoURL } from '~/api/chatroom/api_url'
-import apiHandler from '~/api/api'
 import { cookies } from 'next/headers'
+import { NextResponse } from 'next/server'
+import apiHandler from '~/api/api'
+import { getChatroomInfoURL } from '~/api/chatroom/route'
 
 export async function GET(
     request: Request,
@@ -31,13 +31,6 @@ export async function GET(
             method: 'GET',
             headers: { Authorization: token },
         })
-
-        if (!res) {
-            return NextResponse.json(
-                { error: 'Invalid token' },
-                { status: 401 }
-            )
-        }
 
         return NextResponse.json(res.data)
     } catch (error) {

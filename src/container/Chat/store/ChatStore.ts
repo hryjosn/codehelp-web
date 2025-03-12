@@ -63,8 +63,6 @@ export const useChatroomStore = create<State & Action>()((set, get) => ({
         try {
             const res = await callCreateMessage({ content, chatroomId })
             if (res?.data?.message?.chatroom?.messages) {
-                console.log('new message >>', res?.data?.message)
-
                 get().addMessage(res.data.message)
             }
             return res.data
