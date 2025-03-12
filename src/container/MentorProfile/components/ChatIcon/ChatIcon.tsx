@@ -8,13 +8,17 @@ import { useChatroomStore } from '~/container/Chat/store/ChatStore'
 const ChatIcon = ({ mentorId }: { mentorId: string }) => {
     const router = useRouter()
     const createChatroom = useChatroomStore((state) => state.createChatroom)
+    const getChatroomInfo = useChatroomStore((state) => state.getChatroomInfo)
     return (
         <HiChatBubbleLeftEllipsis
             className="cursor-pointer"
             size={30}
             onClick={async () => {
                 const res = await createChatroom(mentorId)
-                if (res === RESPONSE_CODE.DATA_DUPLICATE || res.chatroomId) {
+                if (res.chatroomId) {
+                    // Waiting Backend renew respond data
+                    // Otherwise need to use mock data
+                    getChatroomInfo(res.chatroomId)
                     router.push('/chat')
                 }
             }}

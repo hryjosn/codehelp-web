@@ -1,11 +1,11 @@
 import { http, HttpResponse } from 'msw'
-import { getMentorInfoURL, saveAppointmentURL } from '~/api/mentor/api_url'
+import { getMentorInfoURL, saveAppointmentURL } from '~/api/mentor/route'
 import {
-    GetMentorInfoReqT,
-    GetMentorInfoResT,
+    AppointmentParam,
     AppointmentReq,
     AppointmentRes,
-    AppointmentParam,
+    GetMentorInfoReqT,
+    GetMentorInfoResT,
 } from '~/api/mentor/types'
 import {
     MENTOR_DISCIPLINES,

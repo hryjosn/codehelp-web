@@ -1,7 +1,7 @@
 import { useInfiniteQuery, useMutation, useQuery } from '@tanstack/react-query'
 import { MentorT } from '~/api/mentor/types'
 import apiHandler from '../api'
-import { getMentorInfoURL, saveAppointmentURL } from './api_url'
+import { getMentorInfoURL, saveAppointmentURL } from './route'
 import { AppointmentReq, AppointmentResWrapData } from './types'
 
 interface MentorListResT {

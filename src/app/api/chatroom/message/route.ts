@@ -1,9 +1,11 @@
 import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'
 import apiHandler from '~/api/api'
-import { userInfoURL } from '~/api/user/route'
+import { createMessageURL } from '~/api/chatroom/route'
 
-export async function GET() {
+export async function POST(req: Request) {
+    const { data } = await req.json()
+    const { content, chatroomId } = data
     const token = cookies().get('auth_token')?.value
 
     if (!token) {
@@ -15,13 +17,16 @@ export async function GET() {
 
     try {
         const res = await apiHandler({
-            url: userInfoURL,
-            method: 'GET',
+            url: createMessageURL(chatroomId),
+            method: 'POST',
             headers: { Authorization: token },
+            data: {
+                content,
+            },
         })
 
         return NextResponse.json(res.data)
     } catch (error) {
-        console.log('error >>', error)
+        return NextResponse.json(error)
     }
 }
