@@ -1,5 +1,6 @@
 import { Metadata } from 'next'
 import { NextIntlClientProvider } from 'next-intl'
+import { server } from '~/../mocks/node'
 import { getMessages } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { MSWProvider } from '~/../mocks/msw-provider'
