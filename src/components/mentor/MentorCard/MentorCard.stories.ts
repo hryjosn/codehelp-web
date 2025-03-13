@@ -37,12 +37,12 @@ const MOCK_MENTOR_LIST: MentorT[] = [
         primaryExpertise: 'Sleep',
         secondaryExpertise: '',
         tertiaryExpertise: '',
-        disciplines: [
+        mentorDisciplines: [
             MENTOR_DISCIPLINES.BIOLOGY,
             MENTOR_DISCIPLINES.BUSINESS_ADMINISTRATION,
         ],
-        skills: [MENTOR_SKILLS.ADOBE_PHOTOSHOP, MENTOR_SKILLS.ANGULAR],
-        tools: [MENTOR_TOOLS.ADOBE_PHOTOSHOP],
+        mentorSkills: [MENTOR_SKILLS.ADOBE_PHOTOSHOP, MENTOR_SKILLS.ANGULAR],
+        mentorTools: [MENTOR_TOOLS.ADOBE_PHOTOSHOP],
         createdAt: '2024-11-24T06:44:51.411Z',
         updatedAt: '2024-11-24T06:44:51.411Z',
         education: "海事資訊科技系$%$高雄科技大學'",
