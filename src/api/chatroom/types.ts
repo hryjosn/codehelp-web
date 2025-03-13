@@ -23,6 +23,8 @@ export interface NewMessageResT {
     }
     status: string
 }
+
+export interface ChatroomListReqT {}
 export interface ChatroomListResT {
     chatroomList: ChatroomListT[]
     status: string
