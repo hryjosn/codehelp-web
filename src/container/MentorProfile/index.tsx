@@ -62,7 +62,7 @@ const MentorProfile = async ({
                             />
                             <BackgroundItem
                                 title={'Disciplines'}
-                                content={mentorInfo.disciplines}
+                                content={mentorInfo.mentorDisciplines}
                             />
                         </div>
                         {mentorInfo.experience.length > 0 && (
