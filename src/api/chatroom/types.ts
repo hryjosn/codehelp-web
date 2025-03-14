@@ -30,3 +30,8 @@ export interface ChatroomListResT {
     status: string
     total: number
 }
+
+export interface CreateMessageData {
+    content: string
+    chatroomId: string
+}
