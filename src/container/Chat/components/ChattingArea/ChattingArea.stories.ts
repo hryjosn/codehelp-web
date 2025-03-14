@@ -8,9 +8,16 @@ const meta = {
         layout: 'centered',
     },
     tags: ['autodocs'],
+    args: {
+        chatroomId: '',
+    },
 } satisfies Meta<typeof ChattingArea>
 
 export default meta
 type Story = StoryObj<typeof meta>
 
-export const Default: Story = {}
+export const Default: Story = {
+    args: {
+        chatroomId: '',
+    },
+}
