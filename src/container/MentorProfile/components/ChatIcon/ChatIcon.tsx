@@ -2,7 +2,6 @@
 
 import { HiChatBubbleLeftEllipsis } from 'react-icons/hi2'
 import { useRouter } from '~/i18n/routing'
-import { RESPONSE_CODE } from '~/container/Login/store/types'
 import { useChatroomStore } from '~/container/Chat/store/ChatStore'
 
 const ChatIcon = ({ mentorId }: { mentorId: string }) => {
