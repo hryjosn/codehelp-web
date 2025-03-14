@@ -7,11 +7,6 @@ import {
     GetMentorInfoReqT,
     GetMentorInfoResT,
 } from '~/api/mentor/types'
-import {
-    MENTOR_DISCIPLINES,
-    MENTOR_SKILLS,
-    MENTOR_TOOLS,
-} from '~/container/SignUp/store/types'
 
 export const getMentorInfo = [
     http.get<GetMentorInfoReqT, GetMentorInfoResT>(
