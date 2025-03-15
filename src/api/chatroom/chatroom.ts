@@ -1,4 +1,5 @@
-import { useInfiniteQuery } from '@tanstack/react-query'
+import { useInfiniteQuery, useMutation } from '@tanstack/react-query'
+import { CreateMessageData } from './types'
 import axios from 'axios'
 
 export const callCreateChatroom = async (data: any) => {
@@ -11,17 +12,12 @@ export const callGetChatroomInfo = async (chatroomId: string) => {
     return await axios.get(`/api/chatroom/chatroom/${chatroomId}`)
 }
 
-export const callCreateMessage = async ({
-    content,
-    chatroomId,
-}: {
-    content: string
-    chatroomId: string
-}) => {
-    return await axios.post('/api/chatroom/message', {
-        data: {
-            content,
-            chatroomId,
+export const useCreateMessage = () => {
+    return useMutation({
+        mutationFn: async (data: CreateMessageData) => {
+            return await axios.post('/api/chatroom/message', {
+                data,
+            })
         },
     })
 }

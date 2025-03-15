@@ -25,7 +25,7 @@ export interface ChatroomInfoT {
 }
 export interface ChatroomListT {
     id: string
-    createdAt: string
+    created_at: string
     member: RoleInfoT
     mentor: RoleInfoT
 }

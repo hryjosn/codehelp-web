@@ -2,15 +2,19 @@ import Image from 'next/image'
 import MessageBox from '../MessageBox/MessageBox'
 import { useChatroomStore } from '../../store/ChatStore'
 import { useEffect, useState } from 'react'
+import { Props } from './types'
 import ButtonInput from '~/components/ButtonInput/ButtonInput'
+import { useCreateMessage } from '~/api/chatroom/chatroom'
 
-const ChattingArea = () => {
+const ChattingArea = ({ chatroomId }: Props) => {
+    const { mutate: createMessage } = useCreateMessage()
     const [content, setContent] = useState('')
     const getChatroomInfo = useChatroomStore((state) => state.getChatroomInfo)
-    const createMessage = useChatroomStore((state) => state.createMessage)
+    const addMessage = useChatroomStore((state) => state.addMessage)
+    const setChatroomId = useChatroomStore((state) => state.setChatroomId)
     const chatroomInfo = useChatroomStore((state) => state.chatroomInfo)
-    const chatroomId = useChatroomStore((state) => state.chatroomId)
     useEffect(() => {
+        setChatroomId(chatroomId)
         getChatroomInfo(chatroomId)
     }, [getChatroomInfo])
 
@@ -30,7 +34,7 @@ const ChattingArea = () => {
                             ) : (
                                 <div className="my-3 flex items-center">
                                     <Image
-                                        className="max-h-12 max-w-12 rounded-full"
+                                        className="min-h-12 min-w-12 rounded-full"
                                         src={chatroomInfo.mentor.avatar}
                                         alt=""
                                         width="48"
@@ -56,7 +60,16 @@ const ChattingArea = () => {
                         setContent(e.target.value)
                     }}
                     onClick={() => {
-                        createMessage({ content, chatroomId })
+                        createMessage(
+                            { content, chatroomId },
+                            {
+                                onSuccess(res) {
+                                    if (res?.data?.message) {
+                                        addMessage(res.data.message)
+                                    }
+                                },
+                            }
+                        )
                         setContent('')
                     }}
                 />
