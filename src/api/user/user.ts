@@ -10,11 +10,13 @@ import {
 } from './route'
 import { BookingInfoResT, LoginReqT, LoginResT } from './types'
 
-export const callMentorSignUp = (data: any) => {
-    return apiHandler({
-        url: mentorSignUpURL,
-        method: 'post',
-        data,
+export const useMentorSignUp = () => {
+    return useMutation({
+        mutationFn: async (data: FormData) => {
+            return await axios.post('/api/mentor/signUp', data, {
+                headers: { 'Content-Type': 'multipart/form-data' },
+            })
+        },
     })
 }
 
@@ -43,8 +45,7 @@ export const useGetUserInfo = () => {
     return useQuery({
         queryKey: ['userInfo'],
         queryFn: async () => {
-            const res = await axios.get('/api/user/get-user-info')
-            return res
+            return await axios.get('/api/user/getUserInfo')
         },
     })
 }
