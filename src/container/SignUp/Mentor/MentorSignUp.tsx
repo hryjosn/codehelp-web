@@ -12,9 +12,9 @@ import Step4 from './Step4/Step4'
 import { mentorSchema, mentorSignUpT } from '../store/types'
 import { RESPONSE_CODE } from '~/container/Login/store/types'
 import { useMentorSignUp } from '~/api/user/user'
-import axios from 'axios'
 import Lottie from 'lottie-react'
 import LoadAnimation from '~/../public/Lottie/loading.json'
+import loginHandler from '~/utils/loginHandler'
 
 const MentorSignUp = () => {
     const { mutate: mentorSignUp, isPending } = useMentorSignUp()
@@ -73,11 +73,8 @@ const MentorSignUp = () => {
             mentorSignUp(formData, {
                 onSuccess(res) {
                     if (res?.data?.token) {
-                        axios.post('/api/auth/token', {
-                            token: res.data.token,
-                        })
+                        loginHandler({ email, password })
                     }
-                    router.push('/')
                 },
             })
         } catch (error) {

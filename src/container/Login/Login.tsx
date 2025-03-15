@@ -1,6 +1,6 @@
 'use client'
 import { joiResolver } from '@hookform/resolvers/joi'
-import axios, { isAxiosError } from 'axios'
+import { isAxiosError } from 'axios'
 import Joi from 'joi/lib'
 import { observer } from 'mobx-react-lite'
 import Image from 'next/image'
@@ -10,7 +10,7 @@ import Button from './components/Button/Button'
 import FormInput from './components/FormInput/FormInput'
 import LinkText from './components/LinkText/LinkText'
 import { LoginDataT, RESPONSE_CODE } from './store/types'
-import { getSession, signIn } from 'next-auth/react'
+import loginHandler from '~/utils/loginHandler'
 
 const Login = () => {
     const [errorText, setErrorText] = useState('')
@@ -36,18 +36,7 @@ const Login = () => {
 
     const onSubmit = async (data: LoginDataT) => {
         try {
-            await signIn('credentials', {
-                email: data.email,
-                password: data.password,
-                callbackUrl: '/',
-            })
-
-            const session = await getSession()
-            if (session?.accessToken) {
-                await axios.post('/api/auth/token', {
-                    token: session.accessToken,
-                })
-            }
+            loginHandler(data)
         } catch (error) {
             reset()
             if (isAxiosError(error)) {

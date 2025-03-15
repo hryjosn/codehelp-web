@@ -2,12 +2,7 @@ import { useMutation, useQuery } from '@tanstack/react-query'
 import axios from 'axios'
 import { LoginDataT } from '~/container/Login/store/types'
 import apiHandler from '../api'
-import {
-    bookingInfoURL,
-    loginURL,
-    memberSignUpURL,
-    mentorSignUpURL,
-} from './route'
+import { bookingInfoURL, loginURL, memberSignUpURL } from './route'
 import { BookingInfoResT, LoginReqT, LoginResT } from './types'
 
 export const useMentorSignUp = () => {
@@ -20,11 +15,13 @@ export const useMentorSignUp = () => {
     })
 }
 
-export const callMemberSignUp = (data: any) => {
-    return apiHandler({
-        url: memberSignUpURL,
-        method: 'post',
-        data,
+export const useMemberSignUp = () => {
+    return useMutation({
+        mutationFn: async (data: FormData) => {
+            return await axios.post('/api/member/signUp', data, {
+                headers: { 'Content-Type': 'multipart/form-data' },
+            })
+        },
     })
 }
 

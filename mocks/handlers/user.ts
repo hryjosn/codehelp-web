@@ -52,7 +52,7 @@ export const login = [
 ]
 
 export const memberSignUp = [
-    http.post<MemberSignUpReqT, MemberSignUpResT>(memberSignUpURL, () => {
+    http.post<MemberSignUpReqT, MemberSignUpResT>('/api/member/signUp', () => {
         return HttpResponse.json({
             newMember: {
                 userName: 'test1',
