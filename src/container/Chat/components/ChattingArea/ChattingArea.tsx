@@ -1,30 +1,39 @@
+'use client'
 import Image from 'next/image'
 import MessageBox from '../MessageBox/MessageBox'
 import { useChatroomStore } from '../../store/ChatStore'
-import { useEffect, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Props } from './types'
 import ButtonInput from '~/components/ButtonInput/ButtonInput'
-import { useCreateMessage } from '~/api/chatroom/chatroom'
+import {
+    useCreateMessage,
+    useMessageList,
+    useGetChatroomInfo,
+} from '~/api/chatroom/chatroom'
 
 const ChattingArea = ({ chatroomId }: Props) => {
     const { mutate: createMessage } = useCreateMessage()
+    const { data: messageListData } = useMessageList(chatroomId)
+    const { data: chatroomInfo } = useGetChatroomInfo(chatroomId)
+
     const [content, setContent] = useState('')
-    const getChatroomInfo = useChatroomStore((state) => state.getChatroomInfo)
     const addMessage = useChatroomStore((state) => state.addMessage)
-    const setChatroomId = useChatroomStore((state) => state.setChatroomId)
-    const chatroomInfo = useChatroomStore((state) => state.chatroomInfo)
-    useEffect(() => {
-        setChatroomId(chatroomId)
-        getChatroomInfo(chatroomId)
-    }, [getChatroomInfo])
+
+    const messagesList = useMemo(() => {
+        const queriedChatroomInfo = messageListData?.pages.flatMap(
+            (page) => page.messagesList
+        )
+        return queriedChatroomInfo
+    }, [messageListData])
 
     return (
         <div className="flex h-screen min-w-[300px] flex-1 flex-col px-5 py-5">
-            <div className="custom-scrollbar mt-5 flex-1 overflow-x-hidden overflow-y-scroll">
-                {chatroomInfo?.messages &&
-                    chatroomInfo.messages.map((data) => (
+            <div className="custom-scrollbar mt-5 flex flex-1 flex-col-reverse overflow-x-hidden overflow-y-scroll">
+                {messagesList?.length &&
+                    !!chatroomInfo &&
+                    messagesList.map((data) => (
                         <div key={data.id}>
-                            {chatroomInfo.member.id === data.userId ? (
+                            {chatroomInfo.chatroom.member.id === data.userId ? (
                                 <div className="my-3 ml-20 flex justify-end">
                                     <MessageBox
                                         key={data.id}
@@ -35,7 +44,10 @@ const ChattingArea = ({ chatroomId }: Props) => {
                                 <div className="my-3 flex items-center">
                                     <Image
                                         className="min-h-12 min-w-12 rounded-full"
-                                        src={chatroomInfo.mentor.avatar}
+                                        src={
+                                            chatroomInfo.chatroom.mentor
+                                                .avatar || ''
+                                        }
                                         alt=""
                                         width="48"
                                         height="48"
