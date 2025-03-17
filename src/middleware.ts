@@ -3,6 +3,7 @@ import createMiddleware from 'next-intl/middleware'
 import { NextRequest, NextResponse } from 'next/server'
 import { locales, routing } from './i18n/routing'
 import { getToken } from 'next-auth/jwt'
+import getCleanPathname from './utils/getCleanPathname'
 
 const SECRET_KEY = process.env.NEXTAUTH_SECRET
 // Define public accessible pages
@@ -13,23 +14,13 @@ const publicPages = [
     '/signup', // Match /signup
 ]
 
-const LOCALES = routing.locales as readonly string[]
-
-function getCleanPathname(url: URL) {
-    const segments = url.pathname.split('/').filter(Boolean)
-    if (LOCALES.includes(segments[0])) {
-        segments.shift() // Remove language prefix
-    }
-    return '/' + segments.join('/')
-}
-
 const handleI18nRouting = createMiddleware(routing)
 
 const authMiddleware = withAuth(
     async function onAuthMiddleware(req) {
         const url = req.nextUrl
         const token = await getToken({ req, secret: SECRET_KEY })
-        const cleanPathname = getCleanPathname(url)
+        const cleanPathname = getCleanPathname(url.pathname)
 
         handleI18nRouting(req)
 
