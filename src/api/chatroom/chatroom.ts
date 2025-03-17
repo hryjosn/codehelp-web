@@ -1,15 +1,62 @@
-import { useInfiniteQuery, useMutation } from '@tanstack/react-query'
-import { CreateMessageData } from './types'
+import { useInfiniteQuery, useMutation, useQuery } from '@tanstack/react-query'
+import {
+    MessageListQueryResT,
+    CreateMessageData,
+    ChatroomInfoResT,
+    CreateChatroomData,
+} from './types'
 import axios from 'axios'
 
-export const callCreateChatroom = async (data: any) => {
-    return await axios.post('/api/chatroom/chatroom', {
-        data,
+export const useCreateChatroom = () => {
+    return useMutation({
+        mutationFn: async (data: CreateChatroomData) => {
+            return await axios.post('/api/chatroom/chatroom', {
+                data,
+            })
+        },
     })
 }
 
-export const callGetChatroomInfo = async (chatroomId: string) => {
-    return await axios.get(`/api/chatroom/chatroom/${chatroomId}`)
+export const useGetChatroomInfo = (chatroomId: string) => {
+    return useQuery({
+        queryKey: ['chatroomInfo', chatroomId],
+        queryFn: async (): Promise<ChatroomInfoResT> => {
+            const res = await axios.get(`/api/chatroom/chatroom/${chatroomId}`)
+            return res.data
+        },
+    })
+}
+
+export const useMessageList = (chatroomId: string) => {
+    return useInfiniteQuery({
+        initialPageParam: 1,
+        queryKey: ['messageList', chatroomId],
+        queryFn: async ({
+            pageParam,
+            queryKey,
+        }): Promise<MessageListQueryResT> => {
+            const [, chatroomId] = queryKey as [string, string]
+            const pageSize = 10
+            const {
+                data: { total, messagesList },
+            } = await axios.get(
+                `/api/chatroom/chatroom/${chatroomId}/message?page=${pageParam}&count=${pageSize}`
+            )
+
+            return {
+                messagesList,
+                total,
+                pageParam,
+                pageSize,
+            }
+        },
+        getNextPageParam: (res) => {
+            if (res.pageParam * res.pageSize < res.total) {
+                return res.pageParam + 1
+            }
+            return undefined
+        },
+    })
 }
 
 export const useCreateMessage = () => {
