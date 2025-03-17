@@ -27,7 +27,7 @@ export const useGetChatroomInfo = (chatroomId: string) => {
     })
 }
 
-export const useMessageList = (chatroomId: string) => {
+export const useGetMessageList = (chatroomId: string) => {
     return useInfiniteQuery({
         initialPageParam: 1,
         queryKey: ['messageList', chatroomId],

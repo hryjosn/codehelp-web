@@ -7,13 +7,13 @@ import { Props } from './types'
 import ButtonInput from '~/components/ButtonInput/ButtonInput'
 import {
     useCreateMessage,
-    useMessageList,
+    useGetMessageList,
     useGetChatroomInfo,
 } from '~/api/chatroom/chatroom'
 
 const ChattingArea = ({ chatroomId }: Props) => {
     const { mutate: createMessage } = useCreateMessage()
-    const { data: messageListData } = useMessageList(chatroomId)
+    const { data: messageListData } = useGetMessageList(chatroomId)
     const { data: chatroomInfo } = useGetChatroomInfo(chatroomId)
 
     const [content, setContent] = useState('')
