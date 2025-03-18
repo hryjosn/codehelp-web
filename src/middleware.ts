@@ -8,9 +8,9 @@ const SECRET_KEY = process.env.NEXTAUTH_SECRET
 // Define public accessible pages
 const publicPages = [
     '/', // Root path
-    '/mentor-profile/[a-zA-Z0-9-]+', // Match /mentor-profile/{id}, where {id} is a number
+    '/mentor-profile/[a-zA-Z0-9-]+', // Match /mentor-profile/{id}, where {id} is a uuid
     '/login', // Match /login
-    '/signup', // Match /signup
+    '/signup.*', // Match /signup
 ]
 
 const handleI18nRouting = createMiddleware(routing)
@@ -61,7 +61,7 @@ function buildPublicPathRegex(
                 Array.isArray(path)
                     ? path
                     : [
-                          path.includes('[a-zA-Z0-9-]+')
+                          path.includes('[a-zA-Z0-9-]+') || path.includes('.*')
                               ? path
                               : path.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'),
                       ]

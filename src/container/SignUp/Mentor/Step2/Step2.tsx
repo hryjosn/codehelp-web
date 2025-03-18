@@ -7,8 +7,8 @@ import levelList from '~/constant/data/level.json'
 
 const Step2 = () => {
     return (
-        <div className="flex justify-center items-center h-full">
-            <div className="flex flex-col gap-10 items-center">
+        <div className="flex h-full items-center justify-center">
+            <div className="flex flex-col items-center gap-10">
                 <div className="text-3xl font-bold">
                     What do you do as a professional?
                 </div>

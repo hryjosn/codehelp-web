@@ -1,9 +1,7 @@
 'use client'
 import { observer } from 'mobx-react-lite'
 import { useRouter } from '~/i18n/routing'
-
 import { Form } from '../components/Form'
-
 import rootStore from '~/store'
 import Step1 from './Step1/Step1'
 import { useState } from 'react'
@@ -13,13 +11,18 @@ import Step2 from './Step2/Step2'
 import Step4 from './Step4/Step4'
 import { mentorSchema, mentorSignUpT } from '../store/types'
 import { RESPONSE_CODE } from '~/container/Login/store/types'
+import { useMentorSignUp } from '~/api/user/user'
+import Lottie from 'lottie-react'
+import LoadAnimation from '~/../public/Lottie/loading.json'
+import loginHandler from '~/utils/loginHandler'
 
 const MentorSignUp = () => {
+    const { mutate: mentorSignUp, isPending } = useMentorSignUp()
     const [currentStep, setCurrentStep] = useState(1)
     const router = useRouter()
     const [errorText, setErrorText] = useState('')
     const {
-        signUpStore: { userName, password, email, avatar, mentorSignUp },
+        signUpStore: { userName, password, email, avatar },
     } = rootStore
     const onSubmit = async ({
         gender,
@@ -34,6 +37,7 @@ const MentorSignUp = () => {
         skills,
         tools,
         level,
+        education,
     }: mentorSignUpT) => {
         const formData = new FormData()
 
@@ -51,6 +55,7 @@ const MentorSignUp = () => {
         formData.append('introduction', introduction)
         formData.append('phoneNumber', phoneNumber)
         formData.append('linkedInURL', linkedIn)
+        formData.append('education', education)
         formData.append('primaryExpertise', expertise[0])
         formData.append('secondaryExpertise', expertise[1] || '')
         formData.append('tertiaryExpertise', expertise[2] || '')
@@ -65,10 +70,13 @@ const MentorSignUp = () => {
         })
 
         try {
-            const res = await mentorSignUp(formData)
-            if (res.data.token) {
-                router.push('/')
-            }
+            mentorSignUp(formData, {
+                onSuccess(res) {
+                    if (res?.data?.token) {
+                        loginHandler({ email, password })
+                    }
+                },
+            })
         } catch (error) {
             switch (error) {
                 case RESPONSE_CODE.VALIDATE_ERROR:
@@ -122,7 +130,14 @@ const MentorSignUp = () => {
                         )}
                         {currentStep === 4 && (
                             <FormButton variant={'nextButton'}>
-                                Submit
+                                {isPending ? (
+                                    <Lottie
+                                        animationData={LoadAnimation}
+                                        className="-my-3 h-12 w-14"
+                                    />
+                                ) : (
+                                    'Submit'
+                                )}
                             </FormButton>
                         )}
                     </div>

@@ -1,0 +1,10 @@
+[
+    { "name": "No Formal Education", "code": "0" }, 
+    { "name": "Elementary School", "code": "1" }, 
+    { "name": "Middle School / Junior High", "code": "2" }, 
+    { "name": "High School / Vocational", "code": "3" }, 
+    { "name": "Associate Degree", "code": "4" }, 
+    { "name": "Bachelor’s Degree", "code": "5" }, 
+    { "name": "Master’s Degree", "code": "6" }, 
+    { "name": "PhD / Postdoctoral", "code": "7" } 
+]
