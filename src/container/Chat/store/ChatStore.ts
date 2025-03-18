@@ -1,9 +1,4 @@
 import { create } from 'zustand'
-import {
-    callCreateChatroom,
-    callGetChatroomInfo,
-} from '~/api/chatroom/chatroom'
-import { CreateChatroomResT } from '~/api/chatroom/types'
 import { ChatroomInfoT, MessageT } from './type'
 
 type State = {
@@ -13,9 +8,6 @@ type State = {
 }
 
 type Action = {
-    createChatroom: (mentorId: string) => Promise<CreateChatroomResT>
-    getChatroomInfo: (chatroomId: string) => void
-    setChatroomId: (chatroomId: string) => void
     addMessage: (newMessage: MessageT) => void
 }
 
@@ -44,17 +36,4 @@ export const useChatroomStore = create<State & Action>()((set, get) => ({
                 ],
             },
         })),
-    setChatroomId: (chatroomId: string) => set({ chatroomId }),
-    createChatroom: async (mentorId) => {
-        try {
-            const res = await callCreateChatroom({ mentorId })
-            return res.data
-        } catch (error) {
-            throw error
-        }
-    },
-    getChatroomInfo: async (chatroomId) => {
-        const res = await callGetChatroomInfo(chatroomId)
-        set({ chatroomInfo: res.data.chatroom })
-    },
 }))
