@@ -1,4 +1,8 @@
-import { ChatroomInfoT, ChatroomListT } from '~/container/Chat/store/type'
+import {
+    ChatroomInfoT,
+    ChatroomListT,
+    MessageT,
+} from '~/container/Chat/store/type'
 
 export interface CreateChatroomReqT {}
 export interface CreateChatroomResT {
@@ -34,4 +38,15 @@ export interface ChatroomListResT {
 export interface CreateMessageData {
     content: string
     chatroomId: string
+}
+
+export interface MessageListQueryResT {
+    messagesList: MessageT[]
+    total: number
+    pageSize: number
+    pageParam: number
+}
+
+export interface CreateChatroomData {
+    mentorId: string
 }

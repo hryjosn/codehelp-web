@@ -1,16 +1,17 @@
 import { Metadata } from 'next'
 import { NextIntlClientProvider } from 'next-intl'
-import { server } from '~/../mocks/node'
 import { getMessages } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { MSWProvider } from '~/../mocks/msw-provider'
+import { server } from '~/../mocks/node'
 import Provider from '~/app/Provider'
 import { ReactQueryClientProvider } from '~/components/ReactQueryClientProvider/ReactQueryClientProvider'
 import { routing } from '~/i18n/routing'
 import { RootStoreProvider } from '~/store/rootStoreProvider'
 import '~/styles/globals.css'
-
-server.listen()
+if (process.env.MOCK === 'true') {
+    server.listen()
+}
 
 export const metadata: Metadata = {
     title: 'Home',

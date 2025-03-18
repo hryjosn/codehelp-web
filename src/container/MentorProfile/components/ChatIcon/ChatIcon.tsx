@@ -2,24 +2,26 @@
 
 import { HiChatBubbleLeftEllipsis } from 'react-icons/hi2'
 import { useRouter } from '~/i18n/routing'
-import { useChatroomStore } from '~/container/Chat/store/ChatStore'
+import { useCreateChatroom } from '~/api/chatroom/chatroom'
 
 const ChatIcon = ({ mentorId }: { mentorId: string }) => {
     const router = useRouter()
-    const createChatroom = useChatroomStore((state) => state.createChatroom)
-    const getChatroomInfo = useChatroomStore((state) => state.getChatroomInfo)
+    const { mutate: createChatroom } = useCreateChatroom()
     return (
         <HiChatBubbleLeftEllipsis
             className="cursor-pointer"
             size={30}
             onClick={async () => {
-                const res = await createChatroom(mentorId)
-                if (res.chatroomId) {
-                    // Waiting Backend renew respond data
-                    // Otherwise need to use mock data
-                    getChatroomInfo(res.chatroomId)
-                    router.push(`/chat/${res.chatroomId}`)
-                }
+                createChatroom(
+                    { mentorId },
+                    {
+                        onSuccess(res) {
+                            if (res?.data?.chatroomId) {
+                                router.push(`/chat/${res.data.chatroomId}`)
+                            }
+                        },
+                    }
+                )
             }}
         />
     )
