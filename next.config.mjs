@@ -17,6 +17,7 @@ const nextConfig = {
                 hostname: 'codehelp-backend-production.up.railway.app',
             },
         ],
+        unoptimized: true,
     },
     webpack: (config, { isServer }) => {
         if (isServer) {
