@@ -2,7 +2,7 @@
 import Image from 'next/image'
 import MessageBox from '../MessageBox/MessageBox'
 import { useChatroomStore } from '../../store/ChatStore'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Props } from './types'
 import ButtonInput from '~/components/ButtonInput/ButtonInput'
 import {
@@ -10,14 +10,17 @@ import {
     useMessageList,
     useGetChatroomInfo,
 } from '~/api/chatroom/chatroom'
+import { useQueryClient } from '@tanstack/react-query'
 
 const ChattingArea = ({ chatroomId }: Props) => {
+    const queryClient = useQueryClient()
     const { mutate: createMessage } = useCreateMessage()
     const { data: messageListData } = useMessageList(chatroomId)
     const { data: chatroomInfo } = useGetChatroomInfo(chatroomId)
 
     const [content, setContent] = useState('')
     const addMessage = useChatroomStore((state) => state.addMessage)
+    const socket = useChatroomStore((state) => state.socket)
 
     const messagesList = useMemo(() => {
         const queriedChatroomInfo = messageListData?.pages.flatMap(
@@ -25,6 +28,29 @@ const ChattingArea = ({ chatroomId }: Props) => {
         )
         return queriedChatroomInfo
     }, [messageListData])
+
+    useEffect(() => {
+        if (socket) {
+            socket.emit('join', chatroomId)
+
+            // socket.on('receiveMessage', (msgData) => {
+            //     queryClient.setQueryData(
+            //         ['messageList', chatroomId],
+            //         ({ pages, pageParams }) => {
+            //             return {
+            //                 pageParams,
+            //                 pages: pages?.map(({ total, messagesList }) => {
+            //                     return {
+            //                         total,
+            //                         messagesList: [msgData, ...messagesList],
+            //                     }
+            //                 }),
+            //             }
+            //         }
+            //     )
+            // })
+        }
+    }, [])
 
     return (
         <div className="flex h-screen min-w-[300px] flex-1 flex-col px-5 py-5">

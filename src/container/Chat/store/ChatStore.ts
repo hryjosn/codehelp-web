@@ -1,14 +1,18 @@
 import { create } from 'zustand'
 import { ChatroomInfoT, MessageT } from './type'
+import { ClientToServerEvents, ServerToClientEvents } from '~/lib/types'
+import { io, Socket } from 'socket.io-client'
 
 type State = {
     content: string
     chatroomInfo: ChatroomInfoT
     chatroomId: string
+    socket: Socket<ServerToClientEvents, ClientToServerEvents> | null
 }
 
 type Action = {
     addMessage: (newMessage: MessageT) => void
+    connectSocket: () => void
 }
 
 export const useChatroomStore = create<State & Action>()((set, get) => ({
@@ -21,6 +25,7 @@ export const useChatroomStore = create<State & Action>()((set, get) => ({
         mentor: { id: '', userName: '', avatar: '' },
         messages: [],
     },
+    socket: null,
     addMessage: (newMessage) =>
         set((state) => ({
             chatroomInfo: {
@@ -36,4 +41,5 @@ export const useChatroomStore = create<State & Action>()((set, get) => ({
                 ],
             },
         })),
+    connectSocket: () => set({ socket: io(process.env.NEXT_PUBLIC_API_URL) }),
 }))
