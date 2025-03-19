@@ -23,7 +23,7 @@ const FormPhoneInput = ({ label, registerName }: FormPhoneInputProps) => {
     }, [registerName, setValue, getFromData])
     const errorMessage = errors[registerName]?.message as string
     return (
-        <div className="w-full flex flex-col items-center">
+        <div className="flex w-full flex-col items-center">
             <div>
                 <p className="font-bold">
                     {label}
@@ -36,13 +36,13 @@ const FormPhoneInput = ({ label, registerName }: FormPhoneInputProps) => {
                     render={({ field }) => (
                         <MuiTelInput
                             className="min-h-10 w-80 rounded-lg"
-                            defaultCountry="US"
+                            defaultCountry="TW"
                             {...field}
                         />
                     )}
                 />
             </div>
-            <div className="text-red-500 min-h-6 text-center text-sm mt-1">
+            <div className="mt-1 min-h-6 text-center text-sm text-red-500">
                 {errorMessage}
             </div>
         </div>

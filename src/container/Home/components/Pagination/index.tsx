@@ -1,11 +1,14 @@
 'use client'
 import { Pagination as CustomPagination } from '@mui/material'
-import { usePathname, useSearchParams } from 'next/navigation'
-import { useRouter } from '~/i18n/routing'
+import { useSearchParams } from 'next/navigation'
+import { usePathname, useRouter } from '~/i18n/routing'
+
 const Pagination = ({ count }: { count: number }) => {
     const searchParams = useSearchParams()
+    const pathname = usePathname()
     const { replace } = useRouter()
     const currentPage = Number(searchParams.get('page')) || 1
+
     const handleOnChange = (_: React.ChangeEvent<unknown>, page: number) => {
         const params = new URLSearchParams(searchParams)
         if (page) {
@@ -13,7 +16,7 @@ const Pagination = ({ count }: { count: number }) => {
         } else {
             params.delete('page')
         }
-        replace(`?${params.toString()}`)
+        replace(`${pathname}?${params.toString()}`)
     }
     return (
         <CustomPagination

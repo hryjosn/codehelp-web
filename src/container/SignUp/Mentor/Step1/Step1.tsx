@@ -4,6 +4,7 @@ import genderList from '~/constant/data/gender.json'
 import countryList from '~/constant/data/countries.json'
 import FormSelect from '../../components/FormSelect/FormSelect'
 import FormPhoneInput from '../../components/FormPhoneInput/FormPhoneInput'
+import educationList from '~/constant/data/education.json'
 
 const Step1 = () => {
     return (
@@ -26,6 +27,11 @@ const Step1 = () => {
                         label="Country"
                         registerName={'country'}
                         dataList={countryList}
+                    />
+                    <FormSelect
+                        label="Education"
+                        registerName={'education'}
+                        dataList={educationList}
                     />
                 </div>
             </div>

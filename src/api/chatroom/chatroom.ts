@@ -27,7 +27,7 @@ export const useGetChatroomInfo = (chatroomId: string) => {
     })
 }
 
-export const useMessageList = (chatroomId: string) => {
+export const useGetMessageRecord = (chatroomId: string) => {
     return useInfiniteQuery({
         initialPageParam: 1,
         queryKey: ['messageList', chatroomId],
@@ -38,13 +38,14 @@ export const useMessageList = (chatroomId: string) => {
             const [, chatroomId] = queryKey as [string, string]
             const pageSize = 10
             const {
-                data: { total, messagesList },
+                data: { total, messages },
             } = await axios.get(
-                `/api/chatroom/chatroom/${chatroomId}/message?page=${pageParam}&count=${pageSize}`
+                `/api/chatroom/chatroom/${chatroomId}/message`,
+                { params: { page: pageParam, count: pageSize } }
             )
 
             return {
-                messagesList,
+                messages,
                 total,
                 pageParam,
                 pageSize,
@@ -77,9 +78,9 @@ export const useGetChatroomList = () => {
             const pageSize = 10
             const {
                 data: { total, chatroomList },
-            } = await axios.get(
-                `/api/chatroom/list?page=${pageParam}&count=${pageSize}`
-            )
+            } = await axios.get(`/api/chatroom/list`, {
+                params: { page: pageParam, count: pageSize },
+            })
 
             return { chatroomList, total, pageParam, pageSize }
         },

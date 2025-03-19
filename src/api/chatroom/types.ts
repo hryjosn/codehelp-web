@@ -41,7 +41,7 @@ export interface CreateMessageData {
 }
 
 export interface MessageListQueryResT {
-    messagesList: MessageT[]
+    messages: MessageT[]
     total: number
     pageSize: number
     pageParam: number

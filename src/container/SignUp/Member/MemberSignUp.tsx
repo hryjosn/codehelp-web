@@ -13,13 +13,18 @@ import Step2 from './Step2/Step2'
 import Step4 from './Step4/Step4'
 import { memberSignUpT, memberSchema } from '../store/types'
 import { RESPONSE_CODE } from '~/container/Login/store/types'
+import { useMemberSignUp } from '~/api/user/user'
+import Lottie from 'lottie-react'
+import LoadAnimation from '~/../public/Lottie/loading.json'
+import loginHandler from '~/utils/loginHandler'
 
 const MemberSignUp = () => {
+    const { mutateAsync: memberSignUp, isPending } = useMemberSignUp()
     const [currentStep, setCurrentStep] = useState(1)
     const router = useRouter()
     const [errorText, setErrorText] = useState('')
     const {
-        signUpStore: { userName, password, email, avatar, memberSignUp },
+        signUpStore: { userName, password, email, avatar },
     } = rootStore
     const onSubmit = async ({
         gender,
@@ -52,10 +57,13 @@ const MemberSignUp = () => {
         })
 
         try {
-            const res = await memberSignUp(formData)
-            if (res.data.token) {
-                router.push('/')
-            }
+            memberSignUp(formData, {
+                onSuccess(res) {
+                    if (res?.data?.token) {
+                        loginHandler({ email, password })
+                    }
+                },
+            })
         } catch (error) {
             switch (error) {
                 case RESPONSE_CODE.VALIDATE_ERROR:
@@ -108,7 +116,14 @@ const MemberSignUp = () => {
                         )}
                         {currentStep === 4 && (
                             <FormButton variant={'nextButton'}>
-                                Submit
+                                {isPending ? (
+                                    <Lottie
+                                        animationData={LoadAnimation}
+                                        className="-my-3 h-12 w-14"
+                                    />
+                                ) : (
+                                    'Submit'
+                                )}
                             </FormButton>
                         )}
                     </div>

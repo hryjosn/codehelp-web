@@ -115,6 +115,7 @@ export interface mentorSignUpT {
     tools: MENTOR_TOOLS[]
     level: string
     introduction: string
+    education: string
 }
 export interface memberSignUpT {
     phoneNumber: string
@@ -144,6 +145,9 @@ export const mentorSchema = Joi.object({
     }),
     company: Joi.string().required().messages({
         'string.empty': 'Company name is required',
+    }),
+    education: Joi.string().required().messages({
+        'string.empty': 'Education is required',
     }),
     years: Joi.number().min(0).max(60).required().messages({
         'any.required': 'Please enter the number of years',

@@ -3,10 +3,10 @@ import { ButtonHTMLAttributes } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { cn } from '~/lib/utils'
 
-const buttonVariants = cva('p-3 text-white', {
+const buttonVariants = cva('p-3 text-white font-bold', {
     variants: {
         variant: {
-            default: 'mt-5 rounded-full w-40 bg-slate-800 hover:bg-slate-700',
+            default: 'rounded-full w-40 bg-slate-800 hover:bg-slate-700',
             nextButton: 'bg-sky-600 px-4 rounded-lg hover:bg-sky-500',
         },
     },

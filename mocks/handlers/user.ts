@@ -52,7 +52,7 @@ export const login = [
 ]
 
 export const memberSignUp = [
-    http.post<MemberSignUpReqT, MemberSignUpResT>(memberSignUpURL, () => {
+    http.post<MemberSignUpReqT, MemberSignUpResT>('/api/member/signUp', () => {
         return HttpResponse.json({
             newMember: {
                 userName: 'test1',
@@ -79,8 +79,66 @@ export const memberSignUp = [
 ]
 
 export const mentorSignUp = [
-    http.post<MentorSignUpReqT, MentorSignUpResT>(mentorSignUpURL, () => {
-        return HttpResponse.json({})
+    http.post<MentorSignUpReqT, MentorSignUpResT>('/api/mentor/signUp', () => {
+        return HttpResponse.json({
+            newMentor: {
+                id: '0d53042e-f179-49cf-bad0-9977adf15a9e',
+                userName: 'testMentor2',
+                email: 'testmentor2@gmail.com',
+                avatar: 'https://codehelp-backend-production.up.railway.app/image/d17b5b40-a243-426b-a946-8a697c211f30',
+                gender: 'm',
+                country: 'AG',
+                title: 'title',
+                company: 'company',
+                phoneNumber: '0909090000          ',
+                emailOtp: false,
+                introduction: 'hello',
+                level: 0,
+                url: 'linked url',
+                primaryExpertise: 'Sleep',
+                secondaryExpertise: '',
+                tertiaryExpertise: '',
+                created_at: '2025-03-15T01:09:40.674Z',
+                updated_at: '2025-03-15T01:09:40.674Z',
+                quickReply: false,
+                experience: [],
+                education: 'Associate Degree',
+                mentorDisciplines: [
+                    {
+                        id: '6c264fd2-0e9c-4c53-b1dc-07a63a55a2b9',
+                        mentorId: '0d53042e-f179-49cf-bad0-9977adf15a9e',
+                        discipline: 'Business Administration',
+                        created_at: '2025-03-15T01:09:40.761Z',
+                    },
+                ],
+                mentorTools: [
+                    {
+                        id: '9cdff9e2-a794-4b45-bb05-0454bada390f',
+                        mentorId: '0d53042e-f179-49cf-bad0-9977adf15a9e',
+                        tool: 'GraphQL',
+                        created_at: '2025-03-15T01:09:40.819Z',
+                    },
+                ],
+                mentorSkills: [
+                    {
+                        id: 'ae71b324-42d9-4b16-851c-e82bc6f5864d',
+                        mentorId: '0d53042e-f179-49cf-bad0-9977adf15a9e',
+                        skill: 'PHP',
+                        created_at: '2025-03-15T01:09:40.790Z',
+                    },
+                    {
+                        id: 'e1d7d79f-2d29-4547-85aa-2bdd567ff5a2',
+                        mentorId: '0d53042e-f179-49cf-bad0-9977adf15a9e',
+                        skill: 'ASP.NET',
+                        created_at: '2025-03-15T01:09:40.790Z',
+                    },
+                ],
+                mentorAvailableTimes: [],
+            },
+            status: 'ok',
+            message: 'testMentor2 sign up successful!',
+            token: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6InRlc3RNZW50b3IyIiwiZW1haWwiOiJ0ZXN0bWVudG9yMkBnbWFpbC5jb20iLCJpZCI6IjBkNTMwNDJlLWYxNzktNDljZi1iYWQwLTk5NzdhZGYxNWE5ZSIsImlhdCI6MTc0MjAwMDk4MCwiZXhwIjoxNzQ0NTkyOTgwfQ.T7d-LvP3wfL2PBMwB4utDcBiSLZq5r6N_H_Cn8baLJI',
+        })
     }),
 ]
 export const getUserInfo = [

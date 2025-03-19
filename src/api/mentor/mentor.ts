@@ -40,8 +40,9 @@ export const getMentorList = async ({
     pageSize: number
 }) => {
     const { data } = await apiHandler<MentorListResT>({
-        url: `/mentor/list?page=${pageParam}&count=${pageSize}`,
+        url: `/mentor/list`,
         method: 'get',
+        params: { page: pageParam, count: pageSize },
     })
     return data
 }
@@ -54,8 +55,9 @@ export const useGetMentorList = () => {
             const {
                 data: { total, mentorList },
             } = await apiHandler<MentorListResT>({
-                url: `/mentor/list?page=${pageParam}&count=${pageSize}`,
+                url: `/mentor/list`,
                 method: 'get',
+                params: { page: pageParam, count: pageSize },
             })
 
             return { mentorList, total, pageParam, pageSize }

@@ -1,6 +1,7 @@
 import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'
 import apiHandler from '~/api/api'
+import { getMessageRecordURL } from '~/api/chatroom/route'
 
 export async function GET(
     req: Request,
@@ -31,10 +32,10 @@ export async function GET(
 
     try {
         const res = await apiHandler({
-            url: '123', //temporary
+            url: getMessageRecordURL(chatroomId),
             method: 'GET',
             headers: { Authorization: token },
-            params: { pageParam: page, pageSize: count },
+            params: { page, count },
         })
 
         return NextResponse.json(res.data)
