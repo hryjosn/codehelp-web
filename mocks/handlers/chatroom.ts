@@ -187,60 +187,69 @@ const getChatroomList = [
 const getMessageList = [
     http.get('/api/chatroom/chatroom/:chatroomId/message', () => {
         return HttpResponse.json({
-            messagesList: [
+            messages: [
                 {
                     id: '33818a27-da4a-448d-a12d-5f36bfb57938',
                     userId: '600fedbb-e44e-41f2-bd2e-0371de476b0c',
                     content: '123',
                     created_at: '2025-03-10T08:27:37.570Z',
+                    type: 0,
                 },
                 {
                     id: '33818a27-da4a-448d-a12d-5f36bfb57938',
                     userId: '94dd9ba9-6a72-4285-9e18-cff7b4e3479f',
                     content: '123',
                     created_at: '2025-03-10T08:27:37.570Z',
+                    type: 0,
                 },
                 {
                     id: '7ad4532b-4a98-40f9-843d-a94b1feb5f98',
                     userId: '94dd9ba9-6a72-4285-9e18-cff7b4e3479f',
                     content: 'new message for this chatroom',
                     created_at: '2025-03-10T08:30:48.875Z',
+                    type: 0,
                 },
                 {
                     id: 'b4086239-2495-4cd0-8a89-e0dd7713b8bf',
                     userId: '600fedbb-e44e-41f2-bd2e-0371de476b0c',
                     content: 'test',
                     created_at: '2025-03-11T03:10:04.455Z',
+                    type: 0,
                 },
                 {
                     id: 'f0031845-a688-4d24-b337-dbb2a5982b19',
                     userId: '94dd9ba9-6a72-4285-9e18-cff7b4e3479f',
                     content: 'hello',
                     created_at: '2025-03-11T06:54:34.607Z',
+                    type: 0,
                 },
                 {
                     id: '50fa7e5a-f27e-446f-acfe-6f2eca7263cb',
                     userId: '94dd9ba9-6a72-4285-9e18-cff7b4e3479f',
                     content: 'new message for this chatroom',
                     created_at: '2025-03-11T06:55:08.795Z',
+                    type: 0,
                 },
                 {
                     id: '2fca5b2f-01aa-4252-b3b1-3d9e4315d0f6',
                     userId: '600fedbb-e44e-41f2-bd2e-0371de476b0c',
                     content: 'test2',
                     created_at: '2025-03-11T06:58:57.956Z',
+                    type: 0,
                 },
                 {
                     id: '6f4df757-ef8d-4227-a239-867be6a2885b',
                     userId: '94dd9ba9-6a72-4285-9e18-cff7b4e3479f',
                     content: 'ut\n',
                     created_at: '2025-03-11T07:11:51.570Z',
+                    type: 0,
                 },
                 {
                     id: '75f6bf3e-9254-45f3-8506-73bd610e0de7',
                     userId: '600fedbb-e44e-41f2-bd2e-0371de476b0c',
                     content: 'new message for this chatroom',
                     created_at: '2025-03-13T08:15:54.933Z',
+                    type: 0,
                 },
                 {
                     id: '0dc624f1-2c1b-4944-94bf-20e06e09ff4f',
@@ -248,6 +257,7 @@ const getMessageList = [
                     content:
                         'new message for this chatroomnew message for this chatroomnew message for this chatroomnew message for this chatroomnew message for this chatroomnew message for this chatroomnew message for this chatroomnew message for this chatroomnew message for this chatroomnew message for this chatroomnew message for this chatroomnew message for this chatroom',
                     created_at: '2025-03-13T08:16:34.177Z',
+                    type: 0,
                 },
             ],
             total: 10,

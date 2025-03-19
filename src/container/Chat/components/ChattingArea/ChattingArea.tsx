@@ -7,13 +7,13 @@ import { Props } from './types'
 import ButtonInput from '~/components/ButtonInput/ButtonInput'
 import {
     useCreateMessage,
-    useGetMessageList,
+    useGetMessageRecord,
     useGetChatroomInfo,
 } from '~/api/chatroom/chatroom'
 
 const ChattingArea = ({ chatroomId }: Props) => {
     const { mutate: createMessage } = useCreateMessage()
-    const { data: messageListData } = useGetMessageList(chatroomId)
+    const { data: messageListData } = useGetMessageRecord(chatroomId)
     const { data: chatroomInfo } = useGetChatroomInfo(chatroomId)
 
     const [content, setContent] = useState('')
@@ -21,7 +21,7 @@ const ChattingArea = ({ chatroomId }: Props) => {
 
     const messagesList = useMemo(() => {
         const queriedChatroomInfo = messageListData?.pages.flatMap(
-            (page) => page.messagesList
+            (page) => page.messages
         )
         return queriedChatroomInfo
     }, [messageListData])
@@ -29,7 +29,7 @@ const ChattingArea = ({ chatroomId }: Props) => {
     return (
         <div className="flex h-screen min-w-[300px] flex-1 flex-col px-5 py-5">
             <div className="custom-scrollbar mt-5 flex flex-1 flex-col-reverse overflow-x-hidden overflow-y-scroll">
-                {messagesList?.length &&
+                {!!messagesList?.length &&
                     !!chatroomInfo &&
                     messagesList.map((data) => (
                         <div key={data.id}>
