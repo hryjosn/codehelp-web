@@ -23,7 +23,7 @@ export async function GET(req: NextRequest) {
             url: getChatroomListURL,
             method: 'GET',
             headers: { Authorization: token },
-            params: { pageParam: page, pageSize: count },
+            params: { page, count },
         })
 
         return NextResponse.json(res.data)
