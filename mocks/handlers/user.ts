@@ -141,45 +141,7 @@ export const mentorSignUp = [
         })
     }),
 ]
-export const getUserInfo = [
-    http.get<UserInfoReqT, UserInfoResT>(mentorInfoURL, () => {
-        return HttpResponse.json({
-            status: 'user_login',
-            msg: 'Login successful',
-            identity: 'mentor',
-            token: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6InRlc3QwMDEiLCJlbWFpbCI6InRlc3QwMDFAZ21haWwuY29tIiwiaWQiOiI5Mzg3ODk1Ny1iYjA3LTQ4NzctYTJjYi03NGNlYjMyYTJmNDAiLCJpYXQiOjE3MzczNjYyMzUsImV4cCI6MTczOTk1ODIzNX0.mGkUaZRZjC6qbruTwYJ0_G0KWjKNHNpmJqDOf0UV1zM',
-            user: {
-                id: '93878957-bb07-4877-a2cb-74ceb32a2f40',
-                userName: 'test001',
-                email: 'test001@gmail.com',
-                avatar: 'https://codehelp-backend-production.up.railway.app/image/9ff9deca-4cce-486d-9010-6b8e36eb219e',
-                gender: 'm',
-                country: 'AT',
-                title: 'test001',
-                company: 'test001',
-                phoneNumber: '+1 555 555 5555     ',
-                emailOtp: false,
-                introduction: 'test001test001test001',
-                level: 0,
-                url: 'https://www.linkedin.com/in/%E9%84%AD%E6%98%8E%E5%80%AB-%E6%B5%B7%E4%BA%8B%E8%B3%87%E8%A8%8A%E7%A7%91%E6%8A%80%E7%B3%BB-4baaba316/',
-                primaryExpertise: 'Backend Development',
-                secondaryExpertise: 'Data Science',
-                tertiaryExpertise: '',
-                disciplines: [
-                    MENTOR_DISCIPLINES.BIOLOGY,
-                    MENTOR_DISCIPLINES.BUSINESS_ADMINISTRATION,
-                ],
-                skills: [MENTOR_SKILLS.ADOBE_PHOTOSHOP, MENTOR_SKILLS.ANGULAR],
-                tools: [MENTOR_TOOLS.ADOBE_PHOTOSHOP],
-                createdAt: '2024-11-05T09:22:49.379Z',
-                updatedAt: '2024-11-05T09:22:49.379Z',
-                quickReply: false,
-                experience: [],
-                education: '',
-            },
-        })
-    }),
-] //this needs to refactor
+
 export const getBookingInfo = [
     http.get<BookingInfoReqT, BookingInfoResT>(bookingInfoURL, () => {
         return HttpResponse.json({
@@ -261,9 +223,4 @@ export const getBookingInfo = [
     }),
 ]
 
-export const userHandlers = [
-    ...login,
-    ...memberSignUp,
-    ...getUserInfo,
-    ...getBookingInfo,
-]
+export const userHandlers = [...login, ...memberSignUp, ...getBookingInfo]

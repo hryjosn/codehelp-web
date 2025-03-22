@@ -16,6 +16,7 @@ const ChatIcon = ({ mentorId }: { mentorId: string }) => {
                     { mentorId },
                     {
                         onSuccess(res) {
+                            // use mock or it won't work
                             if (res?.data?.chatroomId) {
                                 router.push(`/chat/${res.data.chatroomId}`)
                             }

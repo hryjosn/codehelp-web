@@ -42,7 +42,8 @@ export const useGetUserInfo = () => {
     return useQuery({
         queryKey: ['userInfo'],
         queryFn: async () => {
-            return await axios.get('/api/user/getUserInfo')
+            const res = await axios.get('/api/user/getUserInfo')
+            return res.data
         },
     })
 }

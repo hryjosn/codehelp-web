@@ -6,9 +6,13 @@ interface RoleInfoT {
 
 export interface MessageT {
     id: string
-    userId: string
+    sender: {
+        id: string
+        userName: string
+        avatar: string
+    }
     content: string
-    createdAt: string
+    created_at: string
 }
 
 export interface CreateChatroomT {
@@ -18,7 +22,7 @@ export interface CreateChatroomT {
 
 export interface ChatroomInfoT {
     id: string
-    createdAt: string
+    created_at: string
     member: RoleInfoT
     mentor: RoleInfoT
     messages: MessageT[]
