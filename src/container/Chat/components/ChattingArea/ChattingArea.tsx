@@ -24,6 +24,7 @@ const ChattingArea = ({ chatroomId }: Props) => {
     const [content, setContent] = useState('')
     const socket = useChatroomStore((state) => state.socket)
     const connectSocket = useChatroomStore((state) => state.connectSocket)
+    const disconnectSocket = useChatroomStore((state) => state.disconnectSocket)
     const { ref, inView } = useInView({
         threshold: 0.5,
     })
@@ -59,7 +60,12 @@ const ChattingArea = ({ chatroomId }: Props) => {
         } else {
             connectSocket()
         }
-    }, [chatroomId, connectSocket, queryClient, socket])
+        return () => {
+            if (socket) {
+                disconnectSocket()
+            }
+        }
+    }, [chatroomId, connectSocket, disconnectSocket, queryClient, socket])
 
     useEffect(() => {
         if (inView && hasNextPage) {

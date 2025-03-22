@@ -8,11 +8,16 @@ type State = {
 
 type Action = {
     connectSocket: () => void
+    disconnectSocket: () => void
 }
 
-export const useChatroomStore = create<State & Action>()((set) => ({
+export const useChatroomStore = create<State & Action>()((set, get) => ({
     socket: null,
     connectSocket: () => {
         set({ socket: io(process.env.NEXT_PUBLIC_API_URL) })
+    },
+    disconnectSocket: () => {
+        get().socket?.disconnect()
+        set({ socket: null })
     },
 }))
