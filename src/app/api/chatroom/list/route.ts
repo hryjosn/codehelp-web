@@ -7,7 +7,7 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url)
 
     const page = Number(searchParams.get('page')) || 1
-    const count = Number(searchParams.get('count')) || 10
+    const count = Number(searchParams.get('count')) || 15
 
     const token = cookies().get('auth_token')?.value
 
