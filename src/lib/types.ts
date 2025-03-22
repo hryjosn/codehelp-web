@@ -10,13 +10,16 @@ export interface Ice_candidateT {
 }
 
 export interface MessageData {
+    id: string
     sender: {
         id: string
         userName: string
         avatar: string
     }
     roomId: string
-    message: string
+    content: string
+    created_at: string
+    type: number
 }
 
 export interface ServerToClientEvents {
