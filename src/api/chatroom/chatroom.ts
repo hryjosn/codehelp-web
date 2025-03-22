@@ -30,13 +30,13 @@ export const useGetChatroomInfo = (chatroomId: string) => {
 export const useGetMessageRecord = (chatroomId: string) => {
     return useInfiniteQuery({
         initialPageParam: 1,
-        queryKey: ['messageList', chatroomId],
+        queryKey: ['messageRecord', chatroomId],
         queryFn: async ({
             pageParam,
             queryKey,
         }): Promise<MessageListQueryResT> => {
             const [, chatroomId] = queryKey as [string, string]
-            const pageSize = 10
+            const pageSize = 15
             const {
                 data: { total, messages },
             } = await axios.get(
