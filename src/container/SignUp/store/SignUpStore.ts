@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 
-type State = {
+type States = {
     userName: string
     email: string
     password: string
@@ -12,17 +12,17 @@ type Actions = {
     setEmail: (email: string) => void
     setPassword: (password: string) => void
     setAvatar: (avatar: File | null) => void
-    getFormData: (registerName: string) => State[keyof State]
+    getFormData: (registerName: string) => States[keyof States]
 }
 
-export type SignUpStore = State & Actions
+export type SignUpStore = States & Actions
 
-export const useSignUpStore = create<State & Actions>()((set, get) => ({
+export const useSignUpStore = create<States & Actions>()((set, get) => ({
     userName: '',
     email: '',
     password: '',
     avatar: null,
-    getFormData: (registerName) => get()[registerName as keyof State],
+    getFormData: (registerName) => get()[registerName as keyof States],
     setUserName: (userName) => set({ userName }),
     setEmail: (email) => set({ email }),
     setPassword: (password) => set({ password }),

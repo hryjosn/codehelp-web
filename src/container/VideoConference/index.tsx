@@ -10,7 +10,6 @@ import { IoSend, IoVideocam, IoVideocamOff } from 'react-icons/io5'
 import { MdOutlineScreenShare } from 'react-icons/md'
 import { PiChatCircleText } from 'react-icons/pi'
 import { cn } from '~/lib/utils'
-import rootStore from '~/store'
 import MessageBox from './components/MessageBox'
 import RemoteVideo from './components/RemoteVideo/RemoteVideo'
 import { MOCK_MESSAGE_LIST } from './constant'
@@ -21,6 +20,7 @@ import {
     shareScreen,
     stopShareScreen,
 } from './utils'
+import { useStore } from '~/store/rootStoreProvider'
 
 const VideoConference = ({ params }: { params: { id: string } }) => {
     const {
@@ -29,9 +29,13 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
             peerConnectionList,
             socket,
             removeConnectionMember,
+            setLocalStream,
+            addIceCandidate,
+            clearPeerConnections,
+            setRemoteDescription,
         },
-        videoConferenceStore,
-    } = rootStore
+    } = useStore()
+
     const [isMicOpen, setIsMicOpen] = useState(true)
     const [isCamOpen, setIsCamOpen] = useState(true)
     const [isChatOpen, setIsChatOpen] = useState(false)
@@ -46,9 +50,7 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
                 localVideoRef.current.srcObject = localStream
                 socket.emit('join', params.id)
             } else {
-                runInAction(() => {
-                    videoConferenceStore.peerConnectionList = {}
-                })
+                clearPeerConnections()
                 router.push(`/mentor-profile/${params.id}`)
             }
         })()
@@ -68,9 +70,7 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
         })
 
         socket?.on('leave', (remoteId) => {
-            if (videoConferenceStore.peerConnectionList[remoteId]) {
-                removeConnectionMember(remoteId)
-            }
+            removeConnectionMember(remoteId)
         })
 
         socket?.on('offer', async (desc, remoteId) => {
@@ -85,11 +85,7 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
 
         socket?.on('answer', (desc, remoteId) => {
             console.log('收到 answer')
-            runInAction(() => {
-                videoConferenceStore.peerConnectionList[
-                    remoteId
-                ].peerConnection.setRemoteDescription(desc)
-            })
+            setRemoteDescription({ remoteId, desc })
         })
 
         socket?.on('ice_candidate', (data, remoteId) => {
@@ -99,12 +95,7 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
                 sdpMLineIndex: data.label,
                 candidate: data.candidate,
             })
-
-            runInAction(() => {
-                videoConferenceStore.peerConnectionList[
-                    remoteId
-                ].peerConnection.addIceCandidate(candidate)
-            })
+            addIceCandidate({ remoteId, candidate })
         })
 
         socket?.on('remoteStartShare', (remoteId) => {
@@ -251,7 +242,7 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
                                 localVideoRef,
                                 setIsLocalShareScreen
                             )
-                            if (socket.id) {
+                            if (socket?.id) {
                                 socket.emit(
                                     'remoteStartShare',
                                     params.id,
@@ -269,7 +260,7 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
                                 setIsLocalShareScreen
                             )
 
-                            if (socket.id) {
+                            if (socket?.id) {
                                 socket.emit(
                                     'remoteStopShare',
                                     params.id,
@@ -286,16 +277,14 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
                 <Link href={`/mentor-profile/${params.id}`}>
                     <ImPhoneHangUp
                         onClick={() => {
-                            if (localStream && socket.id) {
+                            if (localStream && socket?.id) {
                                 hangup({
                                     roomId: params.id,
                                     localStream: localStream,
                                     remoteId: socket.id,
                                     socket,
                                 })
-                                runInAction(() => {
-                                    videoConferenceStore.localStream = undefined
-                                })
+                                setLocalStream(undefined)
                             }
                         }}
                         className="h-14 w-14 rounded-full bg-red-600 p-3"

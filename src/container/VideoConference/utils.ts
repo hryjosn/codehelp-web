@@ -13,13 +13,17 @@ import {
 } from './types'
 import Decimal from 'decimal.js'
 import { runInAction } from 'mobx'
-import rootStore from '~/store'
+import { useVideoConferenceStore } from './store/VideoConferenceStore'
 
 // export let peerConnection: RTCPeerConnection
 let connectionQualityInterval: NodeJS.Timeout | null = null
 
-const { videoConferenceStore } = rootStore
-const { removeConnectionMember } = videoConferenceStore
+const {
+    peerConnectionList,
+    removeConnectionMember,
+    clearPeerConnections,
+    addPeer,
+} = useVideoConferenceStore.getState()
 const offerAndAnswerOptions = {
     offerToReceiveAudio: true,
     offerToReceiveVideo: true,
@@ -92,22 +96,14 @@ export const createPeerConnection = async ({
             }, 1000)
         }
     }
-
-    runInAction(() => {
-        videoConferenceStore.peerConnectionList[remoteId] = {
-            peerConnection,
-            isScreenSharing: false,
-        }
-    })
+    addPeer({ remoteId, peerConnection })
 
     return peerConnection
 }
 
 export const hangup = ({ roomId, localStream, remoteId, socket }: HangupT) => {
-    if (videoConferenceStore.peerConnectionList) {
-        runInAction(() => {
-            videoConferenceStore.peerConnectionList = {}
-        })
+    if (peerConnectionList) {
+        clearPeerConnections()
     }
 
     localStream.getTracks().forEach((track) => {
@@ -119,7 +115,7 @@ export const hangup = ({ roomId, localStream, remoteId, socket }: HangupT) => {
         connectionQualityInterval = null
     }
 
-    socket?.emit('hangup', roomId, remoteId)
+    socket.emit('hangup', roomId, remoteId)
 }
 
 export const sendOfferSDP = async ({
@@ -290,14 +286,12 @@ const changeVideoTrack = (
         localVideoRef.current.srcObject = localStream
     }
 
-    Object.values(videoConferenceStore.peerConnectionList).map(
-        (peerConnection) => {
-            const videoSender = peerConnection.peerConnection
-                .getSenders()
-                .find((sender) => sender.track!.kind === 'video')
-            if (videoSender) {
-                videoSender.replaceTrack(localStream!.getVideoTracks()[0])
-            }
+    Object.values(peerConnectionList).map((peerConnection) => {
+        const videoSender = peerConnection.peerConnection
+            .getSenders()
+            .find((sender) => sender.track!.kind === 'video')
+        if (videoSender) {
+            videoSender.replaceTrack(localStream!.getVideoTracks()[0])
         }
-    )
+    })
 }

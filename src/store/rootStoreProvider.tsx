@@ -3,6 +3,7 @@
 import { createContext, useContext } from 'react'
 import { useBookingStore } from '~/container/MentorProfile/components/Booking/BookingStore/BookingStore'
 import { useSignUpStore } from '~/container/SignUp/store/SignUpStore'
+import { useVideoConferenceStore } from '~/container/VideoConference/store/VideoConferenceStore'
 import { Props, RootStore } from './types'
 
 const RootStoreContext = createContext<RootStore | undefined>(undefined)
@@ -10,8 +11,13 @@ const RootStoreContext = createContext<RootStore | undefined>(undefined)
 export const RootStoreProvider = ({ children }: Props) => {
     const bookingStore = useBookingStore()
     const signUpStore = useSignUpStore()
+    const videoConferenceStore = useVideoConferenceStore()
 
-    const rootStore: RootStore = { bookingStore, signUpStore }
+    const rootStore: RootStore = {
+        bookingStore,
+        signUpStore,
+        videoConferenceStore,
+    }
 
     return (
         <RootStoreContext.Provider value={rootStore}>
