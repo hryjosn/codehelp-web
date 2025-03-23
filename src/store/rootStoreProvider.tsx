@@ -2,14 +2,16 @@
 
 import { createContext, useContext } from 'react'
 import { useBookingStore } from '~/container/MentorProfile/components/Booking/BookingStore/BookingStore'
+import { useSignUpStore } from '~/container/SignUp/store/SignUpStore'
 import { Props, RootStore } from './types'
 
 const RootStoreContext = createContext<RootStore | undefined>(undefined)
 
 export const RootStoreProvider = ({ children }: Props) => {
     const bookingStore = useBookingStore()
+    const signUpStore = useSignUpStore()
 
-    const rootStore: RootStore = { bookingStore }
+    const rootStore: RootStore = { bookingStore, signUpStore }
 
     return (
         <RootStoreContext.Provider value={rootStore}>

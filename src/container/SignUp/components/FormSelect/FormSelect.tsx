@@ -2,7 +2,7 @@ import { MenuItem, Select, SelectProps } from '@mui/material'
 import { useEffect } from 'react'
 
 import { Controller, useFormContext } from 'react-hook-form'
-import rootStore from '~/store'
+import { useStore } from '~/store/rootStoreProvider'
 
 interface FormSelectProps extends Omit<SelectProps, 'name' | 'value'> {
     label: string
@@ -23,13 +23,13 @@ const FormSelect = ({
         formState: { errors },
     } = useFormContext()
     const {
-        signUpStore: { getFromData },
-    } = rootStore
+        signUpStore: { getFormData },
+    } = useStore()
     useEffect(() => {
-        if (getFromData(registerName)) {
-            setValue(registerName, getFromData(registerName))
+        if (getFormData(registerName)) {
+            setValue(registerName, getFormData(registerName))
         }
-    }, [registerName, setValue, getFromData])
+    }, [registerName, setValue, getFormData])
     const errorMessage = errors[registerName]?.message as string
     return (
         <div className="flex w-80 flex-col gap-1">

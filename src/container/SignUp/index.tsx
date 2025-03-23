@@ -6,21 +6,21 @@ import { Form } from './components/Form'
 import LinkText from './components/LinkText/LinkText'
 import FormButton from './components/FormButton/FormButton'
 import FormInput from './components/FormInput/FormInput'
-import rootStore from '~/store'
-import { runInAction } from 'mobx'
 import AvatarSelect from './components/AvatarSelect/AvatarSelect'
 import { SignUpInputT, signUpSchema } from './store/types'
+import { useStore } from '~/store/rootStoreProvider'
 
 const SignUp = () => {
     const route = useRouter()
+    const {
+        signUpStore: { setAvatar, setEmail, setPassword, setUserName },
+    } = useStore()
     const onSubmit = ({ avatar, userName, email, password }: SignUpInputT) => {
         if (!avatar.name || !avatar.size || !avatar.type) return
-        runInAction(() => {
-            rootStore.signUpStore.avatar = avatar
-            rootStore.signUpStore.userName = userName
-            rootStore.signUpStore.email = email
-            rootStore.signUpStore.password = password
-        })
+        setAvatar(avatar)
+        setEmail(email)
+        setPassword(password)
+        setUserName(userName)
         route.push('/signup/select-role')
     }
 
