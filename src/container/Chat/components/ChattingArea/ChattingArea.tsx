@@ -126,9 +126,7 @@ const ChattingArea = ({ chatroomId }: Props) => {
                                             },
                                             roomId: chatroomId,
                                             content,
-                                            created_at: date
-                                                .getTime()
-                                                .toString(),
+                                            created_at: date.toISOString(),
                                             type: 0,
                                         })
                                     }
