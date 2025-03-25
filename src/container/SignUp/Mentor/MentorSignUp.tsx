@@ -2,7 +2,7 @@
 import { observer } from 'mobx-react-lite'
 import { useRouter } from '~/i18n/routing'
 import { Form } from '../components/Form'
-import rootStore from '~/store'
+
 import Step1 from './Step1/Step1'
 import { useState } from 'react'
 import FormButton from '../components/FormButton/FormButton'
@@ -10,20 +10,22 @@ import Step3 from './Step3/Step3'
 import Step2 from './Step2/Step2'
 import Step4 from './Step4/Step4'
 import { mentorSchema, mentorSignUpT } from '../store/types'
-import { RESPONSE_CODE } from '~/container/Login/store/types'
+import { RESPONSE_CODE } from '~/container/Login/types'
 import { useMentorSignUp } from '~/api/user/user'
 import Lottie from 'lottie-react'
 import LoadAnimation from '~/../public/Lottie/loading.json'
 import loginHandler from '~/utils/loginHandler'
+import { useStore } from '~/store/rootStoreProvider'
 
 const MentorSignUp = () => {
     const { mutate: mentorSignUp, isPending } = useMentorSignUp()
     const [currentStep, setCurrentStep] = useState(1)
     const router = useRouter()
     const [errorText, setErrorText] = useState('')
+
     const {
         signUpStore: { userName, password, email, avatar },
-    } = rootStore
+    } = useStore()
     const onSubmit = async ({
         gender,
         country,

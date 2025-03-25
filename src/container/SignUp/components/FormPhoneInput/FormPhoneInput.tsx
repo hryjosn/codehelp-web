@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { Controller, useFormContext } from 'react-hook-form'
-import rootStore from '~/store'
 import { MuiTelInput } from 'mui-tel-input'
+import { useStore } from '~/store/rootStoreProvider'
 interface FormPhoneInputProps {
     registerName: string
     label: string
@@ -14,13 +14,13 @@ const FormPhoneInput = ({ label, registerName }: FormPhoneInputProps) => {
         formState: { errors },
     } = useFormContext()
     const {
-        signUpStore: { getFromData },
-    } = rootStore
+        signUpStore: { getFormData },
+    } = useStore()
     useEffect(() => {
-        if (getFromData(registerName)) {
-            setValue(registerName, getFromData(registerName))
+        if (getFormData(registerName)) {
+            setValue(registerName, getFormData(registerName))
         }
-    }, [registerName, setValue, getFromData])
+    }, [registerName, setValue, getFormData])
     const errorMessage = errors[registerName]?.message as string
     return (
         <div className="flex w-full flex-col items-center">

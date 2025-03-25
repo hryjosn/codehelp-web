@@ -1,8 +1,6 @@
-import { runInAction } from 'mobx'
 import Image from 'next/image'
 import React, { useRef, useState } from 'react'
 import { Controller, useFormContext } from 'react-hook-form'
-import rootStore from '~/store'
 import compressImage from '~/utils/compressImage'
 
 export type FormAvatarSelectProps = {

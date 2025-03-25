@@ -1,13 +1,14 @@
 import { observer } from 'mobx-react-lite'
 import { useEffect, useRef } from 'react'
 import { cn } from '~/lib/utils'
-import rootStore from '~/store'
 import { Props } from './types'
+import { useStore } from '~/store/rootStoreProvider'
 
 const RemoteVideo = ({ remoteId }: Props) => {
     const {
         videoConferenceStore: { peerConnectionList },
-    } = rootStore
+    } = useStore()
+
     const videoRef = useRef<HTMLVideoElement>(null)
 
     useEffect(() => {
