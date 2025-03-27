@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
 import axios from 'axios'
-import { LoginDataT } from '~/container/Login/store/types'
+import { LoginDataT } from '~/container/Login/types'
 import apiHandler from '../api'
 import { bookingInfoURL, loginURL, memberSignUpURL } from './route'
 import { BookingInfoResT, LoginReqT, LoginResT } from './types'

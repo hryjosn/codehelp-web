@@ -9,7 +9,7 @@ import { FormProvider, useForm } from 'react-hook-form'
 import Button from './components/Button/Button'
 import FormInput from './components/FormInput/FormInput'
 import LinkText from './components/LinkText/LinkText'
-import { LoginDataT, RESPONSE_CODE } from './store/types'
+import { LoginDataT, RESPONSE_CODE } from './types'
 import loginHandler from '~/utils/loginHandler'
 
 const Login = () => {
