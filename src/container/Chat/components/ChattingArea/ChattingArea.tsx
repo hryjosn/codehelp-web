@@ -1,62 +1,97 @@
 'use client'
-import Image from 'next/image'
 import MessageBox from '../MessageBox/MessageBox'
 import { useChatroomStore } from '../../store/ChatStore'
-import { useMemo, useState } from 'react'
-import { Props } from './types'
+import { useEffect, useMemo, useState } from 'react'
+import { useInView } from 'react-intersection-observer'
+import { Props, QueryPagesParams, QueryParams } from './types'
 import ButtonInput from '~/components/ButtonInput/ButtonInput'
-import {
-    useCreateMessage,
-    useGetMessageRecord,
-    useGetChatroomInfo,
-} from '~/api/chatroom/chatroom'
+import { useCreateMessage, useGetMessageRecord } from '~/api/chatroom/chatroom'
+import { useQueryClient } from '@tanstack/react-query'
+import { useGetUserInfo } from '~/api/user/user'
+import Avatar from '~/components/Avatar/Avatar'
 
 const ChattingArea = ({ chatroomId }: Props) => {
+    const date = new Date()
+    const queryClient = useQueryClient()
     const { mutate: createMessage } = useCreateMessage()
-    const { data: messageListData } = useGetMessageRecord(chatroomId)
-    const { data: chatroomInfo } = useGetChatroomInfo(chatroomId)
+    const {
+        data: messageListData,
+        hasNextPage,
+        fetchNextPage,
+    } = useGetMessageRecord(chatroomId)
+    const { data: userData } = useGetUserInfo()
 
     const [content, setContent] = useState('')
-    const addMessage = useChatroomStore((state) => state.addMessage)
+    const socket = useChatroomStore((state) => state.socket)
+    const connectSocket = useChatroomStore((state) => state.connectSocket)
+    const disconnectSocket = useChatroomStore((state) => state.disconnectSocket)
+    const { ref, inView } = useInView({
+        threshold: 0.5,
+    })
 
     const messagesList = useMemo(() => {
-        const queriedChatroomInfo = messageListData?.pages.flatMap(
-            (page) => page.messages
-        )
-        return queriedChatroomInfo
+        return messageListData?.pages.flatMap((page) => page.messages)
     }, [messageListData])
+
+    useEffect(() => {
+        if (socket) {
+            socket.emit('join', chatroomId)
+
+            socket.on('receiveMessage', (msgData) => {
+                const { roomId } = msgData
+
+                queryClient.setQueryData(
+                    ['messageRecord', roomId],
+                    ({ pages, pageParams }: QueryParams) => {
+                        return {
+                            pageParams,
+                            pages: pages?.map(
+                                ({ total, messages }: QueryPagesParams) => {
+                                    return {
+                                        total,
+                                        messages: [msgData, ...messages],
+                                    }
+                                }
+                            ),
+                        }
+                    }
+                )
+            })
+        } else {
+            connectSocket()
+        }
+        return () => {
+            if (socket) {
+                disconnectSocket()
+            }
+        }
+    }, [chatroomId, connectSocket, disconnectSocket, queryClient, socket])
+
+    useEffect(() => {
+        if (inView && hasNextPage) {
+            fetchNextPage()
+        }
+    }, [inView, hasNextPage, fetchNextPage])
 
     return (
         <div className="flex h-screen min-w-[300px] flex-1 flex-col px-5 py-5">
             <div className="custom-scrollbar mt-5 flex flex-1 flex-col-reverse overflow-x-hidden overflow-y-scroll">
                 {!!messagesList?.length &&
-                    !!chatroomInfo &&
-                    messagesList.map((data) => (
-                        <div key={data.id}>
-                            {chatroomInfo.chatroom.member.id === data.userId ? (
+                    !!userData &&
+                    messagesList.map((data, index) => (
+                        <div
+                            key={data.id}
+                            ref={index === messagesList.length - 1 ? ref : null}
+                        >
+                            {userData.user.id === data.user.id ? (
                                 <div className="my-3 ml-20 flex justify-end">
-                                    <MessageBox
-                                        key={data.id}
-                                        message={data.content}
-                                    />
+                                    <MessageBox message={data.content} />
                                 </div>
                             ) : (
                                 <div className="my-3 flex items-center">
-                                    <Image
-                                        className="min-h-12 min-w-12 rounded-full"
-                                        src={
-                                            chatroomInfo.chatroom.mentor
-                                                .avatar || ''
-                                        }
-                                        alt=""
-                                        width="48"
-                                        height="48"
-                                    />
+                                    <Avatar src={data.user.avatar} />
                                     <div className="ml-5 mr-3">
-                                        <MessageBox
-                                            key={data.id}
-                                            message={data.content}
-                                        />
+                                        <MessageBox message={data.content} />
                                     </div>
                                 </div>
                             )}
@@ -76,8 +111,24 @@ const ChattingArea = ({ chatroomId }: Props) => {
                             { content, chatroomId },
                             {
                                 onSuccess(res) {
-                                    if (res?.data?.message) {
-                                        addMessage(res.data.message)
+                                    if (
+                                        res?.data?.message &&
+                                        socket &&
+                                        userData
+                                    ) {
+                                        socket.emit('sendMessage', {
+                                            id: date.getTime().toString(),
+                                            user: {
+                                                id: userData.user.id,
+                                                userName:
+                                                    userData.user.userName,
+                                                avatar: userData.user.avatar,
+                                            },
+                                            roomId: chatroomId,
+                                            content,
+                                            createdAt: date.toISOString(),
+                                            type: 0,
+                                        })
                                     }
                                 },
                             }

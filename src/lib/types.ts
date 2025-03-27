@@ -9,6 +9,19 @@ export interface Ice_candidateT {
     candidate: string
 }
 
+export interface MessageData {
+    id: string
+    user: {
+        id: string
+        userName: string
+        avatar: string
+    }
+    roomId: string
+    content: string
+    createdAt: string
+    type: number
+}
+
 export interface ServerToClientEvents {
     otherUserHangup: () => void
     remoteStartShare: (remoteId: string) => void
@@ -18,6 +31,7 @@ export interface ServerToClientEvents {
     ice_candidate: (data: Ice_candidateT, remoteId: string) => void
     ready: (socketId: string, members: string[]) => void
     leave: (remoteId: string) => void
+    receiveMessage: (messageData: MessageData) => void
 }
 export interface ClientToServerEvents {
     remoteStartShare: (roomID: string, remoteId: string) => void
@@ -39,4 +53,5 @@ export interface ClientToServerEvents {
         localId: string
     ) => void
     hangup: (room: string, remoteId: string) => void
+    sendMessage: (messageData: MessageData) => void
 }

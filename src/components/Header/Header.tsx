@@ -6,6 +6,7 @@ import { Button } from '../Button/Button'
 import { NavButton } from '../NavButton/NavButton'
 import { signOut } from 'next-auth/react'
 import { Link } from '~/i18n/routing'
+import { IoChatbubbleOutline } from 'react-icons/io5'
 
 const Header: FC = () => {
     const [token, setToken] = useState<string | null>(null)
@@ -37,34 +38,39 @@ const Header: FC = () => {
             <Link className="rounded-lg border px-3 py-2" href="/">
                 <p>Code Help Icon</p>
             </Link>
-            {token ? (
-                <div>
-                    <Button
-                        onClick={Logout}
-                        variant={'secondary'}
-                        size={'default'}
-                    >
-                        Logout
-                    </Button>
-                </div>
-            ) : (
-                <div className="flex gap-2">
-                    <NavButton
-                        path="/login"
-                        variant={'primary'}
-                        size={'default'}
-                    >
-                        Login
-                    </NavButton>
-                    <NavButton
-                        path="/signup"
-                        variant={'secondary'}
-                        size={'default'}
-                    >
-                        Sign up
-                    </NavButton>
-                </div>
-            )}
+            <div className="flex">
+                <Link className="mr-5 flex items-center" href="/chat">
+                    <IoChatbubbleOutline size={25} />
+                </Link>
+                {token ? (
+                    <div>
+                        <Button
+                            onClick={Logout}
+                            variant={'secondary'}
+                            size={'default'}
+                        >
+                            Logout
+                        </Button>
+                    </div>
+                ) : (
+                    <div className="flex gap-2">
+                        <NavButton
+                            path="/login"
+                            variant={'primary'}
+                            size={'default'}
+                        >
+                            Login
+                        </NavButton>
+                        <NavButton
+                            path="/signup"
+                            variant={'secondary'}
+                            size={'default'}
+                        >
+                            Sign up
+                        </NavButton>
+                    </div>
+                )}
+            </div>
         </div>
     )
 }
