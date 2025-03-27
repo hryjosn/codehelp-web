@@ -9,9 +9,9 @@ import { ReactQueryClientProvider } from '~/components/ReactQueryClientProvider/
 import { routing } from '~/i18n/routing'
 import { RootStoreProvider } from '~/store/rootStoreProvider'
 import '~/styles/globals.css'
-// if (process.env.MOCK === 'true') {
-//     server.listen()
-// }
+if (process.env.MOCK === 'true') {
+    server.listen()
+}
 
 export const metadata: Metadata = {
     title: 'Home',
@@ -38,8 +38,8 @@ export default async function RootLayout({
                     <ReactQueryClientProvider>
                         <Provider>
                             <RootStoreProvider>
-                                {/* <MSWProvider>{children}</MSWProvider> */}
-                                {children}
+                                <MSWProvider>{children}</MSWProvider>
+                                {/* {children} */}
                             </RootStoreProvider>
                         </Provider>
                     </ReactQueryClientProvider>
