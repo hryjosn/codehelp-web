@@ -1,5 +1,3 @@
-'use client'
-import { observer } from 'mobx-react-lite'
 import ChattingArea from './components/ChattingArea/ChattingArea'
 import SearchInputSection from './components/SearchInputSection/SearchInputSection'
 import ChatroomSection from './components/ChatroomSection/ChatroomSection'
@@ -28,4 +26,4 @@ const Chat = async ({ params }: { params: Promise<{ id: string }> }) => {
     )
 }
 
-export default observer(Chat)
+export default Chat

@@ -23,13 +23,13 @@ const ChatroomSection = () => {
                         id={data.id}
                         userName={
                             userData?.user?.id === data.mentor.id
-                                ? data.mentor.userName
-                                : data.member.userName
+                                ? data.member.userName
+                                : data.mentor.userName
                         }
                         avatar={
                             userData?.user?.id === data.mentor.id
-                                ? data.mentor.avatar
-                                : data.member.avatar
+                                ? data.member.avatar
+                                : data.mentor.avatar
                         }
                     />
                 ))}

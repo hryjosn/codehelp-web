@@ -6,7 +6,7 @@ interface RoleInfoT {
 
 export interface MessageT {
     id: string
-    sender: {
+    user: {
         id: string
         userName: string
         avatar: string

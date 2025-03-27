@@ -36,7 +36,7 @@ export const useGetMessageRecord = (chatroomId: string) => {
             queryKey,
         }): Promise<MessageListQueryResT> => {
             const [, chatroomId] = queryKey as [string, string]
-            const pageSize = 15
+            const pageSize = 10
             const {
                 data: { total, messages },
             } = await axios.get(

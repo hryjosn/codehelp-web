@@ -83,13 +83,13 @@ const ChattingArea = ({ chatroomId }: Props) => {
                             key={data.id}
                             ref={index === messagesList.length - 1 ? ref : null}
                         >
-                            {userData.user.id === data.sender.id ? (
+                            {userData.user.id === data.user.id ? (
                                 <div className="my-3 ml-20 flex justify-end">
                                     <MessageBox message={data.content} />
                                 </div>
                             ) : (
                                 <div className="my-3 flex items-center">
-                                    <Avatar src={data.sender.avatar} />
+                                    <Avatar src={data.user.avatar} />
                                     <div className="ml-5 mr-3">
                                         <MessageBox message={data.content} />
                                     </div>
@@ -118,7 +118,7 @@ const ChattingArea = ({ chatroomId }: Props) => {
                                     ) {
                                         socket.emit('sendMessage', {
                                             id: date.getTime().toString(),
-                                            sender: {
+                                            user: {
                                                 id: userData.user.id,
                                                 userName:
                                                     userData.user.userName,
@@ -126,7 +126,7 @@ const ChattingArea = ({ chatroomId }: Props) => {
                                             },
                                             roomId: chatroomId,
                                             content,
-                                            created_at: date.toISOString(),
+                                            createdAt: date.toISOString(),
                                             type: 0,
                                         })
                                     }
