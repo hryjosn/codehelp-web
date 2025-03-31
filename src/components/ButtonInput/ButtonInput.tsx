@@ -3,10 +3,18 @@ import TextareaAutosize from 'react-textarea-autosize'
 import { Props } from './types'
 
 const ButtonInput = ({ onClick, ...props }: Props) => {
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault()
+            onClick?.()
+        }
+    }
+
     return (
         <div className="flex min-w-[200px] flex-1 items-center rounded-lg bg-gray-100 px-3">
             <TextareaAutosize
                 className="ml-3 w-full resize-none bg-transparent py-3 font-bold outline-none"
+                onKeyDown={handleKeyDown}
                 {...props}
             />
             <button

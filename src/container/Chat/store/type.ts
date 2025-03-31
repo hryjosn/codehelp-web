@@ -4,7 +4,7 @@ interface RoleInfoT {
     avatar: string
 }
 
-interface MessageT {
+export interface MessageT {
     id: string
     userId: string
     content: string
@@ -25,7 +25,7 @@ export interface ChatroomInfoT {
 }
 export interface ChatroomListT {
     id: string
-    createdAt: string
+    created_at: string
     member: RoleInfoT
     mentor: RoleInfoT
 }

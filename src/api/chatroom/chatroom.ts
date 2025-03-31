@@ -1,42 +1,24 @@
-import { useInfiniteQuery } from '@tanstack/react-query'
-import apiHandler from '../api'
+import { useInfiniteQuery, useMutation } from '@tanstack/react-query'
+import { CreateMessageData } from './types'
+import axios from 'axios'
 
-import {
-    createChatroomURL,
-    createMessageURL,
-    getChatroomInfoURL,
-    getChatroomListURL,
-} from './api_url'
-import {
-    ChatroomInfoResT,
-    ChatroomListResT,
-    CreateChatroomResT,
-    NewMessageResT,
-} from './types'
-
-export const callCreateChatroom = (data: any) => {
-    return apiHandler<CreateChatroomResT>({
-        url: createChatroomURL,
-        method: 'post',
+export const callCreateChatroom = async (data: any) => {
+    return await axios.post('/api/chatroom/chatroom', {
         data,
     })
 }
 
-export const callGetChatroomInfo = (chatroomId: string) => {
-    return apiHandler<ChatroomInfoResT>({
-        url: getChatroomInfoURL(chatroomId),
-        method: 'get',
-    })
+export const callGetChatroomInfo = async (chatroomId: string) => {
+    return await axios.get(`/api/chatroom/chatroom/${chatroomId}`)
 }
 
-export const callCreateMessage = (
-    data: { content: string },
-    chatroomId: string
-) => {
-    return apiHandler<NewMessageResT>({
-        url: createMessageURL(chatroomId),
-        method: 'post',
-        data,
+export const useCreateMessage = () => {
+    return useMutation({
+        mutationFn: async (data: CreateMessageData) => {
+            return await axios.post('/api/chatroom/message', {
+                data,
+            })
+        },
     })
 }
 
@@ -48,10 +30,9 @@ export const useGetChatroomList = () => {
             const pageSize = 10
             const {
                 data: { total, chatroomList },
-            } = await apiHandler<ChatroomListResT>({
-                url: getChatroomListURL(pageParam, pageSize),
-                method: 'get',
-            })
+            } = await axios.get(
+                `/api/chatroom/list?page=${pageParam}&count=${pageSize}`
+            )
 
             return { chatroomList, total, pageParam, pageSize }
         },

@@ -1,19 +1,22 @@
 import { useChatroomStore } from '../../store/ChatStore'
 import { Props } from './types'
 import Image from 'next/image'
+import { useRouter } from '~/i18n/routing'
 
 const Chatroom = (props: Props) => {
-    const { userName, avatar } = props
+    const { userName, avatar, id } = props
+    const router = useRouter()
     const getChatroomInfo = useChatroomStore((state) => state.getChatroomInfo)
     return (
         <button
             className="flex w-full items-center rounded-lg px-3 py-3 hover:bg-gray-100"
             onClick={() => {
-                getChatroomInfo(props.id)
+                getChatroomInfo(id)
+                router.push(`/chat/${id}`)
             }}
         >
             <Image
-                className="max-h-12 max-w-12 rounded-full"
+                className="min-h-12 min-w-12 rounded-full"
                 src={avatar}
                 alt="education"
                 width="48"

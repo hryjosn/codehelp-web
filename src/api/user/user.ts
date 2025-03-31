@@ -1,4 +1,5 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
+import axios from 'axios'
 import { LoginDataT } from '~/container/Login/store/types'
 import apiHandler from '../api'
 import {
@@ -6,8 +7,9 @@ import {
     memberSignUpURL,
     mentorSignUpURL,
     userInfoURL,
-} from './api_url'
-import { LoginReqT, LoginResT, UserInfoResT } from './types'
+} from './route'
+
+import { BookingInfoResT, LoginReqT, LoginResT } from './types'
 
 export const callMentorSignUp = (data: any) => {
     return apiHandler({
@@ -42,11 +44,8 @@ export const useGetUserInfo = () => {
     return useQuery({
         queryKey: ['userInfo'],
         queryFn: async () => {
-            const res = await apiHandler<UserInfoResT>({
-                url: userInfoURL,
-                method: 'get',
-            })
-            return res.data
+            const res = await axios.get('/api/user/get-user-info')
+            return res
         },
     })
 }

@@ -1,13 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import Chat from './Chat'
+import DefaultChattingArea from './DefaultChattingArea'
 
 const meta = {
-    title: 'Chat',
-    component: Chat,
+    title: 'Chat/DefaultChattingArea',
+    component: DefaultChattingArea,
     parameters: {
         layout: 'centered',
     },
-} satisfies Meta<typeof Chat>
+    tags: ['autodocs'],
+} satisfies Meta<typeof DefaultChattingArea>
 
 export default meta
 type Story = StoryObj<typeof meta>

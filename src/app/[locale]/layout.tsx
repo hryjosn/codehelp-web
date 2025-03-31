@@ -1,13 +1,14 @@
 import { Metadata } from 'next'
-import { ReactQueryClientProvider } from '~/components/ReactQueryClientProvider/ReactQueryClientProvider'
-import '~/styles/globals.css'
-import { server } from '~/../mocks/node'
-import { MSWProvider } from '~/../mocks/msw-provider'
 import { NextIntlClientProvider } from 'next-intl'
+import { server } from '~/../mocks/node'
 import { getMessages } from 'next-intl/server'
 import { notFound } from 'next/navigation'
+import { MSWProvider } from '~/../mocks/msw-provider'
+import Provider from '~/app/Provider'
+import { ReactQueryClientProvider } from '~/components/ReactQueryClientProvider/ReactQueryClientProvider'
 import { routing } from '~/i18n/routing'
 import { RootStoreProvider } from '~/store/rootStoreProvider'
+import '~/styles/globals.css'
 
 server.listen()
 
@@ -34,9 +35,12 @@ export default async function RootLayout({
             <body>
                 <NextIntlClientProvider messages={messages}>
                     <ReactQueryClientProvider>
-                        <RootStoreProvider>
-                            <MSWProvider>{children}</MSWProvider>
-                        </RootStoreProvider>
+                        <Provider>
+                            <RootStoreProvider>
+                                <MSWProvider>{children}</MSWProvider>
+                                {/* {children} */}
+                            </RootStoreProvider>
+                        </Provider>
                     </ReactQueryClientProvider>
                 </NextIntlClientProvider>
             </body>

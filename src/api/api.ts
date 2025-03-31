@@ -12,11 +12,6 @@ instance.interceptors.request.use(
     async (config) => {
         // config can be modified before sending the request
         // Add an authentication token to the request
-        const token = 'asdasd'
-
-        if (token) {
-            config.headers.Authorization = token
-        }
 
         return config
     },
@@ -34,9 +29,6 @@ instance.interceptors.response.use(
         return response
     },
     (error) => {
-        if (error.response?.status === 401) {
-            localStorage.removeItem('token')
-        }
         if (isAxiosError(error)) {
             return Promise.reject(error.response?.data.code)
         }
