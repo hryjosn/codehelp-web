@@ -72,7 +72,10 @@ const MentorProfile = async ({
                         <Education educationProps={mentorInfo.education} />
                     </div>
                     <div className="px-6 lg:px-0">
-                        <Booking mentorId={mentorInfo.id} />
+                        <Booking
+                            mentorId={mentorInfo.id}
+                            availableTimes={mentorInfo.mentorAvailableTimes}
+                        />
                     </div>
                 </div>
             </div>

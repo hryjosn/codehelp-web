@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
 import apiHandler from '../api'
 import { INewBookingReq, INewBookingRes } from './types'
-import { getBookingInfoEndPoint, generateNewBookingEndPoint } from './api_url'
+import { getBookingInfoEndPoint, generateNewBookingEndPoint } from './route'
 
 export const useNewBooking = () => {
     return useMutation({

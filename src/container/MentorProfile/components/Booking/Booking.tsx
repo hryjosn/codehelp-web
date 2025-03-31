@@ -8,8 +8,11 @@ import Calendar from './components/Calendar/Calendar'
 import BookingModal from './components/BookingModal/BookingModal'
 import TimeSlot from './components/TimeSlot/TimeSlot'
 import BookingButton from './components/BookingButton/BookingButton'
+import { IBookingProps } from './components/BookingModal/types'
 
-const Booking = ({ mentorId }: { mentorId: string }) => {
+const Booking = ({ mentorId, availableTimes }: IBookingProps) => {
+    console.log(availableTimes)
+
     const [visibleTimes, setVisibleTimes] = useState<MOCK_TIME_OPTIONS_T[]>(
         MOCK_TIME_OPTIONS.slice(0, 6)
     )

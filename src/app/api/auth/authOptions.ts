@@ -21,6 +21,8 @@ export const authOptions: NextAuthOptions = {
                         email: credentials?.email,
                         password: credentials?.password,
                     })
+                    console.log(res.data)
+
                     res.data.user.identity = res.data.identity
                     res.data.user.token = res.data.token
 

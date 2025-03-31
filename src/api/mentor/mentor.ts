@@ -1,18 +1,9 @@
 import { useInfiniteQuery, useMutation, useQuery } from '@tanstack/react-query'
-import { MentorT } from '~/api/mentor/types'
+import { MentorInfoResT, MentorListResT } from '~/api/mentor/types'
 import apiHandler from '../api'
 import { getMentorInfoURL, saveAppointmentURL } from './route'
 import { AppointmentReq, AppointmentResWrapData } from './types'
 
-interface MentorListResT {
-    mentorList: MentorT[]
-    status: string
-    total: number
-}
-interface MentorInfoResT {
-    mentor: MentorT
-    status: string
-}
 export const getMentorInfo = async (mentorId: string) => {
     const res = await apiHandler<MentorInfoResT>({
         url: getMentorInfoURL(mentorId),

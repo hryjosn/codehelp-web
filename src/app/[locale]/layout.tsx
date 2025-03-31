@@ -10,7 +10,7 @@ import { routing } from '~/i18n/routing'
 import { RootStoreProvider } from '~/store/rootStoreProvider'
 import '~/styles/globals.css'
 
-server.listen()
+process.env.NEXT_PUBLIC_ENV_NODE === 'dev' && server.listen()
 
 export const metadata: Metadata = {
     title: 'Home',

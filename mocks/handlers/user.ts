@@ -1,6 +1,6 @@
 import { http, HttpResponse } from 'msw'
+import { getBookingInfoEndPoint } from '~/api/booking/route'
 import {
-    bookingInfoURL,
     loginURL,
     memberSignUpURL,
     mentorInfoURL,
@@ -123,7 +123,7 @@ export const getUserInfo = [
     }),
 ] //this needs to refactor
 export const getBookingInfo = [
-    http.get<BookingInfoReqT, BookingInfoResT>(bookingInfoURL, () => {
+    http.get<BookingInfoReqT, BookingInfoResT>(getBookingInfoEndPoint, () => {
         return HttpResponse.json({
             status: 'ok',
             msg: 'Get booking info successful',
