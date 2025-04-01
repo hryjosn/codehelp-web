@@ -35,21 +35,19 @@ const Login = () => {
     } = methods
 
     const onSubmit = async (data: LoginDataT) => {
-        try {
-            loginHandler(data)
-        } catch (error) {
+        const res = await loginHandler(data)
+
+        if (res) {
             reset()
-            if (isAxiosError(error)) {
-                switch (error.response?.data.code) {
-                    case RESPONSE_CODE.VALIDATE_ERROR:
-                        setErrorText('Validate error')
-                        break
-                    case RESPONSE_CODE.USER_DATA_ERROR:
-                        setErrorText('Email or password is wrong')
-                        break
-                    default:
-                        setErrorText('Unknown error')
-                }
+            switch (res.code) {
+                case RESPONSE_CODE.VALIDATE_ERROR:
+                    setErrorText('Validate error')
+                    break
+                case RESPONSE_CODE.USER_DATA_ERROR:
+                    setErrorText('Email or password is wrong')
+                    break
+                default:
+                    setErrorText('Unknown error')
             }
         }
     }
@@ -76,7 +74,7 @@ const Login = () => {
                                     type="password"
                                 />
                                 <Button errors={errors}>Login</Button>
-                                <p className="min-h-6 text-red-500">
+                                <p className="mt-6 min-h-6 text-red-500">
                                     {errorText}
                                 </p>
                             </div>

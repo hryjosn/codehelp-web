@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios, { AxiosError } from 'axios'
 import { NextAuthOptions, Session, User } from 'next-auth'
 import { JWT } from 'next-auth/jwt'
 import CredentialsProvider from 'next-auth/providers/credentials'
@@ -27,7 +27,11 @@ export const authOptions: NextAuthOptions = {
 
                     return res.data.user || null
                 } catch (error) {
-                    console.log(error)
+                    let errorMessage = ''
+                    if (error instanceof AxiosError) {
+                        errorMessage = error.response?.data
+                    }
+                    throw new Error(JSON.stringify(errorMessage))
                 }
             },
         }),
