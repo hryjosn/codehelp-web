@@ -2,11 +2,13 @@ import { create } from 'zustand'
 import { PeerConnectionListT } from '../types'
 import { io, Socket } from 'socket.io-client'
 import { ServerToClientEvents, ClientToServerEvents } from '~/lib/types'
+import { MessageData } from '~/lib/types'
 
 type States = {
     localStream: MediaStream | undefined
     peerConnectionList: PeerConnectionListT
     socket: Socket<ServerToClientEvents, ClientToServerEvents> | null
+    chatList: MessageData[]
 }
 
 type Actions = {
@@ -35,6 +37,8 @@ type Actions = {
     clearPeerConnections: () => void
     removeConnectionMember: (remoteId: string) => void
     setLocalStream: (localStream: MediaStream | undefined) => void
+    addMessage: (newMessage: MessageData) => void
+    resetChatList: () => void
 }
 
 export type VideoConferenceStore = States & Actions
@@ -43,6 +47,7 @@ export const useVideoConferenceStore = create<States & Actions>()((set) => ({
     localStream: undefined,
     peerConnectionList: {},
     socket: null,
+    chatList: [],
     setLocalStream: (localStream) => set({ localStream }),
 
     addIceCandidate: ({ remoteId, candidate }) =>
@@ -100,4 +105,19 @@ export const useVideoConferenceStore = create<States & Actions>()((set) => ({
             return state
         })
     },
+    addMessage: (newMessage) =>
+        set((state) => ({
+            chatList: [
+                {
+                    id: newMessage.id,
+                    user: newMessage.user,
+                    content: newMessage.content,
+                    createdAt: newMessage.createdAt,
+                    roomId: newMessage.roomId,
+                    type: newMessage.type,
+                },
+                ...state.chatList,
+            ],
+        })),
+    resetChatList: () => set({ chatList: [] }),
 }))
