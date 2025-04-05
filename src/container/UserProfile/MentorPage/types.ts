@@ -1,4 +1,5 @@
 import { Experience } from '~/container/Home/components/MentorList/types'
+import { GenderCode } from '../types'
 export interface Discipline {
     id: string
     mentorId: string
@@ -26,7 +27,7 @@ export interface Props {
         userName: string
         email: string
         avatar: string
-        gender: string
+        gender: GenderCode
         country: string
         title: string
         company: string

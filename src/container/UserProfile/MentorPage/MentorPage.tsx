@@ -17,9 +17,8 @@ import {
 } from 'lucide-react'
 import { Discipline, Props, Skill, Tool } from './types'
 import Header from '~/components/Header/Header'
-import levelList from '~/constant/data/level.json'
-import genderList from '~/constant/data/gender.json'
 import Card from '../components/Card/Card'
+import { GENDER_LIST, LEVEL_LIST } from '../types'
 
 // This would typically come from an API or database
 const mentorData = {
@@ -146,25 +145,13 @@ export default function MentorPage({ userData }: Props) {
                                     <div className="flex items-center text-sm">
                                         <User className="text-muted-foreground mr-3 h-4 w-4" />
                                         <span>
-                                            {
-                                                genderList.find(
-                                                    (data) =>
-                                                        data.code ===
-                                                        userData.gender.toString()
-                                                )?.name
-                                            }
+                                            {GENDER_LIST[userData.gender]}
                                         </span>
                                     </div>
                                     <div className="flex items-center text-sm">
                                         <Clock className="text-muted-foreground mr-3 h-4 w-4" />
                                         <span>
-                                            {
-                                                levelList.find(
-                                                    (data) =>
-                                                        data.code ===
-                                                        userData.level.toString()
-                                                )?.name
-                                            }
+                                            {LEVEL_LIST[userData.level]}
                                         </span>
                                     </div>
                                 </div>

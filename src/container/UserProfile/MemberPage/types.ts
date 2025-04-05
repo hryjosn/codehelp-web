@@ -1,9 +1,11 @@
+import { GenderCode } from '../types'
+
 export interface Props {
     userData: {
         userName: string
         email: string
         avatar: string
-        gender: string
+        gender: GenderCode
         country: string
         title: string
         company: string
