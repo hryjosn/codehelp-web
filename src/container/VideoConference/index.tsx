@@ -6,13 +6,13 @@ import { useRouter } from '~/i18n/routing'
 import { useEffect, useRef, useState } from 'react'
 import { ImPhoneHangUp } from 'react-icons/im'
 import { IoMdMic, IoMdMicOff } from 'react-icons/io'
-import { IoSend, IoVideocam, IoVideocamOff } from 'react-icons/io5'
+import { IoVideocam, IoVideocamOff } from 'react-icons/io5'
 import { MdOutlineScreenShare } from 'react-icons/md'
 import { PiChatCircleText } from 'react-icons/pi'
 import { cn } from '~/lib/utils'
 import MessageBox from './components/MessageBox'
 import RemoteVideo from './components/RemoteVideo/RemoteVideo'
-import { MOCK_MESSAGE_LIST } from './constant'
+import ButtonInput from '~/components/ButtonInput/ButtonInput'
 import {
     hangup,
     sendAnswerSDP,
@@ -21,6 +21,7 @@ import {
     stopShareScreen,
 } from './utils'
 import { useStore } from '~/store/rootStoreProvider'
+import { useGetUserInfo } from '~/api/user/user'
 
 const VideoConference = ({ params }: { params: { id: string } }) => {
     const {
@@ -28,18 +29,25 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
             localStream,
             peerConnectionList,
             socket,
+            chatList,
             removeConnectionMember,
             setLocalStream,
             addIceCandidate,
             clearPeerConnections,
             setRemoteDescription,
+            addMessage,
+            resetChatList,
         },
     } = useStore()
+    const { data: userData } = useGetUserInfo()
+
+    const date = new Date()
 
     const [isMicOpen, setIsMicOpen] = useState(true)
     const [isCamOpen, setIsCamOpen] = useState(true)
     const [isChatOpen, setIsChatOpen] = useState(false)
     const [isLocalShareScreen, setIsLocalShareScreen] = useState(false)
+    const [content, setContent] = useState('')
     const localVideoRef = useRef<HTMLVideoElement>(null)
 
     const router = useRouter()
@@ -114,6 +122,20 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
             }
         })
 
+        socket?.on('receiveMessage', (msgData) => {
+            const { createdAt } = msgData
+            const date = new Date(createdAt)
+            const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
+
+            const localTime = date.toLocaleTimeString('en-US', {
+                hour: 'numeric',
+                minute: 'numeric',
+                hour12: false,
+                timeZone: timeZone,
+            })
+            addMessage({ ...msgData, createdAt: localTime })
+        })
+
         return () => {
             if (socket) {
                 socket.off('ready')
@@ -121,7 +143,9 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
                 socket.off('offer')
                 socket.off('answer')
                 socket.off('ice_candidate')
+                socket.off('receiveMessage')
                 socket.disconnect()
+                resetChatList()
             }
         }
     }, [])
@@ -183,22 +207,45 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
                         >
                             X
                         </button>
-                        <div className="custom-scrollbar flex shrink grow basis-0 flex-col gap-2 overflow-y-scroll">
-                            {MOCK_MESSAGE_LIST.map((data, index) => (
-                                <MessageBox
-                                    name={data.name}
-                                    time={data.time}
-                                    message={data.message}
-                                    key={index}
-                                />
-                            ))}
+                        <div className="custom-scrollbar flex shrink grow basis-0 flex-col flex-col-reverse gap-2 overflow-y-scroll">
+                            {chatList.length > 0 &&
+                                chatList.map((data) => (
+                                    <div className="mt-3" key={data.id}>
+                                        <MessageBox
+                                            name={data.user.userName}
+                                            time={data.createdAt}
+                                            message={data.content}
+                                        />
+                                    </div>
+                                ))}
                         </div>
-                        <div className="flex gap-2 rounded-full border-2 bg-slate-50 px-3">
-                            <textarea
-                                className="custom-scrollbar flex-1 resize-none break-words border-0 bg-slate-50 py-2 outline-none"
-                                rows={1}
+                        <div className="flex justify-center pr-3">
+                            <ButtonInput
+                                value={content}
+                                maxRows={10}
+                                placeholder="Write something..."
+                                onChange={(e) => {
+                                    setContent(e.target.value)
+                                }}
+                                onClick={() => {
+                                    if (socket && content) {
+                                        socket.emit('sendMessage', {
+                                            id: date.getTime().toString(),
+                                            user: {
+                                                id: userData.user.id,
+                                                userName:
+                                                    userData.user.userName,
+                                                avatar: userData.user.avatar,
+                                            },
+                                            roomId: params.id,
+                                            content,
+                                            createdAt: date.toISOString(),
+                                            type: 0,
+                                        })
+                                    }
+                                    setContent('')
+                                }}
                             />
-                            <IoSend className="h-7 w-7 self-center" />
                         </div>
                     </div>
                 )}
@@ -209,14 +256,14 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
                         onClick={() => {
                             audioSwitch()
                         }}
-                        className="h-14 w-14 rounded-full bg-gray-200 p-3"
+                        className="h-14 w-14 cursor-pointer rounded-full bg-gray-200 p-3"
                     />
                 ) : (
                     <IoMdMicOff
                         onClick={() => {
                             audioSwitch()
                         }}
-                        className="h-14 w-14 rounded-full bg-red-500 p-3"
+                        className="h-14 w-14 cursor-pointer rounded-full bg-red-500 p-3"
                     />
                 )}
                 {isCamOpen ? (
@@ -224,19 +271,21 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
                         onClick={() => {
                             camSwitch()
                         }}
-                        className="h-14 w-14 rounded-full bg-gray-200 p-3"
+                        className="h-14 w-14 cursor-pointer rounded-full bg-gray-200 p-3"
                     />
                 ) : (
                     <IoVideocamOff
                         onClick={() => {
                             camSwitch()
                         }}
-                        className="h-14 w-14 rounded-full bg-red-500 p-3"
+                        className="h-14 w-14 cursor-pointer rounded-full bg-red-500 p-3"
                     />
                 )}
                 {isLocalShareScreen === false ? (
                     <MdOutlineScreenShare
-                        className={'h-14 w-14 rounded-full bg-gray-200 p-3'}
+                        className={
+                            'h-14 w-14 cursor-pointer rounded-full bg-gray-200 p-3'
+                        }
                         onClick={async () => {
                             await shareScreen(
                                 localVideoRef,
@@ -253,7 +302,9 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
                     />
                 ) : (
                     <MdOutlineScreenShare
-                        className={'h-14 w-14 rounded-full bg-red-500 p-3'}
+                        className={
+                            'h-14 w-14 cursor-pointer rounded-full bg-red-500 p-3'
+                        }
                         onClick={async () => {
                             await stopShareScreen(
                                 localVideoRef,
@@ -272,7 +323,7 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
                 )}
                 <PiChatCircleText
                     onClick={() => setIsChatOpen(!isChatOpen)}
-                    className="h-14 w-14 rounded-full bg-gray-200 p-3"
+                    className="h-14 w-14 cursor-pointer rounded-full bg-gray-200 p-3"
                 />
                 <Link href={`/mentor-profile/${params.id}`}>
                     <ImPhoneHangUp
