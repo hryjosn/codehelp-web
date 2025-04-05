@@ -1,11 +1,7 @@
-import MentorPage from './MentorPage/MentorPage'
+import UserProfileSection from './UserProfileSection/UserProfileSection'
 
 const UserProfile = () => {
-    return (
-        <div>
-            <MentorPage />
-        </div>
-    )
+    return <UserProfileSection />
 }
 
 export default UserProfile
