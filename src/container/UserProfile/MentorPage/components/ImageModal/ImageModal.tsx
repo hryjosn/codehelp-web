@@ -1,6 +1,6 @@
 'use client'
 import { Modal } from '@mui/material'
-import { useImageModalStore } from './store/AppointmentModalStore'
+import { useImageModalStore } from './store/ImageModalStore'
 import Image from 'next/image'
 
 const ImageModal = () => {

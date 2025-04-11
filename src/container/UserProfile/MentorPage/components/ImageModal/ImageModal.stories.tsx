@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import ImageModal from './ImageModal'
-import { useImageModalStore } from './store/AppointmentModalStore'
+import { useImageModalStore } from './store/ImageModalStore'
 
 const meta = {
     title: 'UserProfile/MentorPage/ImageModal',
