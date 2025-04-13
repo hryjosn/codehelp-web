@@ -31,6 +31,8 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
             socket,
             chatList,
             isLocalShareScreen,
+            isMicOpen,
+            isWebcamOpen,
             removeConnectionMember,
             setLocalStream,
             addIceCandidate,
@@ -39,14 +41,14 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
             addMessage,
             resetChatList,
             registerShareScreenSocketEvents,
+            setIsMicOpen,
+            setIsWebcamOpen,
         },
     } = useStore()
     const { data: userData } = useGetUserInfo()
 
     const date = new Date()
 
-    const [isMicOpen, setIsMicOpen] = useState(true)
-    const [isCamOpen, setIsCamOpen] = useState(true)
     const [isChatOpen, setIsChatOpen] = useState(false)
     const [content, setContent] = useState('')
     const localVideoRef = useRef<HTMLVideoElement>(null)
@@ -152,7 +154,7 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
         if (localVideoRef.current && localVideoRef.current.srcObject) {
             const mediaStream = localVideoRef.current.srcObject as MediaStream
             const videoTracks = mediaStream.getVideoTracks()
-            setIsCamOpen(!videoTracks[0].enabled)
+            setIsWebcamOpen(!videoTracks[0].enabled)
             videoTracks[0].enabled = !videoTracks[0].enabled
         }
     }
@@ -255,7 +257,7 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
                         className="h-14 w-14 cursor-pointer rounded-full bg-red-500 p-3"
                     />
                 )}
-                {isCamOpen ? (
+                {isWebcamOpen ? (
                     <IoVideocam
                         onClick={() => {
                             camSwitch()

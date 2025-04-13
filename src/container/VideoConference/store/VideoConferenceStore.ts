@@ -10,6 +10,8 @@ type States = {
     socket: Socket<ServerToClientEvents, ClientToServerEvents> | null
     chatList: MessageData[]
     isLocalShareScreen: boolean
+    isMicOpen: boolean
+    isWebcamOpen: boolean
 }
 
 type Actions = {
@@ -49,6 +51,8 @@ type Actions = {
         isSharing: boolean
     }) => void
     registerShareScreenSocketEvents: () => void
+    setIsMicOpen: (isOpen: boolean) => void
+    setIsWebcamOpen: (isOpen: boolean) => void
 }
 
 export type VideoConferenceStore = States & Actions
@@ -60,6 +64,8 @@ export const useVideoConferenceStore = create<States & Actions>()(
         socket: null,
         chatList: [],
         isLocalShareScreen: false,
+        isMicOpen: true,
+        isWebcamOpen: true,
         setLocalStream: (localStream) => set({ localStream }),
 
         addIceCandidate: ({ remoteId, candidate }) =>
@@ -174,5 +180,8 @@ export const useVideoConferenceStore = create<States & Actions>()(
                 }
             })
         },
+
+        setIsMicOpen: (isOpen) => set({ isMicOpen: isOpen }),
+        setIsWebcamOpen: (isOpen) => set({ isWebcamOpen: isOpen }),
     })
 )

@@ -61,3 +61,9 @@ export enum REPORT_TYPE {
     INBOUND_RTP = 'inbound-rtp',
     CANDIDATE_PAIR = 'candidate-pair',
 }
+
+export interface ReplaceStreamTracks {
+    stream: MediaStream
+    isReplaceVideo?: boolean
+    isReplaceAudio?: boolean
+}
