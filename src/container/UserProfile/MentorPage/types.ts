@@ -50,3 +50,8 @@ export interface Props {
         mentorAvailableTimes: []
     }
 }
+
+export interface AdjustMinuteToHour {
+    minute: number
+    t: Function
+}

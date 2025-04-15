@@ -1,5 +1,9 @@
 {
     "MentorCard": {
         "avg-attendance": "平均出席率"
+    },
+    "Time":{
+        "h": "小時",
+        "m": "分鐘"
     }
 }

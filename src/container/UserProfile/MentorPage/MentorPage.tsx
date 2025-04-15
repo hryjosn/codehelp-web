@@ -19,6 +19,13 @@ import { Discipline, Props, Skill, Tool } from './types'
 import Header from '~/components/Header/Header'
 import Card from '../components/Card/Card'
 import { GENDER_LIST, LEVEL_LIST } from '../types'
+import { useGetBookingRecordList } from '~/api/booking/booking'
+import { useEffect, useMemo, useState } from 'react'
+import AppointmentButton from './components/AppointmentButton/AppointmentButton'
+import { useAppointmentModalStore } from './components/AppointmentModal/store/AppointmentModalStore'
+import { useInView } from 'react-intersection-observer'
+import AppointmentModal from './components/AppointmentModal/AppointmentModal'
+import ImageModal from './components/ImageModal/ImageModal'
 
 // This would typically come from an API or database
 const mentorData = {
@@ -75,6 +82,31 @@ const mentorData = {
 }
 
 export default function MentorPage({ userData }: Props) {
+    const {
+        data: bookingRecordListData,
+        hasNextPage,
+        fetchNextPage,
+    } = useGetBookingRecordList()
+
+    const { openModal } = useAppointmentModalStore()
+    const [bookingId, setBookingId] = useState('')
+
+    const { ref, inView } = useInView({
+        threshold: 0.5,
+    })
+
+    const bookingRecordList = useMemo(() => {
+        return bookingRecordListData?.pages.flatMap(
+            (page) => page.bookingRecords
+        )
+    }, [bookingRecordListData])
+
+    useEffect(() => {
+        if (inView && hasNextPage) {
+            fetchNextPage()
+        }
+    }, [inView, hasNextPage, fetchNextPage])
+
     return (
         <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
             <Header />
@@ -168,37 +200,68 @@ export default function MentorPage({ userData }: Props) {
                 </div>
 
                 {/* Stats and Availability Section */}
-                <Card
-                    className="mb-6"
-                    headerTitle="Availability"
-                    onClick={() => {}}
-                    content={
-                        <div className="space-y-2">
-                            <div className="flex items-center justify-between text-sm">
-                                <span className="text-muted-foreground">
-                                    Next Available:
-                                </span>
-                                <span className="font-medium">
-                                    {mentorData.availability.nextAvailable}
-                                </span>
+                <div className="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
+                    <Card
+                        headerTitle="Availability"
+                        onClick={() => {}}
+                        content={
+                            <div className="space-y-2">
+                                <div className="flex items-center justify-between text-sm">
+                                    <span className="text-muted-foreground">
+                                        Next Available:
+                                    </span>
+                                    <span className="font-medium">
+                                        {mentorData.availability.nextAvailable}
+                                    </span>
+                                </div>
+                                <Separator className="my-2" />
+                                {mentorData.availability.schedule.map(
+                                    (slot, index) => (
+                                        <div
+                                            key={index}
+                                            className="flex items-center justify-between text-sm"
+                                        >
+                                            <span className="text-muted-foreground">
+                                                {slot.day}
+                                            </span>
+                                            <span>{slot.hours}</span>
+                                        </div>
+                                    )
+                                )}
                             </div>
-                            <Separator className="my-2" />
-                            {mentorData.availability.schedule.map(
-                                (slot, index) => (
-                                    <div
-                                        key={index}
-                                        className="flex items-center justify-between text-sm"
-                                    >
-                                        <span className="text-muted-foreground">
-                                            {slot.day}
-                                        </span>
-                                        <span>{slot.hours}</span>
-                                    </div>
-                                )
-                            )}
-                        </div>
-                    }
-                />
+                        }
+                    />
+                    <Card
+                        headerTitle={
+                            <div className="flex items-center">
+                                <p>Appointments</p>
+                            </div>
+                        }
+                        onClick={() => {}}
+                        content={
+                            <div className="flex max-h-[200px] flex-1 flex-col space-y-2 overflow-y-scroll px-2">
+                                {bookingRecordList &&
+                                    bookingRecordList.map((data, index) => (
+                                        <AppointmentButton
+                                            key={index}
+                                            ref={
+                                                index ===
+                                                bookingRecordList.length - 1
+                                                    ? ref
+                                                    : null
+                                            }
+                                            bookingAt={data.bookingAt}
+                                            duration={data.duration}
+                                            onClick={() => {
+                                                setBookingId(data.id)
+                                                openModal()
+                                            }}
+                                        />
+                                    ))}
+                            </div>
+                        }
+                    />
+                </div>
 
                 {/* Expertise Section */}
                 <div className="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
@@ -347,6 +410,8 @@ export default function MentorPage({ userData }: Props) {
                     }
                 />
             </div>
+            <AppointmentModal bookingId={bookingId} />
+            <ImageModal />
         </div>
     )
 }
