@@ -29,7 +29,7 @@ const authMiddleware = withAuth(
         ) {
             return NextResponse.redirect(new URL('/', req.url))
         }
-        return NextResponse.next()
+        return handleI18nRouting(req)
     },
     {
         callbacks: {

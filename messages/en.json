@@ -1,5 +1,9 @@
 {
     "MentorCard": {
         "avg-attendance": "Avg. Attendance"
+    },
+    "Time":{
+        "h": "h",
+        "m": "m"
     }
 }

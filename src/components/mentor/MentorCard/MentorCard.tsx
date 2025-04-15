@@ -18,8 +18,11 @@ const MentorCard = ({ mentor }: Props) => {
                     alt={userName}
                     width={0}
                     height={0}
-                    sizes="100vw"
-                    style={{ width: '100%', height: 'auto' }}
+                    style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                    }}
                 />
             </div>
             <div className="mb-4 flex flex-col gap-2 text-slate-800">
