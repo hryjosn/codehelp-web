@@ -61,7 +61,7 @@ const MemberSignUp = () => {
             memberSignUp(formData, {
                 onSuccess(res) {
                     if (res?.data?.token) {
-                        loginHandler({ email, password })
+                        loginHandler({ data: { email, password }, router })
                     }
                 },
             })

@@ -1,7 +1,8 @@
 import axios from 'axios'
 import { getSession, signIn } from 'next-auth/react'
+import { LoginHandler } from './types'
 
-const loginHandler = async (data: { email: string; password: string }) => {
+const loginHandler = async ({ data, router }: LoginHandler) => {
     const res = await signIn('credentials', {
         email: data.email,
         password: data.password,
@@ -24,6 +25,10 @@ const loginHandler = async (data: { email: string; password: string }) => {
         await axios.post('/api/auth/token', {
             token: session.accessToken,
         })
+    }
+
+    if (res?.ok && res.url) {
+        router.push(res.url)
     }
 }
 
