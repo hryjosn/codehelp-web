@@ -1,5 +1,5 @@
 import { PC_CONFIG } from './constant'
-import { Dispatch, RefObject, SetStateAction } from 'react'
+import { RefObject } from 'react'
 import {
     HangupT,
     ICE_CONNECTION_STATE,
@@ -10,19 +10,19 @@ import {
     CreatePeerConnectionT,
     SendAnswerSDP_T,
     SendOfferSDP_T,
+    ReplaceStreamTracks,
 } from './types'
 import Decimal from 'decimal.js'
-import { runInAction } from 'mobx'
 import { useVideoConferenceStore } from './store/VideoConferenceStore'
 
 // export let peerConnection: RTCPeerConnection
 let connectionQualityInterval: NodeJS.Timeout | null = null
 
 const {
-    peerConnectionList,
     removeConnectionMember,
     clearPeerConnections,
     addPeer,
+    setIsLocalShareScreen,
 } = useVideoConferenceStore.getState()
 const offerAndAnswerOptions = {
     offerToReceiveAudio: true,
@@ -31,10 +31,17 @@ const offerAndAnswerOptions = {
 
 export const createLocalStream = async () => {
     try {
+        const isWebcamOpen = useVideoConferenceStore.getState().isWebcamOpen
+
         const stream = await navigator.mediaDevices.getUserMedia({
             audio: true,
             video: true,
         })
+
+        const videoTrack = stream.getVideoTracks()[0]
+        if (videoTrack) {
+            videoTrack.enabled = isWebcamOpen
+        }
         return stream
     } catch (err) {
         console.log('getUserMedia error: ', err)
@@ -70,6 +77,7 @@ export const createPeerConnection = async ({
     peerConnection.oniceconnectionstatechange = (e) => {
         const peerConnection = e.target as RTCPeerConnection
         const state = peerConnection.iceConnectionState
+
         if (
             state === ICE_CONNECTION_STATE.DISCONNECTED ||
             state === ICE_CONNECTION_STATE.FAILED
@@ -101,9 +109,18 @@ export const createPeerConnection = async ({
     return peerConnection
 }
 
-export const hangup = ({ roomId, localStream, remoteId, socket }: HangupT) => {
+export const hangup = async ({
+    roomId,
+    localStream,
+    remoteId,
+    socket,
+    localVideoRef,
+}: HangupT) => {
+    const { peerConnectionList } = useVideoConferenceStore.getState()
     if (peerConnectionList) {
         clearPeerConnections()
+        clearCurrentVideo(localVideoRef)
+        setIsLocalShareScreen(false)
     }
 
     localStream.getTracks().forEach((track) => {
@@ -181,8 +198,10 @@ const adjustMaxBitrate = async (
 
         if (sender) {
             const params = sender.getParameters()
-            params.encodings[0].maxBitrate = maxBitrate
-            sender.setParameters(params)
+            if (params.encodings.length) {
+                params.encodings[0].maxBitrate = maxBitrate
+                sender.setParameters(params)
+            }
         } else {
             console.log('local video stream is not found.')
         }
@@ -235,19 +254,38 @@ const getMaxBitrate = ({
 }
 
 export const shareScreen = async (
-    localVideoRef: RefObject<HTMLVideoElement>,
-    setIsLocalShareScreen: Dispatch<SetStateAction<boolean>>
+    localVideoRef: RefObject<HTMLVideoElement>
 ) => {
     try {
-        const mediaStream = await navigator.mediaDevices.getDisplayMedia({
+        const videoStream = await navigator.mediaDevices.getDisplayMedia({
             video: true,
         })
 
+        const micStream = await navigator.mediaDevices.getUserMedia({
+            audio: true,
+        })
+
+        const newMicTrack = applyMicState(micStream)
+
+        const combinedStream = new MediaStream([
+            ...videoStream.getVideoTracks(),
+            newMicTrack,
+        ])
+
         clearCurrentVideo(localVideoRef)
 
-        if (mediaStream) changeVideoTrack(localVideoRef, mediaStream)
-        mediaStream.getVideoTracks()[0].onended = () => {
-            stopShareScreen(localVideoRef, setIsLocalShareScreen)
+        if (localVideoRef.current) {
+            localVideoRef.current.srcObject = combinedStream
+        }
+
+        replaceStreamTracks({
+            stream: combinedStream,
+            isReplaceAudio: true,
+            isReplaceVideo: true,
+        })
+
+        videoStream.getVideoTracks()[0].onended = () => {
+            stopShareScreen(localVideoRef)
         }
         setIsLocalShareScreen(true)
     } catch (err) {
@@ -257,15 +295,26 @@ export const shareScreen = async (
 }
 
 export const stopShareScreen = async (
-    localVideoRef: RefObject<HTMLVideoElement>,
-    setIsLocalShareScreen: Dispatch<SetStateAction<boolean>>
+    localVideoRef: RefObject<HTMLVideoElement>
 ) => {
     try {
         const localStream = await createLocalStream()
 
         clearCurrentVideo(localVideoRef)
 
-        if (localStream) changeVideoTrack(localVideoRef, localStream)
+        if (localStream) {
+            applyMicState(localStream)
+
+            if (localVideoRef.current) {
+                localVideoRef.current.srcObject = localStream
+            }
+
+            replaceStreamTracks({
+                stream: localStream,
+                isReplaceAudio: true,
+                isReplaceVideo: true,
+            })
+        }
         setIsLocalShareScreen(false)
     } catch (err) {
         console.log(err)
@@ -275,23 +324,45 @@ export const stopShareScreen = async (
 
 const clearCurrentVideo = (localVideoRef: RefObject<HTMLVideoElement>) => {
     const currentStream = localVideoRef.current?.srcObject as MediaStream
-    currentStream?.getVideoTracks().forEach((track) => track.stop())
+    if (!currentStream) return
+
+    currentStream.getTracks().forEach((track) => track.stop())
+
+    localVideoRef.current!.srcObject = null
 }
 
-const changeVideoTrack = (
-    localVideoRef: RefObject<HTMLVideoElement>,
-    localStream: MediaStream
-) => {
-    if (localVideoRef.current) {
-        localVideoRef.current.srcObject = localStream
-    }
+export const replaceStreamTracks = ({
+    stream,
+    isReplaceVideo = true,
+    isReplaceAudio = true,
+}: ReplaceStreamTracks) => {
+    const { peerConnectionList } = useVideoConferenceStore.getState()
 
-    Object.values(peerConnectionList).map((peerConnection) => {
-        const videoSender = peerConnection.peerConnection
-            .getSenders()
-            .find((sender) => sender.track!.kind === 'video')
-        if (videoSender) {
-            videoSender.replaceTrack(localStream!.getVideoTracks()[0])
+    Object.values(peerConnectionList).forEach(({ peerConnection }) => {
+        const senders = peerConnection.getSenders()
+
+        if (isReplaceVideo) {
+            const videoTrack = stream.getVideoTracks()[0]
+            const videoSender = senders.find((s) => s.track?.kind === 'video')
+            if (videoSender && videoTrack) {
+                videoSender.replaceTrack(videoTrack)
+            }
+        }
+
+        if (isReplaceAudio) {
+            const audioTrack = stream.getAudioTracks()[0]
+            const audioSender = senders.find((s) => s.track?.kind === 'audio')
+            if (audioSender && audioTrack) {
+                audioSender.replaceTrack(audioTrack)
+            }
         }
     })
+}
+
+export const applyMicState = (stream: MediaStream) => {
+    const isMicOpen = useVideoConferenceStore.getState().isMicOpen
+    const audioTrack = stream.getAudioTracks()[0]
+    if (audioTrack) audioTrack.enabled = isMicOpen
+
+    return audioTrack
 }

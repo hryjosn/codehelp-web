@@ -30,6 +30,9 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
             peerConnectionList,
             socket,
             chatList,
+            isLocalShareScreen,
+            isMicOpen,
+            isWebcamOpen,
             removeConnectionMember,
             setLocalStream,
             addIceCandidate,
@@ -37,16 +40,16 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
             setRemoteDescription,
             addMessage,
             resetChatList,
+            registerShareScreenSocketEvents,
+            setIsMicOpen,
+            setIsWebcamOpen,
         },
     } = useStore()
     const { data: userData } = useGetUserInfo()
 
     const date = new Date()
 
-    const [isMicOpen, setIsMicOpen] = useState(true)
-    const [isCamOpen, setIsCamOpen] = useState(true)
     const [isChatOpen, setIsChatOpen] = useState(false)
-    const [isLocalShareScreen, setIsLocalShareScreen] = useState(false)
     const [content, setContent] = useState('')
     const localVideoRef = useRef<HTMLVideoElement>(null)
 
@@ -106,35 +109,21 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
             addIceCandidate({ remoteId, candidate })
         })
 
-        socket?.on('remoteStartShare', (remoteId) => {
-            if (peerConnectionList[remoteId]) {
-                runInAction(() => {
-                    peerConnectionList[remoteId].isScreenSharing = true
-                })
-            }
-        })
-
-        socket?.on('remoteStopShare', (remoteId) => {
-            if (peerConnectionList[remoteId]) {
-                runInAction(() => {
-                    peerConnectionList[remoteId].isScreenSharing = false
-                })
-            }
-        })
-
         socket?.on('receiveMessage', (msgData) => {
-            const { createdAt } = msgData
-            const date = new Date(createdAt)
+            const date = new Date(msgData.createdAt)
             const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
 
             const localTime = date.toLocaleTimeString('en-US', {
                 hour: 'numeric',
                 minute: 'numeric',
                 hour12: false,
-                timeZone: timeZone,
+                timeZone,
             })
+
             addMessage({ ...msgData, createdAt: localTime })
         })
+
+        registerShareScreenSocketEvents()
 
         return () => {
             if (socket) {
@@ -144,6 +133,8 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
                 socket.off('answer')
                 socket.off('ice_candidate')
                 socket.off('receiveMessage')
+                socket.off('remoteStartShare')
+                socket.off('remoteStopShare')
                 socket.disconnect()
                 resetChatList()
             }
@@ -163,7 +154,7 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
         if (localVideoRef.current && localVideoRef.current.srcObject) {
             const mediaStream = localVideoRef.current.srcObject as MediaStream
             const videoTracks = mediaStream.getVideoTracks()
-            setIsCamOpen(!videoTracks[0].enabled)
+            setIsWebcamOpen(!videoTracks[0].enabled)
             videoTracks[0].enabled = !videoTracks[0].enabled
         }
     }
@@ -266,7 +257,7 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
                         className="h-14 w-14 cursor-pointer rounded-full bg-red-500 p-3"
                     />
                 )}
-                {isCamOpen ? (
+                {isWebcamOpen ? (
                     <IoVideocam
                         onClick={() => {
                             camSwitch()
@@ -287,10 +278,7 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
                             'h-14 w-14 cursor-pointer rounded-full bg-gray-200 p-3'
                         }
                         onClick={async () => {
-                            await shareScreen(
-                                localVideoRef,
-                                setIsLocalShareScreen
-                            )
+                            await shareScreen(localVideoRef)
                             if (socket?.id) {
                                 socket.emit(
                                     'remoteStartShare',
@@ -306,10 +294,7 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
                             'h-14 w-14 cursor-pointer rounded-full bg-red-500 p-3'
                         }
                         onClick={async () => {
-                            await stopShareScreen(
-                                localVideoRef,
-                                setIsLocalShareScreen
-                            )
+                            await stopShareScreen(localVideoRef)
 
                             if (socket?.id) {
                                 socket.emit(
@@ -334,6 +319,7 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
                                     localStream: localStream,
                                     remoteId: socket.id,
                                     socket,
+                                    localVideoRef,
                                 })
                                 setLocalStream(undefined)
                             }

@@ -1,3 +1,4 @@
+import { RefObject } from 'react'
 import { Socket } from 'socket.io-client'
 import { ServerToClientEvents, ClientToServerEvents } from '~/lib/types'
 export interface CreatePeerConnectionT {
@@ -18,6 +19,7 @@ export interface HangupT {
     localStream: MediaStream
     remoteId: string
     socket: Socket<ServerToClientEvents, ClientToServerEvents>
+    localVideoRef: RefObject<HTMLVideoElement>
 }
 export interface SendOfferSDP_T {
     localStream: MediaStream
@@ -58,4 +60,10 @@ export interface IConnectionQuality {
 export enum REPORT_TYPE {
     INBOUND_RTP = 'inbound-rtp',
     CANDIDATE_PAIR = 'candidate-pair',
+}
+
+export interface ReplaceStreamTracks {
+    stream: MediaStream
+    isReplaceVideo?: boolean
+    isReplaceAudio?: boolean
 }

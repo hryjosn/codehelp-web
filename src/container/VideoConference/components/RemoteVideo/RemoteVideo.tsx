@@ -23,6 +23,7 @@ const RemoteVideo = ({ remoteId }: Props) => {
             }
         }
     }, [peerConnectionList])
+
     return (
         <video
             ref={videoRef}
