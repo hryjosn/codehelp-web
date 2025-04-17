@@ -1,0 +1,17 @@
+services:
+  nextjs:
+    build: .
+    container_name: next-app
+    environment:
+      - NEXT_PUBLIC_API_URL=https://codehelp-backend-production.up.railway.app
+      - NEXT_PUBLIC_MOCK=off
+      - NEXTAUTH_SECRET=8+eObjGKYVRZPE7L8xf+BNHEs32pMlXICDAPvoMQODc=
+      - MOCK=false
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - nextjs
