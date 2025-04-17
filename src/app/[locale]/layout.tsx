@@ -38,8 +38,11 @@ export default async function RootLayout({
                     <ReactQueryClientProvider>
                         <Provider>
                             <RootStoreProvider>
-                                <MSWProvider>{children}</MSWProvider>
-                                {/* {children} */}
+                                {process.env.MOCK === 'true' ? (
+                                    <MSWProvider>{children}</MSWProvider>
+                                ) : (
+                                    <>{children}</>
+                                )}
                             </RootStoreProvider>
                         </Provider>
                     </ReactQueryClientProvider>

@@ -17,8 +17,11 @@ const Bio = ({ avatar, name, company, title, country }: Props) => {
                     alt={name}
                     width={0}
                     height={0}
-                    sizes="100%"
-                    style={{ width: 'auto', height: 'auto' }}
+                    style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                    }}
                 />
             </div>
             <div>
