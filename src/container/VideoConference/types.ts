@@ -1,3 +1,4 @@
+import { RefObject } from 'react'
 import { Socket } from 'socket.io-client'
 import { ServerToClientEvents, ClientToServerEvents } from '~/lib/types'
 export interface CreatePeerConnectionT {
@@ -18,6 +19,7 @@ export interface HangupT {
     localStream: MediaStream
     remoteId: string
     socket: Socket<ServerToClientEvents, ClientToServerEvents>
+    localVideoRef: RefObject<HTMLVideoElement>
 }
 export interface SendOfferSDP_T {
     localStream: MediaStream

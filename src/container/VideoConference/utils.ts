@@ -1,5 +1,5 @@
 import { PC_CONFIG } from './constant'
-import { Dispatch, RefObject, SetStateAction } from 'react'
+import { RefObject } from 'react'
 import {
     HangupT,
     ICE_CONNECTION_STATE,
@@ -12,17 +12,16 @@ import {
     SendOfferSDP_T,
 } from './types'
 import Decimal from 'decimal.js'
-import { runInAction } from 'mobx'
 import { useVideoConferenceStore } from './store/VideoConferenceStore'
 
 // export let peerConnection: RTCPeerConnection
 let connectionQualityInterval: NodeJS.Timeout | null = null
 
 const {
-    peerConnectionList,
     removeConnectionMember,
     clearPeerConnections,
     addPeer,
+    setIsLocalShareScreen,
 } = useVideoConferenceStore.getState()
 const offerAndAnswerOptions = {
     offerToReceiveAudio: true,
@@ -70,6 +69,7 @@ export const createPeerConnection = async ({
     peerConnection.oniceconnectionstatechange = (e) => {
         const peerConnection = e.target as RTCPeerConnection
         const state = peerConnection.iceConnectionState
+
         if (
             state === ICE_CONNECTION_STATE.DISCONNECTED ||
             state === ICE_CONNECTION_STATE.FAILED
@@ -101,9 +101,18 @@ export const createPeerConnection = async ({
     return peerConnection
 }
 
-export const hangup = ({ roomId, localStream, remoteId, socket }: HangupT) => {
+export const hangup = async ({
+    roomId,
+    localStream,
+    remoteId,
+    socket,
+    localVideoRef,
+}: HangupT) => {
+    const { peerConnectionList } = useVideoConferenceStore.getState()
     if (peerConnectionList) {
         clearPeerConnections()
+        clearCurrentVideo(localVideoRef)
+        setIsLocalShareScreen(false)
     }
 
     localStream.getTracks().forEach((track) => {
@@ -181,8 +190,10 @@ const adjustMaxBitrate = async (
 
         if (sender) {
             const params = sender.getParameters()
-            params.encodings[0].maxBitrate = maxBitrate
-            sender.setParameters(params)
+            if (params.encodings.length) {
+                params.encodings[0].maxBitrate = maxBitrate
+                sender.setParameters(params)
+            }
         } else {
             console.log('local video stream is not found.')
         }
@@ -235,8 +246,7 @@ const getMaxBitrate = ({
 }
 
 export const shareScreen = async (
-    localVideoRef: RefObject<HTMLVideoElement>,
-    setIsLocalShareScreen: Dispatch<SetStateAction<boolean>>
+    localVideoRef: RefObject<HTMLVideoElement>
 ) => {
     try {
         const mediaStream = await navigator.mediaDevices.getDisplayMedia({
@@ -247,7 +257,7 @@ export const shareScreen = async (
 
         if (mediaStream) changeVideoTrack(localVideoRef, mediaStream)
         mediaStream.getVideoTracks()[0].onended = () => {
-            stopShareScreen(localVideoRef, setIsLocalShareScreen)
+            stopShareScreen(localVideoRef)
         }
         setIsLocalShareScreen(true)
     } catch (err) {
@@ -257,8 +267,7 @@ export const shareScreen = async (
 }
 
 export const stopShareScreen = async (
-    localVideoRef: RefObject<HTMLVideoElement>,
-    setIsLocalShareScreen: Dispatch<SetStateAction<boolean>>
+    localVideoRef: RefObject<HTMLVideoElement>
 ) => {
     try {
         const localStream = await createLocalStream()
@@ -285,6 +294,7 @@ const changeVideoTrack = (
     if (localVideoRef.current) {
         localVideoRef.current.srcObject = localStream
     }
+    const { peerConnectionList } = useVideoConferenceStore.getState()
 
     Object.values(peerConnectionList).map((peerConnection) => {
         const videoSender = peerConnection.peerConnection
