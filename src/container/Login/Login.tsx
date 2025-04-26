@@ -1,6 +1,5 @@
 'use client'
 import { joiResolver } from '@hookform/resolvers/joi'
-import { isAxiosError } from 'axios'
 import Joi from 'joi/lib'
 import { observer } from 'mobx-react-lite'
 import Image from 'next/image'
@@ -11,8 +10,10 @@ import FormInput from './components/FormInput/FormInput'
 import LinkText from './components/LinkText/LinkText'
 import { LoginDataT, RESPONSE_CODE } from './types'
 import loginHandler from '~/utils/loginHandler'
+import { useRouter } from '~/i18n/routing'
 
 const Login = () => {
+    const router = useRouter()
     const [errorText, setErrorText] = useState('')
     const schema = Joi.object({
         email: Joi.string().email().required(),
@@ -35,7 +36,7 @@ const Login = () => {
     } = methods
 
     const onSubmit = async (data: LoginDataT) => {
-        const res = await loginHandler(data)
+        const res = await loginHandler({ data, router })
 
         if (res) {
             reset()
