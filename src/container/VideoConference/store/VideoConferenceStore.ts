@@ -9,6 +9,7 @@ type States = {
     peerConnectionList: PeerConnectionListT
     socket: Socket<ServerToClientEvents, ClientToServerEvents> | null
     chatList: MessageData[]
+    isLocalShareScreen: boolean
 }
 
 type Actions = {
@@ -39,85 +40,139 @@ type Actions = {
     setLocalStream: (localStream: MediaStream | undefined) => void
     addMessage: (newMessage: MessageData) => void
     resetChatList: () => void
+    setIsLocalShareScreen: (isShare: boolean) => void
+    updatePeerIsScreenSharing: ({
+        remoteId,
+        isSharing,
+    }: {
+        remoteId: string
+        isSharing: boolean
+    }) => void
+    registerShareScreenSocketEvents: () => void
 }
 
 export type VideoConferenceStore = States & Actions
 
-export const useVideoConferenceStore = create<States & Actions>()((set) => ({
-    localStream: undefined,
-    peerConnectionList: {},
-    socket: null,
-    chatList: [],
-    setLocalStream: (localStream) => set({ localStream }),
+export const useVideoConferenceStore = create<States & Actions>()(
+    (set, get) => ({
+        localStream: undefined,
+        peerConnectionList: {},
+        socket: null,
+        chatList: [],
+        isLocalShareScreen: false,
+        setLocalStream: (localStream) => set({ localStream }),
 
-    addIceCandidate: ({ remoteId, candidate }) =>
-        set((state) => {
-            const peerData = state.peerConnectionList[remoteId]
-            if (peerData) {
-                peerData.peerConnection.addIceCandidate(candidate)
-            }
-            return state
-        }),
+        addIceCandidate: ({ remoteId, candidate }) =>
+            set((state) => {
+                const peerData = state.peerConnectionList[remoteId]
+                if (peerData) {
+                    peerData.peerConnection.addIceCandidate(candidate)
+                }
+                return state
+            }),
 
-    setRemoteDescription: ({ remoteId, desc }) =>
-        set((state) => {
-            const peerData = state.peerConnectionList[remoteId]
-            if (peerData) {
-                peerData.peerConnection.setRemoteDescription(desc)
-            }
-            return state
-        }),
+        setRemoteDescription: ({ remoteId, desc }) =>
+            set((state) => {
+                const peerData = state.peerConnectionList[remoteId]
+                if (peerData) {
+                    peerData.peerConnection.setRemoteDescription(desc)
+                }
+                return state
+            }),
 
-    clearPeerConnections: () =>
-        set({
-            peerConnectionList: {},
-        }),
+        clearPeerConnections: () =>
+            set({
+                peerConnectionList: {},
+            }),
 
-    addPeer: ({ remoteId, peerConnection }) =>
-        set((state) => ({
-            peerConnectionList: {
-                ...state.peerConnectionList,
-                [remoteId]: { peerConnection, isScreenSharing: false },
-            },
-        })),
-
-    connectSocket: () => {
-        set({ socket: io(process.env.NEXT_PUBLIC_API_URL) })
-    },
-
-    removeConnectionMember: (remoteId) => {
-        set((state) => {
-            const peerData = state.peerConnectionList[remoteId]
-
-            if (peerData) {
-                peerData.peerConnection.onicecandidate = null
-                peerData.peerConnection.onnegotiationneeded = null
-                peerData.peerConnection.oniceconnectionstatechange = null
-
-                peerData.peerConnection.close()
-
-                const updatedList = { ...state.peerConnectionList }
-                delete updatedList[remoteId]
-
-                return { peerConnectionList: updatedList }
-            }
-
-            return state
-        })
-    },
-    addMessage: (newMessage) =>
-        set((state) => ({
-            chatList: [
-                {
-                    id: newMessage.id,
-                    user: newMessage.user,
-                    content: newMessage.content,
-                    createdAt: newMessage.createdAt,
-                    roomId: newMessage.roomId,
-                    type: newMessage.type,
+        addPeer: ({ remoteId, peerConnection }) =>
+            set((state) => ({
+                peerConnectionList: {
+                    ...state.peerConnectionList,
+                    [remoteId]: { peerConnection, isScreenSharing: false },
                 },
-                ...state.chatList,
-            ],
-        })),
-    resetChatList: () => set({ chatList: [] }),
-}))
+            })),
+
+        connectSocket: () => {
+            set({ socket: io(process.env.NEXT_PUBLIC_API_URL) })
+        },
+
+        removeConnectionMember: (remoteId) => {
+            set((state) => {
+                const peerData = state.peerConnectionList[remoteId]
+
+                if (peerData) {
+                    peerData.peerConnection.onicecandidate = null
+                    peerData.peerConnection.onnegotiationneeded = null
+                    peerData.peerConnection.oniceconnectionstatechange = null
+
+                    peerData.peerConnection.close()
+
+                    const updatedList = { ...state.peerConnectionList }
+                    delete updatedList[remoteId]
+
+                    return { peerConnectionList: updatedList }
+                }
+
+                return state
+            })
+        },
+
+        updatePeerIsScreenSharing: ({ remoteId, isSharing }) =>
+            set((state) => {
+                const existing = state.peerConnectionList[remoteId]
+
+                if (!existing) return {}
+
+                return {
+                    peerConnectionList: {
+                        ...state.peerConnectionList,
+                        [remoteId]: {
+                            ...existing,
+                            isScreenSharing: isSharing,
+                        },
+                    },
+                }
+            }),
+
+        addMessage: (newMessage) =>
+            set((state) => ({
+                chatList: [
+                    {
+                        id: newMessage.id,
+                        user: newMessage.user,
+                        content: newMessage.content,
+                        createdAt: newMessage.createdAt,
+                        roomId: newMessage.roomId,
+                        type: newMessage.type,
+                    },
+                    ...state.chatList,
+                ],
+            })),
+        resetChatList: () => set({ chatList: [] }),
+        setIsLocalShareScreen: (isShare) =>
+            set({ isLocalShareScreen: isShare }),
+
+        registerShareScreenSocketEvents: () => {
+            const { socket } = get()
+
+            if (!socket) return
+
+            socket.on('remoteStartShare', (remoteId) => {
+                const { peerConnectionList, updatePeerIsScreenSharing } = get()
+
+                if (peerConnectionList[remoteId]) {
+                    updatePeerIsScreenSharing({ remoteId, isSharing: true })
+                }
+            })
+
+            socket.on('remoteStopShare', (remoteId) => {
+                const { peerConnectionList, updatePeerIsScreenSharing } = get()
+
+                if (peerConnectionList[remoteId]) {
+                    updatePeerIsScreenSharing({ remoteId, isSharing: false })
+                }
+            })
+        },
+    })
+)
