@@ -11,7 +11,7 @@ export const PC_CONFIG = {
         { urls: 'stun:stun4.l.google.com:19302' },
         { urls: 'stun:stun4.l.google.com:5349' },
         {
-            url: 'relay1.expressturn.com:3478',
+            url: 'turn:relay1.expressturn.com:3478',
             credential: 'vk2nkqnghHY6Nanb',
             username: 'efDNY4K2DS3KJZEKAZ',
         },
