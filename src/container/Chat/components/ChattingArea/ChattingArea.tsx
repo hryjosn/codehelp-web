@@ -5,7 +5,11 @@ import { useEffect, useMemo, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { Props, QueryPagesParams, QueryParams } from './types'
 import ButtonInput from '~/components/ButtonInput/ButtonInput'
-import { useCreateMessage, useGetMessageRecord } from '~/api/chatroom/chatroom'
+import {
+    useCreateMessage,
+    useGetMessageRecord,
+    useGetChatroomInfo,
+} from '~/api/chatroom/chatroom'
 import { useQueryClient } from '@tanstack/react-query'
 import { useGetUserInfo } from '~/api/user/user'
 import Avatar from '~/components/Avatar/Avatar'
@@ -20,6 +24,7 @@ const ChattingArea = ({ chatroomId }: Props) => {
         fetchNextPage,
     } = useGetMessageRecord(chatroomId)
     const { data: userData } = useGetUserInfo()
+    const { data: chatroomData } = useGetChatroomInfo(chatroomId)
 
     const [content, setContent] = useState('')
     const socket = useChatroomStore((state) => state.socket)
@@ -74,8 +79,16 @@ const ChattingArea = ({ chatroomId }: Props) => {
     }, [inView, hasNextPage, fetchNextPage])
 
     return (
-        <div className="flex h-screen min-w-[300px] flex-1 flex-col px-5 py-5">
-            <div className="custom-scrollbar mt-5 flex flex-1 flex-col-reverse overflow-x-hidden overflow-y-scroll">
+        <div className="flex h-screen min-w-[300px] flex-1 flex-col py-5">
+            {chatroomData && (
+                <div className="flex items-center border-b px-3 pb-3">
+                    <Avatar src={chatroomData.chatroom.mentor.avatar} />
+                    <p className="ml-3 font-bold">
+                        {chatroomData.chatroom.mentor.userName}
+                    </p>
+                </div>
+            )}
+            <div className="custom-scrollbar mt-5 flex flex-1 flex-col-reverse overflow-x-hidden overflow-y-scroll px-5">
                 {!!messagesList?.length &&
                     !!userData &&
                     messagesList.map((data, index) => (
@@ -98,7 +111,7 @@ const ChattingArea = ({ chatroomId }: Props) => {
                         </div>
                     ))}
             </div>
-            <div className="flex justify-center pr-3">
+            <div className="flex justify-center px-5">
                 <ButtonInput
                     value={content}
                     maxRows={17}
