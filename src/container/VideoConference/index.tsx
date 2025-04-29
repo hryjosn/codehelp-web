@@ -1,18 +1,18 @@
 'use client'
-import { runInAction } from 'mobx'
 import { observer } from 'mobx-react-lite'
-import { Link } from '~/i18n/routing'
-import { useRouter } from '~/i18n/routing'
 import { useEffect, useRef, useState } from 'react'
 import { ImPhoneHangUp } from 'react-icons/im'
 import { IoMdMic, IoMdMicOff } from 'react-icons/io'
 import { IoVideocam, IoVideocamOff } from 'react-icons/io5'
 import { MdOutlineScreenShare } from 'react-icons/md'
 import { PiChatCircleText } from 'react-icons/pi'
+import { useGetUserInfo } from '~/api/user/user'
+import ButtonInput from '~/components/ButtonInput/ButtonInput'
+import { Link, useRouter } from '~/i18n/routing'
 import { cn } from '~/lib/utils'
+import { useStore } from '~/store/rootStoreProvider'
 import MessageBox from './components/MessageBox'
 import RemoteVideo from './components/RemoteVideo/RemoteVideo'
-import ButtonInput from '~/components/ButtonInput/ButtonInput'
 import {
     hangup,
     sendAnswerSDP,
@@ -20,8 +20,6 @@ import {
     shareScreen,
     stopShareScreen,
 } from './utils'
-import { useStore } from '~/store/rootStoreProvider'
-import { useGetUserInfo } from '~/api/user/user'
 
 const VideoConference = ({ params }: { params: { id: string } }) => {
     const {
@@ -104,6 +102,7 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
 
             const candidate = new RTCIceCandidate({
                 sdpMLineIndex: data.label,
+                sdpMid: data.id,
                 candidate: data.candidate,
             })
             addIceCandidate({ remoteId, candidate })
@@ -278,7 +277,7 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
                             'h-14 w-14 cursor-pointer rounded-full bg-gray-200 p-3'
                         }
                         onClick={async () => {
-                            await shareScreen(localVideoRef)
+                            await shareScreen(localVideoRef, params.id)
                             if (socket?.id) {
                                 socket.emit(
                                     'remoteStartShare',
@@ -294,15 +293,10 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
                             'h-14 w-14 cursor-pointer rounded-full bg-red-500 p-3'
                         }
                         onClick={async () => {
-                            await stopShareScreen(localVideoRef)
-
-                            if (socket?.id) {
-                                socket.emit(
-                                    'remoteStopShare',
-                                    params.id,
-                                    socket.id
-                                )
-                            }
+                            await stopShareScreen({
+                                localVideoRef,
+                                paramId: params.id,
+                            })
                         }}
                     />
                 )}

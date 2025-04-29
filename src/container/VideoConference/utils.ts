@@ -1,19 +1,19 @@
-import { PC_CONFIG } from './constant'
+import Decimal from 'decimal.js'
 import { RefObject } from 'react'
+import { PC_CONFIG } from './constant'
+import { useVideoConferenceStore } from './store/VideoConferenceStore'
 import {
+    CONNECTION_QUALITY,
+    CreatePeerConnectionT,
     HangupT,
     ICE_CONNECTION_STATE,
-    CONNECTION_QUALITY,
-    MAX_BITRATE,
     IConnectionQuality,
+    MAX_BITRATE,
+    ReplaceStreamTracks,
     REPORT_TYPE,
-    CreatePeerConnectionT,
     SendAnswerSDP_T,
     SendOfferSDP_T,
-    ReplaceStreamTracks,
 } from './types'
-import Decimal from 'decimal.js'
-import { useVideoConferenceStore } from './store/VideoConferenceStore'
 
 // export let peerConnection: RTCPeerConnection
 let connectionQualityInterval: NodeJS.Timeout | null = null
@@ -254,7 +254,8 @@ const getMaxBitrate = ({
 }
 
 export const shareScreen = async (
-    localVideoRef: RefObject<HTMLVideoElement>
+    localVideoRef: RefObject<HTMLVideoElement>,
+    paramId: string
 ) => {
     try {
         const videoStream = await navigator.mediaDevices.getDisplayMedia({
@@ -266,6 +267,7 @@ export const shareScreen = async (
         })
 
         const newMicTrack = applyMicState(micStream)
+        console.log()
 
         const combinedStream = new MediaStream([
             ...videoStream.getVideoTracks(),
@@ -285,7 +287,7 @@ export const shareScreen = async (
         })
 
         videoStream.getVideoTracks()[0].onended = () => {
-            stopShareScreen(localVideoRef)
+            stopShareScreen({ localVideoRef, paramId })
         }
         setIsLocalShareScreen(true)
     } catch (err) {
@@ -294,9 +296,13 @@ export const shareScreen = async (
     }
 }
 
-export const stopShareScreen = async (
+export const stopShareScreen = async ({
+    localVideoRef,
+    paramId,
+}: {
     localVideoRef: RefObject<HTMLVideoElement>
-) => {
+    paramId: string
+}) => {
     try {
         const localStream = await createLocalStream()
 
@@ -316,6 +322,9 @@ export const stopShareScreen = async (
             })
         }
         setIsLocalShareScreen(false)
+        const { socket } = useVideoConferenceStore.getState()
+
+        socket?.emit('remoteStopShare', paramId, socket?.id!)
     } catch (err) {
         console.log(err)
         setIsLocalShareScreen(false)
