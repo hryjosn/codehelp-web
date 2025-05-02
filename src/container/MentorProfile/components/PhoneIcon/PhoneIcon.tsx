@@ -6,12 +6,14 @@ import { createLocalStream } from '~/container/VideoConference/utils'
 import LoadingModal from '~/components/LoadingModal/LoadingModal'
 import { useState } from 'react'
 import { useStore } from '~/store/rootStoreProvider'
+import { useToast } from '~/hooks/use-toast'
 
 const PhoneIcon = ({ mentorId }: { mentorId: string }) => {
     const router = useRouter()
     const {
         videoConferenceStore: { connectSocket, setLocalStream },
     } = useStore()
+    const { toast } = useToast()
 
     const [modalVisible, setModalVisible] = useState(false)
     return (
@@ -21,14 +23,20 @@ const PhoneIcon = ({ mentorId }: { mentorId: string }) => {
                 size={30}
                 onClick={async () => {
                     setModalVisible(true)
-                    const localStream = await createLocalStream()
+                    const { localStream, errMsg } = await createLocalStream()
                     connectSocket()
                     setLocalStream(localStream)
 
                     if (localStream) {
                         router.push(`/video-conference/${mentorId}`)
-                        setModalVisible(false)
                     }
+                    if (errMsg) {
+                        toast({
+                            title: 'Connecting failed',
+                            description: String(errMsg),
+                        })
+                    }
+                    setModalVisible(false)
                 }}
             />
             <LoadingModal visible={modalVisible} />
