@@ -136,6 +136,8 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
                 socket.off('remoteStopShare')
                 socket.disconnect()
                 resetChatList()
+                setIsMicOpen(true)
+                setIsWebcamOpen(true)
             }
         }
     }, [])
