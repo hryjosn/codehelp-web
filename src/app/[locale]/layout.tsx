@@ -8,6 +8,8 @@ import Provider from '~/app/Provider'
 import { ReactQueryClientProvider } from '~/components/ReactQueryClientProvider/ReactQueryClientProvider'
 import { routing } from '~/i18n/routing'
 import { RootStoreProvider } from '~/store/rootStoreProvider'
+import { Toaster } from '~/components/ui/toaster'
+
 import '~/styles/globals.css'
 if (process.env.MOCK === 'true') {
     server.listen()
@@ -42,6 +44,7 @@ export default async function RootLayout({
                                 ) : (
                                     <>{children}</>
                                 )}
+                                <Toaster />
                             </RootStoreProvider>
                         </Provider>
                     </ReactQueryClientProvider>

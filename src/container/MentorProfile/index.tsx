@@ -7,8 +7,7 @@ import Education from '~/components/mentor/Education'
 import Experience from '~/components/mentor/Experience'
 import { BackgroundItem } from './components/BackgroundItem/BackgroundItem'
 import Booking from './components/Booking/Booking'
-import ChatIcon from './components/ChatIcon/ChatIcon'
-import PhoneIcon from './components/PhoneIcon/PhoneIcon'
+import CommunicationSection from './components/CommunicationSection/CommunicationSection'
 
 const MentorProfile = async ({
     params,
@@ -30,8 +29,7 @@ const MentorProfile = async ({
                     country={mentorInfo.country}
                 />
                 <div className="flex justify-end gap-5">
-                    <ChatIcon mentorId={mentorId} />
-                    <PhoneIcon mentorId={mentorId} />
+                    <CommunicationSection mentorId={mentorId} />
                 </div>
                 <div className="mt-6 flex flex-col items-start gap-4 border-t border-solid border-gray-200 pt-6 lg:flex-row lg:gap-32">
                     <div className="flex flex-1 flex-col gap-4 px-6">
