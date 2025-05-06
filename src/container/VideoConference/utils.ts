@@ -33,18 +33,18 @@ export const createLocalStream = async () => {
     try {
         const isWebcamOpen = useVideoConferenceStore.getState().isWebcamOpen
 
-        const stream = await navigator.mediaDevices.getUserMedia({
+        const localStream = await navigator.mediaDevices.getUserMedia({
             audio: true,
             video: true,
         })
 
-        const videoTrack = stream.getVideoTracks()[0]
+        const videoTrack = localStream.getVideoTracks()[0]
         if (videoTrack) {
             videoTrack.enabled = isWebcamOpen
         }
-        return stream
+        return { localStream }
     } catch (err) {
-        console.log('getUserMedia error: ', err)
+        return { errMsg: err }
     }
 }
 
@@ -304,7 +304,7 @@ export const stopShareScreen = async ({
     paramId: string
 }) => {
     try {
-        const localStream = await createLocalStream()
+        const { localStream } = await createLocalStream()
 
         clearCurrentVideo(localVideoRef)
 
