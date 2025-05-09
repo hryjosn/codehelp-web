@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import BasicInfoTab from './BasicInfoTab'
-import { fn } from '@storybook/test'
 import { Tabs } from '../ui/tabs'
 
 const meta = {

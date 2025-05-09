@@ -19,15 +19,12 @@ import {
     SelectValue,
 } from './components/ui/select'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './components/ui/tabs'
-import { Separator } from './components/ui/separator'
 import { Props } from './types'
 import expertiseList from '~/constant/data/expertise.json'
 import { useEditProfileModalStore } from './store/EditProfileModalStore'
-import {
-    inputChange,
-    selectChange,
-} from '~/container/UserProfile/MentorPage/utils'
+import { selectChange } from '~/container/UserProfile/MentorPage/utils'
 import BasicInfoTab from './components/BasicInfoTab/BasicInfoTab'
+import ContactInfoTab from './components/ContactInfoTab/ContactInfoTab'
 
 export default function EditProfileModal({ profileData, onSave }: Props) {
     const { isOpen, newUserInfo, closeModal, initializeUserInfo } =
@@ -65,63 +62,16 @@ export default function EditProfileModal({ profileData, onSave }: Props) {
                             </TabsTrigger>
                         </TabsList>
 
+                        {/* Basic Information Tab */}
                         <BasicInfoTab />
 
                         {/* Contact Information Tab */}
-                        <TabsContent value="contact" className="mt-4 space-y-4">
-                            <div className="space-y-2">
-                                <Label htmlFor="email">Email</Label>
-                                <Input
-                                    id="email"
-                                    name="email"
-                                    type="email"
-                                    value={newUserInfo.email || ''}
-                                    onChange={inputChange}
-                                    required
-                                />
-                            </div>
-
-                            <div className="space-y-2">
-                                <Label htmlFor="phoneNumber">
-                                    Phone Number
-                                </Label>
-                                <Input
-                                    id="phoneNumber"
-                                    name="phoneNumber"
-                                    value={newUserInfo.phoneNumber || ''}
-                                    onChange={inputChange}
-                                />
-                            </div>
-
-                            <div className="space-y-2">
-                                <Label htmlFor="company">Company</Label>
-                                <Input
-                                    id="company"
-                                    name="company"
-                                    value={newUserInfo.company || ''}
-                                    onChange={inputChange}
-                                />
-                            </div>
-
-                            <div className="space-y-2">
-                                <Label htmlFor="linkedinUrl">
-                                    LinkedIn URL
-                                </Label>
-                                <Input
-                                    id="linkedinUrl"
-                                    name="linkedinUrl"
-                                    type="url"
-                                    value={newUserInfo.url || ''}
-                                    onChange={inputChange}
-                                    placeholder="https://linkedin.com/"
-                                />
-                            </div>
-                        </TabsContent>
+                        <ContactInfoTab />
 
                         {/* Expertise Tab */}
                         <TabsContent
                             value="expertise"
-                            className="mt-4 space-y-4"
+                            className="mt-4 space-y-6"
                         >
                             {/* Primary Expertise */}
                             <div className="space-y-2">
@@ -157,8 +107,6 @@ export default function EditProfileModal({ profileData, onSave }: Props) {
                                     </SelectContent>
                                 </Select>
                             </div>
-
-                            <Separator />
 
                             {/* Secondary Expertise */}
                             <div className="space-y-2">
@@ -203,8 +151,6 @@ export default function EditProfileModal({ profileData, onSave }: Props) {
                                     </SelectContent>
                                 </Select>
                             </div>
-
-                            <Separator />
 
                             {/* Tertiary Expertise */}
                             <div className="space-y-2">
