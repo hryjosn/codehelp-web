@@ -1,5 +1,11 @@
 import prettyMilliseconds from 'pretty-ms'
-import { AdjustMinuteToHour } from './types'
+import { AdjustMinuteToHour, TimeCode } from './types'
+import { format, parseISO } from 'date-fns'
+import { useEditProfileModalStore } from './components/EditProfileModal/store/EditProfileModalStore'
+import compressImage from '~/utils/compressImage'
+import educationList from '~/constant/data/education.json'
+
+const { setNewUserInfo, setAvatarPreview } = useEditProfileModalStore.getState()
 
 export const adjustTimeZone = (date: Date) => {
     const newDate = new Date(date)
@@ -22,4 +28,52 @@ export const adjustMinuteToHour = ({ minute, t }: AdjustMinuteToHour) => {
     const refactorTime = prettyMilliseconds(minute * 60 * 1000)
 
     return refactorTime.replace('h', t('h')).replace('m', t('m'))
+}
+
+export const convertTimeCode = (timeCode: number) => {
+    const utcTime = `1970-01-01T${TimeCode[timeCode - 1]}`
+    const convertTime = format(parseISO(utcTime), 'h:mm a')
+
+    return convertTime
+}
+
+export const inputChange = (
+    event:
+        | React.ChangeEvent<HTMLInputElement>
+        | React.ChangeEvent<HTMLTextAreaElement>
+) => {
+    const { name, value } = event.target
+    setNewUserInfo({ [name]: value })
+}
+
+export const selectChange = ({
+    name,
+    value,
+}: {
+    name: string
+    value: string
+}) => {
+    setNewUserInfo({ [name]: value })
+}
+
+export const avatarChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+) => {
+    if (event.target.files && event.target.files[0]) {
+        const compressedImage = await compressImage(event)
+        if (compressedImage) {
+            const imageURL = URL.createObjectURL(compressedImage)
+            setAvatarPreview(imageURL)
+            setNewUserInfo({ avatar: imageURL })
+        }
+    }
+}
+
+export const educationChange = (code: string) => {
+    const selectedLevel = educationList.find((data) => data.code === code)
+    if (selectedLevel) {
+        setNewUserInfo({
+            education: selectedLevel.code,
+        })
+    }
 }
