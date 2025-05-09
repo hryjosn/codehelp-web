@@ -21,7 +21,19 @@ const meta = {
     ],
 } satisfies Meta<typeof ImageModal>
 
+const OpenModalButton = () => {
+    const openModal = useImageModalStore((state) => state.openModal)
+    return (
+        <>
+            <button onClick={openModal}>Open modal</button>
+            <ImageModal />
+        </>
+    )
+}
+
 export default meta
 type Story = StoryObj<typeof meta>
 
-export const Default: Story = {}
+export const Default: Story = {
+    render: OpenModalButton,
+}
