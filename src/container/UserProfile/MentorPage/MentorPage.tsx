@@ -29,7 +29,7 @@ import { useInView } from 'react-intersection-observer'
 import AppointmentModal from './components/AppointmentModal/AppointmentModal'
 import ImageModal from './components/ImageModal/ImageModal'
 import { convertTimeCode } from './utils'
-import { EditProfileModal } from './components/EditProfileModal/EditProfileModal'
+import EditProfileModal from './components/EditProfileModal/EditProfileModal'
 
 // This would typically come from an API or database
 const mentorData = {
