@@ -33,6 +33,7 @@ import { convertTimeCode } from './utils'
 import EditProfileModal from './components/EditProfileModal/EditProfileModal'
 import { UpdateMentorInfoData } from '~/api/mentor/types'
 import { useQueryClient } from '@tanstack/react-query'
+import { useToast } from '~/hooks/use-toast'
 
 // This would typically come from an API or database
 const mentorData = {
@@ -81,6 +82,8 @@ export default function MentorPage({ userData }: Props) {
         threshold: 0.5,
     })
 
+    const { toast } = useToast()
+
     const bookingRecordList = useMemo(() => {
         return bookingRecordListData?.pages.flatMap(
             (page) => page.bookingRecords
@@ -110,6 +113,10 @@ export default function MentorPage({ userData }: Props) {
                 if (res.status === 'ok') {
                     queryClient.invalidateQueries({
                         queryKey: ['userInfo'],
+                    })
+                    toast({
+                        title: 'Update Successful!',
+                        variant: 'hint',
                     })
                 }
             },
