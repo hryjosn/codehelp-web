@@ -21,19 +21,19 @@ const config: Config = {
                 foreground: 'hsl(var(--foreground))',
                 popover: {
                     DEFAULT: 'hsl(var(--popover))',
-                    foreground: 'hsl(var(--popover-foreground))'
+                    foreground: 'hsl(var(--popover-foreground))',
                 },
                 muted: {
                     DEFAULT: 'hsl(var(--muted))',
-                    foreground: 'hsl(var(--muted-foreground))'
+                    foreground: 'hsl(var(--muted-foreground))',
                 },
                 accent: {
                     DEFAULT: 'hsl(var(--accent))',
-                    foreground: 'hsl(var(--accent-foreground))'
+                    foreground: 'hsl(var(--accent-foreground))',
                 },
                 destructive: {
                     DEFAULT: 'hsl(var(--destructive))',
-                    foreground: 'hsl(var(--destructive-foreground))'
+                    foreground: 'hsl(var(--destructive-foreground))',
                 },
                 input: 'hsl(var(--input))',
                 ring: 'hsl(var(--ring))',

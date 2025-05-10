@@ -3,11 +3,15 @@
 import { Input } from '../ui/input'
 import { Label } from '../ui/label'
 import { TabsContent } from '../ui/tabs'
+import { Switch } from '../ui/switch'
 import { useEditProfileModalStore } from '../../store/EditProfileModalStore'
-import { inputChange } from '~/container/UserProfile/MentorPage/utils'
+import {
+    inputChange,
+    selectChange,
+} from '~/container/UserProfile/MentorPage/utils'
 
 const ContactInfoTab = () => {
-    const { newUserInfo } = useEditProfileModalStore()
+    const { newMentorInfo } = useEditProfileModalStore()
 
     return (
         <TabsContent value="contact" className="mt-4 space-y-4">
@@ -17,7 +21,7 @@ const ContactInfoTab = () => {
                     id="email"
                     name="email"
                     type="email"
-                    value={newUserInfo.email || ''}
+                    value={newMentorInfo.email || ''}
                     onChange={inputChange}
                     required
                 />
@@ -28,7 +32,7 @@ const ContactInfoTab = () => {
                 <Input
                     id="phoneNumber"
                     name="phoneNumber"
-                    value={newUserInfo.phoneNumber || ''}
+                    value={newMentorInfo.phoneNumber || ''}
                     onChange={inputChange}
                 />
             </div>
@@ -38,8 +42,19 @@ const ContactInfoTab = () => {
                 <Input
                     id="company"
                     name="company"
-                    value={newUserInfo.company || ''}
+                    value={newMentorInfo.company || ''}
                     onChange={inputChange}
+                />
+            </div>
+
+            <div className="flex items-center justify-between space-y-0 pt-2">
+                <Label htmlFor="quickReply">Quick Reply</Label>
+                <Switch
+                    id="quickReply"
+                    checked={!!newMentorInfo.quickReply}
+                    onCheckedChange={(checked) =>
+                        selectChange({ name: 'quickReply', value: checked })
+                    }
                 />
             </div>
 
@@ -49,7 +64,7 @@ const ContactInfoTab = () => {
                     id="linkedinUrl"
                     name="linkedinUrl"
                     type="url"
-                    value={newUserInfo.url || ''}
+                    value={newMentorInfo.url || ''}
                     onChange={inputChange}
                     placeholder="https://linkedin.com/"
                 />

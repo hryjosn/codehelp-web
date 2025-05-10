@@ -3145,6 +3145,31 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@radix-ui/react-switch@npm:^1.2.4":
+  version: 1.2.4
+  resolution: "@radix-ui/react-switch@npm:1.2.4"
+  dependencies:
+    "@radix-ui/primitive": "npm:1.1.2"
+    "@radix-ui/react-compose-refs": "npm:1.1.2"
+    "@radix-ui/react-context": "npm:1.1.2"
+    "@radix-ui/react-primitive": "npm:2.1.2"
+    "@radix-ui/react-use-controllable-state": "npm:1.2.2"
+    "@radix-ui/react-use-previous": "npm:1.1.1"
+    "@radix-ui/react-use-size": "npm:1.1.1"
+  peerDependencies:
+    "@types/react": "*"
+    "@types/react-dom": "*"
+    react: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
+    react-dom: ^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
+    "@types/react-dom":
+      optional: true
+  checksum: 10c0/53f1f985dd0ed7b28b108b8075078912fed1496313f23270f0be3234fedebb5df4b4b33f2cb1a9c5670d48a38200fc4e1f09db2608c3e94d1de61339ac2d2c53
+  languageName: node
+  linkType: hard
+
 "@radix-ui/react-tabs@npm:^1.1.11":
   version: 1.1.11
   resolution: "@radix-ui/react-tabs@npm:1.1.11"
@@ -5573,6 +5598,7 @@ __metadata:
     "@radix-ui/react-select": "npm:^2.2.4"
     "@radix-ui/react-separator": "npm:^1.1.2"
     "@radix-ui/react-slot": "npm:^1.1.1"
+    "@radix-ui/react-switch": "npm:^1.2.4"
     "@radix-ui/react-tabs": "npm:^1.1.11"
     "@storybook/addon-essentials": "npm:^8.2.9"
     "@storybook/addon-interactions": "npm:^8.2.9"
