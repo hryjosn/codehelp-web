@@ -21,6 +21,7 @@ import Header from '~/components/Header/Header'
 import Card from '../components/Card/Card'
 import { GENDER_LIST, LEVEL_LIST } from '../types'
 import { useGetBookingRecordList } from '~/api/booking/booking'
+import { useUpdateMentorInfo } from '~/api/mentor/mentor'
 import { useEffect, useMemo, useState } from 'react'
 import AppointmentButton from './components/AppointmentButton/AppointmentButton'
 import { useAppointmentModalStore } from './components/AppointmentModal/store/AppointmentModalStore'
@@ -30,6 +31,8 @@ import AppointmentModal from './components/AppointmentModal/AppointmentModal'
 import ImageModal from './components/ImageModal/ImageModal'
 import { convertTimeCode } from './utils'
 import EditProfileModal from './components/EditProfileModal/EditProfileModal'
+import { UpdateMentorInfoData } from '~/api/mentor/types'
+import { useQueryClient } from '@tanstack/react-query'
 
 // This would typically come from an API or database
 const mentorData = {
@@ -64,11 +67,15 @@ export default function MentorPage({ userData }: Props) {
         hasNextPage,
         fetchNextPage,
     } = useGetBookingRecordList()
+    const { mutate: updateInfo } = useUpdateMentorInfo()
 
     const { openModal: openAppointmentModal } = useAppointmentModalStore()
     const { openModal: openEditProfileModal, newMentorInfo } =
         useEditProfileModalStore()
+
     const [bookingId, setBookingId] = useState('')
+
+    const queryClient = useQueryClient()
 
     const { ref, inView } = useInView({
         threshold: 0.5,
@@ -82,6 +89,31 @@ export default function MentorPage({ userData }: Props) {
 
     const profileUpdate = () => {
         console.log('newMentorInfo >>', newMentorInfo)
+        const updateData: UpdateMentorInfoData = {
+            userName: newMentorInfo.userName,
+            gender: newMentorInfo.gender,
+            country: newMentorInfo.country,
+            title: newMentorInfo.title,
+            company: newMentorInfo.company,
+            introduction: newMentorInfo.introduction,
+            phoneNumber: newMentorInfo.phoneNumber,
+            level: newMentorInfo.level,
+            linkedInURL: newMentorInfo.url,
+            primaryExpertise: newMentorInfo.primaryExpertise,
+            secondaryExpertise: newMentorInfo.secondaryExpertise,
+            tertiaryExpertise: newMentorInfo.tertiaryExpertise,
+            education: newMentorInfo.education,
+            quickReply: newMentorInfo.quickReply,
+        }
+        updateInfo(updateData, {
+            onSuccess(res) {
+                if (res.status === 'ok') {
+                    queryClient.invalidateQueries({
+                        queryKey: ['userInfo'],
+                    })
+                }
+            },
+        })
     }
 
     useEffect(() => {
