@@ -91,7 +91,6 @@ export default function MentorPage({ userData }: Props) {
     }, [bookingRecordListData])
 
     const profileUpdate = () => {
-        console.log('newMentorInfo >>', newMentorInfo)
         const updateData: UpdateMentorInfoData = {
             userName: newMentorInfo.userName,
             gender: newMentorInfo.gender,
