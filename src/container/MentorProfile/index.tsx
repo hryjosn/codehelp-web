@@ -8,6 +8,7 @@ import Experience from '~/components/mentor/Experience'
 import { BackgroundItem } from './components/BackgroundItem/BackgroundItem'
 import Booking from './components/Booking/Booking'
 import CommunicationSection from './components/CommunicationSection/CommunicationSection'
+import { Separator } from '../UserProfile/components/separator'
 
 const MentorProfile = async ({
     params,
@@ -58,6 +59,7 @@ const MentorProfile = async ({
                                     mentorInfo.tertiaryExpertise,
                                 ]}
                             />
+                            <Separator />
                             <BackgroundItem
                                 title={'Disciplines'}
                                 content={mentorInfo.mentorDisciplines}
