@@ -9,6 +9,7 @@ const Card = ({
     className,
     headerTitle,
     content,
+    isButtonVisible,
     onClick,
     ...props
 }: Props) => (
@@ -22,6 +23,7 @@ const Card = ({
         <CardHeader
             className="pb-2"
             title={headerTitle}
+            isButtonVisible={isButtonVisible}
             onClick={() => {
                 if (onClick) onClick()
             }}

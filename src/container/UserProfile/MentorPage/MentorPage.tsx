@@ -14,18 +14,27 @@ import {
     Award,
     Briefcase,
     GraduationCap,
+    Link,
 } from 'lucide-react'
-import { Discipline, Props, Skill, Tool } from './types'
+import { Discipline, EDUCATION, Props, Skill, Tool, WEEK_DAYS } from './types'
 import Header from '~/components/Header/Header'
 import Card from '../components/Card/Card'
 import { GENDER_LIST, LEVEL_LIST } from '../types'
 import { useGetBookingRecordList } from '~/api/booking/booking'
+import { useUpdateMentorInfo } from '~/api/mentor/mentor'
 import { useEffect, useMemo, useState } from 'react'
 import AppointmentButton from './components/AppointmentButton/AppointmentButton'
 import { useAppointmentModalStore } from './components/AppointmentModal/store/AppointmentModalStore'
+import { useEditProfileModalStore } from './components/EditProfileModal/store/EditProfileModalStore'
 import { useInView } from 'react-intersection-observer'
 import AppointmentModal from './components/AppointmentModal/AppointmentModal'
 import ImageModal from './components/ImageModal/ImageModal'
+import EditProfileModal from './components/EditProfileModal/EditProfileModal'
+import { UpdateMentorInfoData } from '~/api/mentor/types'
+import { useQueryClient } from '@tanstack/react-query'
+import { useToast } from '~/hooks/use-toast'
+import { timeCodeList } from './constants'
+import Square from './components/Square/Square'
 
 // This would typically come from an API or database
 const mentorData = {
@@ -52,33 +61,6 @@ const mentorData = {
                 'Full-stack development for various client projects using JavaScript, Python, and Ruby.',
         },
     ],
-    education: [
-        {
-            degree: 'Ph.D. in Computer Science',
-            institution: 'Stanford University',
-            year: '2008',
-        },
-        {
-            degree: 'M.S. in Software Engineering',
-            institution: 'MIT',
-            year: '2005',
-        },
-        {
-            degree: 'B.S. in Computer Science',
-            institution: 'UC Berkeley',
-            year: '2003',
-        },
-    ],
-    // Platform-specific stats
-    availability: {
-        status: 'Available',
-        nextAvailable: 'Today, 3:00 PM',
-        schedule: [
-            { day: 'Monday', hours: '9:00 AM - 5:00 PM' },
-            { day: 'Wednesday', hours: '9:00 AM - 5:00 PM' },
-            { day: 'Friday', hours: '9:00 AM - 3:00 PM' },
-        ],
-    },
 }
 
 export default function MentorPage({ userData }: Props) {
@@ -87,19 +69,59 @@ export default function MentorPage({ userData }: Props) {
         hasNextPage,
         fetchNextPage,
     } = useGetBookingRecordList()
+    const { mutate: updateInfo } = useUpdateMentorInfo()
 
-    const { openModal } = useAppointmentModalStore()
+    const { openModal: openAppointmentModal } = useAppointmentModalStore()
+    const { openModal: openEditProfileModal, newMentorInfo } =
+        useEditProfileModalStore()
+
     const [bookingId, setBookingId] = useState('')
+
+    const queryClient = useQueryClient()
 
     const { ref, inView } = useInView({
         threshold: 0.5,
     })
+
+    const { toast } = useToast()
 
     const bookingRecordList = useMemo(() => {
         return bookingRecordListData?.pages.flatMap(
             (page) => page.bookingRecords
         )
     }, [bookingRecordListData])
+
+    const profileUpdate = () => {
+        const updateData: UpdateMentorInfoData = {
+            userName: newMentorInfo.userName,
+            gender: newMentorInfo.gender,
+            country: newMentorInfo.country,
+            title: newMentorInfo.title,
+            company: newMentorInfo.company,
+            introduction: newMentorInfo.introduction,
+            phoneNumber: newMentorInfo.phoneNumber,
+            level: newMentorInfo.level,
+            linkedInURL: newMentorInfo.url,
+            primaryExpertise: newMentorInfo.primaryExpertise,
+            secondaryExpertise: newMentorInfo.secondaryExpertise,
+            tertiaryExpertise: newMentorInfo.tertiaryExpertise,
+            education: newMentorInfo.education,
+            quickReply: newMentorInfo.quickReply,
+        }
+        updateInfo(updateData, {
+            onSuccess(res) {
+                if (res.status === 'ok') {
+                    queryClient.invalidateQueries({
+                        queryKey: ['userInfo'],
+                    })
+                    toast({
+                        title: 'Update Successful!',
+                        variant: 'hint',
+                    })
+                }
+            },
+        })
+    }
 
     useEffect(() => {
         if (inView && hasNextPage) {
@@ -114,16 +136,11 @@ export default function MentorPage({ userData }: Props) {
                 <div className="mb-6 flex flex-col items-start justify-between md:flex-row md:items-center">
                     <h1 className="text-2xl font-bold">My Profile</h1>
                     <div className="mt-2 flex items-center md:mt-0">
-                        <Badge
-                            variant="outline"
-                            className="mr-2 border-green-200 bg-green-50 text-green-700 dark:border-green-800 dark:bg-green-900/20 dark:text-green-400"
-                        >
-                            {mentorData.availability.status}
-                        </Badge>
                         <Button
                             variant="outline"
                             size="sm"
                             className="flex items-center"
+                            onClick={openEditProfileModal}
                         >
                             <Edit className="mr-2 h-4 w-4" />
                             Edit Profile
@@ -153,7 +170,7 @@ export default function MentorPage({ userData }: Props) {
                                     <p className="text-muted-foreground">
                                         {userData.primaryExpertise}
                                     </p>
-                                    <div className="text-muted-foreground mt-2 flex items-center">
+                                    <div className="mt-2 flex items-center text-muted-foreground">
                                         <MapPin className="mr-1 h-4 w-4" />
                                         <span>{userData.country}</span>
                                     </div>
@@ -163,28 +180,32 @@ export default function MentorPage({ userData }: Props) {
 
                                 <div className="space-y-3">
                                     <div className="flex items-center text-sm">
-                                        <Mail className="text-muted-foreground mr-3 h-4 w-4" />
+                                        <Mail className="mr-3 h-4 w-4 text-muted-foreground" />
                                         <span>{userData.email}</span>
                                     </div>
                                     <div className="flex items-center text-sm">
-                                        <Phone className="text-muted-foreground mr-3 h-4 w-4" />
+                                        <Phone className="mr-3 h-4 w-4 text-muted-foreground" />
                                         <span>{userData.phoneNumber}</span>
                                     </div>
                                     <div className="flex items-center text-sm">
-                                        <Building className="text-muted-foreground mr-3 h-4 w-4" />
+                                        <Building className="mr-3 h-4 w-4 text-muted-foreground" />
                                         <span>{userData.company}</span>
                                     </div>
                                     <div className="flex items-center text-sm">
-                                        <User className="text-muted-foreground mr-3 h-4 w-4" />
+                                        <User className="mr-3 h-4 w-4 text-muted-foreground" />
                                         <span>
                                             {GENDER_LIST[userData.gender]}
                                         </span>
                                     </div>
                                     <div className="flex items-center text-sm">
-                                        <Clock className="text-muted-foreground mr-3 h-4 w-4" />
+                                        <Clock className="mr-3 h-4 w-4 text-muted-foreground" />
                                         <span>
                                             {LEVEL_LIST[userData.level]}
                                         </span>
+                                    </div>
+                                    <div className="flex items-center text-sm">
+                                        <Link className="mr-3 h-4 w-4 text-muted-foreground" />
+                                        <span>{userData.url}</span>
                                     </div>
                                 </div>
                             </div>
@@ -194,7 +215,6 @@ export default function MentorPage({ userData }: Props) {
                     <Card
                         className="lg:col-span-3"
                         headerTitle="About Me"
-                        onClick={() => {}}
                         content={<p>{userData.introduction}</p>}
                     />
                 </div>
@@ -203,31 +223,33 @@ export default function MentorPage({ userData }: Props) {
                 <div className="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
                     <Card
                         headerTitle="Availability"
-                        onClick={() => {}}
+                        isButtonVisible
                         content={
                             <div className="space-y-2">
-                                <div className="flex items-center justify-between text-sm">
-                                    <span className="text-muted-foreground">
-                                        Next Available:
-                                    </span>
-                                    <span className="font-medium">
-                                        {mentorData.availability.nextAvailable}
-                                    </span>
-                                </div>
-                                <Separator className="my-2" />
-                                {mentorData.availability.schedule.map(
-                                    (slot, index) => (
-                                        <div
-                                            key={index}
-                                            className="flex items-center justify-between text-sm"
-                                        >
-                                            <span className="text-muted-foreground">
-                                                {slot.day}
-                                            </span>
-                                            <span>{slot.hours}</span>
+                                {userData.mentorAvailableTimes.map((data) => (
+                                    <div
+                                        key={data.id}
+                                        className="flex items-center justify-between text-sm"
+                                    >
+                                        <span className="text-muted-foreground">
+                                            {WEEK_DAYS[data.day]}
+                                        </span>
+                                        <div className="flex items-center text-muted-foreground">
+                                            <div>0</div>
+                                            <div className="mx-2 flex">
+                                                {timeCodeList.map((code) => (
+                                                    <Square
+                                                        key={code}
+                                                        isChecked={data.timeCode.includes(
+                                                            code
+                                                        )}
+                                                    />
+                                                ))}
+                                            </div>
+                                            <div>24</div>
                                         </div>
-                                    )
-                                )}
+                                    </div>
+                                ))}
                             </div>
                         }
                     />
@@ -237,7 +259,6 @@ export default function MentorPage({ userData }: Props) {
                                 <p>Appointments</p>
                             </div>
                         }
-                        onClick={() => {}}
                         content={
                             <div className="flex max-h-[200px] flex-1 flex-col space-y-2 overflow-y-scroll px-2">
                                 {bookingRecordList &&
@@ -254,7 +275,7 @@ export default function MentorPage({ userData }: Props) {
                                             duration={data.duration}
                                             onClick={() => {
                                                 setBookingId(data.id)
-                                                openModal()
+                                                openAppointmentModal()
                                             }}
                                         />
                                     ))}
@@ -264,33 +285,49 @@ export default function MentorPage({ userData }: Props) {
                 </div>
 
                 {/* Expertise Section */}
-                <div className="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
-                    <Card
-                        headerTitle={
-                            <div className="flex items-center">
-                                <Award className="text-muted-foreground mr-2 h-5 w-5" />
-                                <p>Primary Expertise</p>
-                            </div>
-                        }
-                        onClick={() => {}}
-                        content={<p>{userData.primaryExpertise}</p>}
-                    />
-
-                    <Card
-                        headerTitle={
-                            <div className="flex items-center">
-                                <Award className="text-muted-foreground mr-2 h-5 w-5" />
-                                <p>Secondary Expertise</p>
-                            </div>
-                        }
-                        onClick={() => {}}
-                        content={<p>{userData.secondaryExpertise}</p>}
-                    />
-                </div>
+                <Card
+                    headerTitle={
+                        <div className="flex items-center">
+                            <Award className="mr-2 h-5 w-5 text-muted-foreground" />
+                            <p>Expertise</p>
+                        </div>
+                    }
+                    content={
+                        <div className="space-y-6">
+                            {userData.primaryExpertise && (
+                                <div>
+                                    <h3 className="font-semibold">Primary:</h3>
+                                    <span className="text-sm text-muted-foreground">
+                                        {userData.primaryExpertise}
+                                    </span>
+                                </div>
+                            )}
+                            {userData.secondaryExpertise && (
+                                <div className="mt-2">
+                                    <h3 className="font-semibold">
+                                        Secondary:
+                                    </h3>
+                                    <span className="text-sm text-muted-foreground">
+                                        {userData.secondaryExpertise}
+                                    </span>
+                                </div>
+                            )}
+                            {userData.tertiaryExpertise && (
+                                <div className="mt-2">
+                                    <h3 className="font-semibold">Tertiary:</h3>
+                                    <span className="text-sm text-muted-foreground">
+                                        {userData.tertiaryExpertise}
+                                    </span>
+                                </div>
+                            )}
+                        </div>
+                    }
+                />
 
                 {/* Disciplines Section */}
                 <Card
                     className="mb-6"
+                    isButtonVisible
                     headerTitle="Disciplines"
                     onClick={() => {}}
                     content={
@@ -313,6 +350,7 @@ export default function MentorPage({ userData }: Props) {
                 <div className="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
                     <Card
                         headerTitle="Skills"
+                        isButtonVisible
                         onClick={() => {}}
                         content={
                             <div className="flex flex-wrap gap-2">
@@ -327,6 +365,7 @@ export default function MentorPage({ userData }: Props) {
 
                     <Card
                         headerTitle="Tools"
+                        isButtonVisible
                         onClick={() => {}}
                         content={
                             <div className="flex flex-wrap gap-2">
@@ -345,11 +384,10 @@ export default function MentorPage({ userData }: Props) {
                     className="mb-6"
                     headerTitle={
                         <div className="flex items-center">
-                            <Briefcase className="text-muted-foreground mr-2 h-5 w-5" />
+                            <Briefcase className="mr-2 h-5 w-5 text-muted-foreground" />
                             <p>Work Experience</p>
                         </div>
                     }
-                    onClick={() => {}}
                     content={
                         <div className="space-y-6">
                             {mentorData.experience.map((exp, index) => (
@@ -361,11 +399,11 @@ export default function MentorPage({ userData }: Props) {
                                         <h3 className="font-semibold">
                                             {exp.role}
                                         </h3>
-                                        <span className="text-muted-foreground text-sm">
+                                        <span className="text-sm text-muted-foreground">
                                             {exp.period}
                                         </span>
                                     </div>
-                                    <p className="text-muted-foreground text-sm">
+                                    <p className="text-sm text-muted-foreground">
                                         {exp.company}
                                     </p>
                                     <p className="mt-2 text-sm">
@@ -381,37 +419,24 @@ export default function MentorPage({ userData }: Props) {
                 <Card
                     headerTitle={
                         <div className="flex items-center">
-                            <GraduationCap className="text-muted-foreground mr-2 h-5 w-5" />
+                            <GraduationCap className="mr-2 h-5 w-5 text-muted-foreground" />
                             <p>Education</p>
                         </div>
                     }
+                    isButtonVisible
                     onClick={() => {}}
                     content={
                         <div className="space-y-4">
-                            {mentorData.education.map((edu, index) => (
-                                <div key={index}>
-                                    {index > 0 && (
-                                        <Separator className="my-3" />
-                                    )}
-                                    <div className="flex justify-between">
-                                        <h3 className="font-semibold">
-                                            {edu.degree}
-                                        </h3>
-                                        <span className="text-muted-foreground text-sm">
-                                            {edu.year}
-                                        </span>
-                                    </div>
-                                    <p className="text-muted-foreground text-sm">
-                                        {edu.institution}
-                                    </p>
-                                </div>
-                            ))}
+                            <h3 className="font-semibold">
+                                {EDUCATION[Number(userData.education)]}
+                            </h3>
                         </div>
                     }
                 />
             </div>
             <AppointmentModal bookingId={bookingId} />
             <ImageModal />
+            <EditProfileModal profileData={userData} onSave={profileUpdate} />
         </div>
     )
 }
