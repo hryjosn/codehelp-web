@@ -29,11 +29,12 @@ import { useEditProfileModalStore } from './components/EditProfileModal/store/Ed
 import { useInView } from 'react-intersection-observer'
 import AppointmentModal from './components/AppointmentModal/AppointmentModal'
 import ImageModal from './components/ImageModal/ImageModal'
-import { convertTimeCode } from './utils'
 import EditProfileModal from './components/EditProfileModal/EditProfileModal'
 import { UpdateMentorInfoData } from '~/api/mentor/types'
 import { useQueryClient } from '@tanstack/react-query'
 import { useToast } from '~/hooks/use-toast'
+import { timeCodeList } from './constants'
+import Square from './components/Square/Square'
 
 // This would typically come from an API or database
 const mentorData = {
@@ -233,13 +234,20 @@ export default function MentorPage({ userData }: Props) {
                                         <span className="text-muted-foreground">
                                             {WEEK_DAYS[data.day]}
                                         </span>
-                                        <span className="text-muted-foreground">
-                                            {convertTimeCode(data.timeCode[0])}{' '}
-                                            -{' '}
-                                            {convertTimeCode(
-                                                data.timeCode.at(-1)!
-                                            )}
-                                        </span>
+                                        <div className="flex items-center text-muted-foreground">
+                                            <div>0</div>
+                                            <div className="mx-2 flex">
+                                                {timeCodeList.map((code) => (
+                                                    <Square
+                                                        key={code}
+                                                        isChecked={data.timeCode.includes(
+                                                            code
+                                                        )}
+                                                    />
+                                                ))}
+                                            </div>
+                                            <div>24</div>
+                                        </div>
                                     </div>
                                 ))}
                             </div>
