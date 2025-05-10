@@ -1,34 +1,34 @@
 import { create } from 'zustand'
-import { UserProfileData } from '../../../types'
+import { MentorProfileData } from '../../../types'
 
 type State = {
     isOpen: boolean
-    newUserInfo: UserProfileData
+    newMentorInfo: MentorProfileData
     avatarPreview: string
 }
 
 type Action = {
     openModal: () => void
     closeModal: () => void
-    setNewUserInfo: (newData: Partial<UserProfileData>) => void
+    setNewMentorInfo: (newData: Partial<MentorProfileData>) => void
     setAvatarPreview: (url: string) => void
-    initializeUserInfo: (data: UserProfileData) => void
+    initializeUserInfo: (data: MentorProfileData) => void
 }
 
 export const useEditProfileModalStore = create<State & Action>()((set) => ({
     isOpen: false,
-    newUserInfo: {} as UserProfileData,
+    newMentorInfo: {} as MentorProfileData,
     avatarPreview: '',
     openModal: () => set({ isOpen: true }),
     closeModal: () => set({ isOpen: false }),
-    setNewUserInfo: (newData) =>
+    setNewMentorInfo: (newData) =>
         set((state) => ({
-            newUserInfo: { ...state.newUserInfo, ...newData },
+            newMentorInfo: { ...state.newMentorInfo, ...newData },
         })),
     setAvatarPreview: (url) => set({ avatarPreview: url }),
     initializeUserInfo: (data) =>
         set({
-            newUserInfo: data,
+            newMentorInfo: data,
             avatarPreview: data.avatar,
         }),
 }))

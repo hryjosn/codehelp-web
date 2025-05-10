@@ -25,11 +25,13 @@ const RenderUploadAvatar = () => {
     const avatarPreview = useEditProfileModalStore(
         (state) => state.avatarPreview
     )
-    const newUserInfo = useEditProfileModalStore((state) => state.newUserInfo)
+    const newMentorInfo = useEditProfileModalStore(
+        (state) => state.newMentorInfo
+    )
 
     return (
         <UploadAvatar
-            userName={newUserInfo.userName}
+            userName={newMentorInfo.userName}
             avatarPreview={avatarPreview}
             onChange={avatarChange}
         />

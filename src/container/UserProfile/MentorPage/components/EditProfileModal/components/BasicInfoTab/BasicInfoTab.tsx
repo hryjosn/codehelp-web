@@ -24,13 +24,13 @@ import {
 } from '~/container/UserProfile/MentorPage/utils'
 
 const BasicInfoTab = () => {
-    const { newUserInfo, avatarPreview } = useEditProfileModalStore()
+    const { newMentorInfo, avatarPreview } = useEditProfileModalStore()
 
     return (
         <TabsContent value="basic" className="mt-4 space-y-4">
             <div className="mb-4">
                 <UploadAvatar
-                    userName={newUserInfo.userName}
+                    userName={newMentorInfo.userName}
                     avatarPreview={avatarPreview}
                     onChange={avatarChange}
                 />
@@ -42,7 +42,7 @@ const BasicInfoTab = () => {
                     <Input
                         id="userName"
                         name="userName"
-                        value={newUserInfo.userName || ''}
+                        value={newMentorInfo.userName || ''}
                         onChange={inputChange}
                         required
                     />
@@ -53,7 +53,7 @@ const BasicInfoTab = () => {
                     <Input
                         id="title"
                         name="title"
-                        value={newUserInfo.title || ''}
+                        value={newMentorInfo.title || ''}
                         onChange={inputChange}
                         required
                     />
@@ -64,7 +64,7 @@ const BasicInfoTab = () => {
                 <div className="space-y-2">
                     <Label htmlFor="gender">Gender</Label>
                     <RadioGroup
-                        value={newUserInfo.gender || ''}
+                        value={newMentorInfo.gender || ''}
                         onValueChange={(value) =>
                             selectChange({
                                 name: 'gender',
@@ -96,7 +96,7 @@ const BasicInfoTab = () => {
                         type="number"
                         min="0"
                         max="6"
-                        value={newUserInfo.level || 0}
+                        value={newMentorInfo.level || 0}
                         onChange={inputChange}
                         required
                     />
@@ -106,7 +106,7 @@ const BasicInfoTab = () => {
             <div className="space-y-2">
                 <Label htmlFor="educationLevel">Education Level</Label>
                 <Select
-                    value={newUserInfo.education || ''}
+                    value={newMentorInfo.education || ''}
                     onValueChange={educationChange}
                 >
                     <SelectTrigger id="educationLevel">
@@ -125,7 +125,7 @@ const BasicInfoTab = () => {
             <div className="space-y-2">
                 <Label htmlFor="country">Country</Label>
                 <Select
-                    value={newUserInfo.country || ''}
+                    value={newMentorInfo.country || ''}
                     onValueChange={(value) => {
                         selectChange({
                             name: 'country',
@@ -151,7 +151,7 @@ const BasicInfoTab = () => {
                 <Textarea
                     id="introduction"
                     name="introduction"
-                    value={newUserInfo.introduction || ''}
+                    value={newMentorInfo.introduction || ''}
                     onChange={inputChange}
                     className="min-h-[100px]"
                     required

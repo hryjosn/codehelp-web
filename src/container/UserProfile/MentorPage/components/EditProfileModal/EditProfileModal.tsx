@@ -9,25 +9,15 @@ import {
     DialogFooter,
 } from './components/ui/dialog'
 import { Button } from './components/ui/button'
-import { Input } from './components/ui/input'
-import { Label } from './components/ui/label'
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from './components/ui/select'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from './components/ui/tabs'
+import { Tabs, TabsList, TabsTrigger } from './components/ui/tabs'
 import { Props } from './types'
-import expertiseList from '~/constant/data/expertise.json'
 import { useEditProfileModalStore } from './store/EditProfileModalStore'
-import { selectChange } from '~/container/UserProfile/MentorPage/utils'
 import BasicInfoTab from './components/BasicInfoTab/BasicInfoTab'
 import ContactInfoTab from './components/ContactInfoTab/ContactInfoTab'
+import ExpertiseTab from './components/ExpertiseTab/ExpertiseTab'
 
 export default function EditProfileModal({ profileData, onSave }: Props) {
-    const { isOpen, newUserInfo, closeModal, initializeUserInfo } =
+    const { isOpen, newMentorInfo, closeModal, initializeUserInfo } =
         useEditProfileModalStore()
 
     useEffect(() => {
@@ -37,12 +27,12 @@ export default function EditProfileModal({ profileData, onSave }: Props) {
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
 
-        if (!newUserInfo.primaryExpertise) {
+        if (!newMentorInfo.primaryExpertise) {
             alert('Primary expertise is required')
             return
         }
         closeModal()
-        onSave(newUserInfo)
+        onSave(newMentorInfo)
     }
 
     return (
@@ -69,133 +59,7 @@ export default function EditProfileModal({ profileData, onSave }: Props) {
                         <ContactInfoTab />
 
                         {/* Expertise Tab */}
-                        <TabsContent
-                            value="expertise"
-                            className="mt-4 space-y-6"
-                        >
-                            {/* Primary Expertise */}
-                            <div className="space-y-2">
-                                <Label
-                                    htmlFor="primaryExpertise"
-                                    className="font-medium"
-                                >
-                                    Primary Expertise{' '}
-                                    <span className="text-red-500">*</span>
-                                </Label>
-                                <Select
-                                    value={newUserInfo.primaryExpertise || ''}
-                                    onValueChange={(value) =>
-                                        selectChange({
-                                            name: 'primaryExpertise',
-                                            value,
-                                        })
-                                    }
-                                    required
-                                >
-                                    <SelectTrigger id="primaryExpertise">
-                                        <SelectValue placeholder="Select primary expertise" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {expertiseList.map((expertise) => (
-                                            <SelectItem
-                                                key={expertise}
-                                                value={expertise}
-                                            >
-                                                {expertise}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                            </div>
-
-                            {/* Secondary Expertise */}
-                            <div className="space-y-2">
-                                <Label
-                                    htmlFor="secondaryExpertise"
-                                    className="font-medium"
-                                >
-                                    Secondary Expertise
-                                </Label>
-                                <Select
-                                    value={newUserInfo.secondaryExpertise || ''}
-                                    onValueChange={(value) =>
-                                        selectChange({
-                                            name: 'secondaryExpertise',
-                                            value,
-                                        })
-                                    }
-                                >
-                                    <SelectTrigger id="secondaryExpertise">
-                                        <SelectValue placeholder="Select secondary expertise (optional)" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="none">
-                                            None
-                                        </SelectItem>
-                                        {expertiseList
-                                            .filter(
-                                                (expertise) =>
-                                                    expertise !==
-                                                        newUserInfo.primaryExpertise &&
-                                                    expertise !==
-                                                        newUserInfo.tertiaryExpertise
-                                            )
-                                            .map((expertise) => (
-                                                <SelectItem
-                                                    key={expertise}
-                                                    value={expertise}
-                                                >
-                                                    {expertise}
-                                                </SelectItem>
-                                            ))}
-                                    </SelectContent>
-                                </Select>
-                            </div>
-
-                            {/* Tertiary Expertise */}
-                            <div className="space-y-2">
-                                <Label
-                                    htmlFor="tertiaryExpertise"
-                                    className="font-medium"
-                                >
-                                    Tertiary Expertise
-                                </Label>
-                                <Select
-                                    value={newUserInfo.tertiaryExpertise || ''}
-                                    onValueChange={(value) =>
-                                        selectChange({
-                                            name: 'tertiaryExpertise',
-                                            value,
-                                        })
-                                    }
-                                >
-                                    <SelectTrigger id="tertiaryExpertise">
-                                        <SelectValue placeholder="Select tertiary expertise (optional)" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="none">
-                                            None
-                                        </SelectItem>
-                                        {expertiseList
-                                            .filter(
-                                                (expertise) =>
-                                                    expertise !==
-                                                        newUserInfo.primaryExpertise &&
-                                                    expertise !==
-                                                        newUserInfo.secondaryExpertise
-                                            )
-                                            .map((expertise) => (
-                                                <SelectItem
-                                                    key={expertise}
-                                                    value={expertise}
-                                                >
-                                                    {expertise}
-                                                </SelectItem>
-                                            ))}
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                        </TabsContent>
+                        <ExpertiseTab />
                     </Tabs>
 
                     <DialogFooter className="mt-6">

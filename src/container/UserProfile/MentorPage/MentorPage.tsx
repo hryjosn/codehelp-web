@@ -66,7 +66,8 @@ export default function MentorPage({ userData }: Props) {
     } = useGetBookingRecordList()
 
     const { openModal: openAppointmentModal } = useAppointmentModalStore()
-    const { openModal: openEditProfileModal } = useEditProfileModalStore()
+    const { openModal: openEditProfileModal, newMentorInfo } =
+        useEditProfileModalStore()
     const [bookingId, setBookingId] = useState('')
 
     const { ref, inView } = useInView({
@@ -79,7 +80,9 @@ export default function MentorPage({ userData }: Props) {
         )
     }, [bookingRecordListData])
 
-    const profileUpdate = () => {}
+    const profileUpdate = () => {
+        console.log('newMentorInfo >>', newMentorInfo)
+    }
 
     useEffect(() => {
         if (inView && hasNextPage) {

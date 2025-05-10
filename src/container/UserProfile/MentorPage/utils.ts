@@ -5,7 +5,8 @@ import { useEditProfileModalStore } from './components/EditProfileModal/store/Ed
 import compressImage from '~/utils/compressImage'
 import educationList from '~/constant/data/education.json'
 
-const { setNewUserInfo, setAvatarPreview } = useEditProfileModalStore.getState()
+const { setNewMentorInfo, setAvatarPreview } =
+    useEditProfileModalStore.getState()
 
 export const adjustTimeZone = (date: Date) => {
     const newDate = new Date(date)
@@ -43,7 +44,7 @@ export const inputChange = (
         | React.ChangeEvent<HTMLTextAreaElement>
 ) => {
     const { name, value } = event.target
-    setNewUserInfo({ [name]: value })
+    setNewMentorInfo({ [name]: value })
 }
 
 export const selectChange = ({
@@ -51,9 +52,9 @@ export const selectChange = ({
     value,
 }: {
     name: string
-    value: string
+    value: string | boolean
 }) => {
-    setNewUserInfo({ [name]: value })
+    setNewMentorInfo({ [name]: value })
 }
 
 export const avatarChange = async (
@@ -64,7 +65,7 @@ export const avatarChange = async (
         if (compressedImage) {
             const imageURL = URL.createObjectURL(compressedImage)
             setAvatarPreview(imageURL)
-            setNewUserInfo({ avatar: imageURL })
+            setNewMentorInfo({ avatar: imageURL })
         }
     }
 }
@@ -72,7 +73,7 @@ export const avatarChange = async (
 export const educationChange = (code: string) => {
     const selectedLevel = educationList.find((data) => data.code === code)
     if (selectedLevel) {
-        setNewUserInfo({
+        setNewMentorInfo({
             education: selectedLevel.code,
         })
     }

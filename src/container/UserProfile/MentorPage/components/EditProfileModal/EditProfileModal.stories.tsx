@@ -2,9 +2,9 @@ import type { Meta, StoryObj } from '@storybook/react'
 import EditProfileModal from './EditProfileModal'
 import { fn } from '@storybook/test'
 import { useEditProfileModalStore } from './store/EditProfileModalStore'
-import { UserProfileData } from '../../types'
+import { MentorProfileData } from '../../types'
 
-const profileData: UserProfileData = {
+const profileData: MentorProfileData = {
     id: 'f029c005-b7ff-4c20-ab76-9af9a683385f',
     userName: 'testmentor13',
     email: 'testmentor13@gmail.com',

@@ -22,10 +22,10 @@ export interface Skill {
 }
 
 export interface Props {
-    userData: UserProfileData
+    userData: MentorProfileData
 }
 
-export interface UserProfileData {
+export interface MentorProfileData {
     id: string
     userName: string
     email: string
