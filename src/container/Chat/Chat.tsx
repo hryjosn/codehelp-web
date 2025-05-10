@@ -17,9 +17,6 @@ const Chat = async ({ params }: { params: Promise<{ id: string }> }) => {
                     <p className="text-xl font-bold">Messages</p>
                 </div>
 
-                <div className="mt-5">
-                    <SearchInputSection />
-                </div>
                 <div className="custom-scrollbar mt-5 overflow-y-scroll">
                     <ChatroomSection chatroomId={chatroomId} />
                 </div>
