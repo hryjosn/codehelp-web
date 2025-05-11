@@ -1,6 +1,7 @@
 'use client'
 import { FC, useEffect, useState } from 'react'
 
+import Image from 'next/image'
 import axios from 'axios'
 import { useRouter } from '~/i18n/routing'
 import { NavButton } from '../NavButton/NavButton'
@@ -11,10 +12,13 @@ import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import { useGetUserInfo } from '~/api/user/user'
 import Avatar from '~/components/Avatar/Avatar'
+import { useHeaderStore } from './store/HeaderStore'
 
 const Header: FC = () => {
     const { data: userData } = useGetUserInfo()
-    const [token, setToken] = useState<string | null>(null)
+
+    const { token, fetchToken, setToken } = useHeaderStore()
+
     const [dropDown, setDropDown] = useState<null | HTMLElement>(null)
     const router = useRouter()
 
@@ -26,16 +30,6 @@ const Header: FC = () => {
     }
 
     useEffect(() => {
-        const fetchToken = async () => {
-            try {
-                const { data } = await axios.get('/api/auth/token')
-                setToken(data.token)
-            } catch (error) {
-                console.error('Failed to fetch token:', error)
-                setToken(null)
-            }
-        }
-
         fetchToken()
     }, [])
 
@@ -43,16 +37,25 @@ const Header: FC = () => {
         try {
             signOut({ callbackUrl: '/' })
             await axios.delete('/api/auth/token')
-            setToken(null)
+            setToken('')
         } catch (error) {
             console.error('Logout failed:', error)
         }
     }
 
     return (
-        <div className="g-white flex items-center justify-between border-b border-gray-100 px-6 py-2 shadow-md">
-            <Link className="rounded-lg border px-3 py-2" href="/">
-                <p>Code Help Icon</p>
+        <div className="flex items-center justify-between border-b border-gray-100 px-8 py-2 shadow-md">
+            <Link className="ml-4" href="/">
+                <Image
+                    src="/Logo/codehelp_logo.png"
+                    alt=""
+                    width={0}
+                    height={0}
+                    style={{
+                        width: '15%',
+                        height: '15%',
+                    }}
+                />
             </Link>
             <div className="flex">
                 {token ? (
