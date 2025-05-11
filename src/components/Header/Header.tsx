@@ -45,17 +45,14 @@ const Header: FC = () => {
 
     return (
         <div className="flex items-center justify-between border-b border-gray-100 px-8 py-2 shadow-md">
-            <Link className="ml-4" href="/">
+            <Link className="flex items-center" href="/">
                 <Image
                     src="/Logo/codehelp_logo.png"
                     alt=""
-                    width={0}
-                    height={0}
-                    style={{
-                        width: '15%',
-                        height: '15%',
-                    }}
+                    width={50}
+                    height={50}
                 />
+                <p className="text-xl font-bold">Codehelp</p>
             </Link>
             <div className="flex">
                 {token ? (
