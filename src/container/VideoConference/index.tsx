@@ -14,25 +14,29 @@ import { useStore } from '~/store/rootStoreProvider'
 import MessageBox from './components/MessageBox'
 import RemoteVideo from './components/RemoteVideo/RemoteVideo'
 import {
+    createLocalStream,
     hangup,
     sendAnswerSDP,
     sendOfferSDP,
     shareScreen,
     stopShareScreen,
 } from './utils'
+import { useToast } from '~/hooks/use-toast'
+import { io, Socket } from 'socket.io-client'
+import { ServerToClientEvents, ClientToServerEvents } from '~/lib/types'
+
+let localStream: MediaStream | undefined
+let socket: Socket<ServerToClientEvents, ClientToServerEvents> | null
 
 const VideoConference = ({ params }: { params: { id: string } }) => {
     const {
         videoConferenceStore: {
-            localStream,
             peerConnectionList,
-            socket,
             chatList,
             isLocalShareScreen,
             isMicOpen,
             isWebcamOpen,
             removeConnectionMember,
-            setLocalStream,
             addIceCandidate,
             clearPeerConnections,
             setRemoteDescription,
@@ -50,17 +54,31 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
     const [isChatOpen, setIsChatOpen] = useState(false)
     const [content, setContent] = useState('')
     const localVideoRef = useRef<HTMLVideoElement>(null)
+    const { toast } = useToast()
 
     const router = useRouter()
 
     useEffect(() => {
+        socket = io(process.env.NEXT_PUBLIC_API_URL)
         ;(async function () {
+            const { localStream: localStreamData, errMsg } =
+                await createLocalStream()
+
+            localStream = localStreamData
+
+            if (errMsg) {
+                toast({
+                    title: 'Connecting failed',
+                    description: String(errMsg),
+                })
+                clearPeerConnections()
+                router.push(`/mentor-profile/${params.id}`)
+                return
+            }
+
             if (localVideoRef.current && localStream && socket) {
                 localVideoRef.current.srcObject = localStream
                 socket.emit('join', params.id)
-            } else {
-                clearPeerConnections()
-                router.push(`/mentor-profile/${params.id}`)
             }
         })()
 
@@ -71,7 +89,7 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
                         sendOfferSDP({
                             remoteId,
                             localStream: localStream!,
-                            socket,
+                            socket: socket!,
                         })
                     }
                 })
@@ -88,7 +106,7 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
                 localStream: localStream!,
                 remoteId,
                 desc,
-                socket,
+                socket: socket!,
             })
         })
 
@@ -122,7 +140,7 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
             addMessage({ ...msgData, createdAt: localTime })
         })
 
-        registerShareScreenSocketEvents()
+        registerShareScreenSocketEvents(socket)
 
         return () => {
             if (socket) {
@@ -279,13 +297,12 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
                             'h-14 w-14 cursor-pointer rounded-full bg-gray-200 p-3'
                         }
                         onClick={async () => {
-                            await shareScreen(localVideoRef, params.id)
-                            if (socket?.id) {
-                                socket.emit(
-                                    'remoteStartShare',
-                                    params.id,
-                                    socket.id
-                                )
+                            if (socket) {
+                                await shareScreen({
+                                    localVideoRef,
+                                    paramId: params.id,
+                                    socket,
+                                })
                             }
                         }}
                     />
@@ -295,10 +312,13 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
                             'h-14 w-14 cursor-pointer rounded-full bg-red-500 p-3'
                         }
                         onClick={async () => {
-                            await stopShareScreen({
-                                localVideoRef,
-                                paramId: params.id,
-                            })
+                            if (socket) {
+                                await stopShareScreen({
+                                    localVideoRef,
+                                    paramId: params.id,
+                                    socket,
+                                })
+                            }
                         }}
                     />
                 )}
@@ -309,15 +329,19 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
                 <Link href={`/mentor-profile/${params.id}`}>
                     <ImPhoneHangUp
                         onClick={() => {
-                            if (localStream && socket?.id) {
+                            if (
+                                localStream &&
+                                socket?.id &&
+                                localVideoRef.current
+                            ) {
                                 hangup({
                                     roomId: params.id,
-                                    localStream: localStream,
+                                    localStream,
                                     remoteId: socket.id,
                                     socket,
                                     localVideoRef,
                                 })
-                                setLocalStream(undefined)
+                                localVideoRef.current.srcObject = null
                             }
                         }}
                         className="h-14 w-14 rounded-full bg-red-600 p-3"
