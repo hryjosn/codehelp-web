@@ -5,9 +5,7 @@ import { ServerToClientEvents, ClientToServerEvents } from '~/lib/types'
 import { MessageData } from '~/lib/types'
 
 type States = {
-    localStream: MediaStream | undefined
     peerConnectionList: PeerConnectionListT
-    socket: Socket<ServerToClientEvents, ClientToServerEvents> | null
     chatList: MessageData[]
     isLocalShareScreen: boolean
     isMicOpen: boolean
@@ -15,7 +13,6 @@ type States = {
 }
 
 type Actions = {
-    connectSocket: () => void
     addIceCandidate: ({
         remoteId,
         candidate,
@@ -39,7 +36,6 @@ type Actions = {
     }) => void
     clearPeerConnections: () => void
     removeConnectionMember: (remoteId: string) => void
-    setLocalStream: (localStream: MediaStream | undefined) => void
     addMessage: (newMessage: MessageData) => void
     resetChatList: () => void
     setIsLocalShareScreen: (isShare: boolean) => void
@@ -50,7 +46,9 @@ type Actions = {
         remoteId: string
         isSharing: boolean
     }) => void
-    registerShareScreenSocketEvents: () => void
+    registerShareScreenSocketEvents: (
+        socket: Socket<ServerToClientEvents, ClientToServerEvents>
+    ) => void
     setIsMicOpen: (isOpen: boolean) => void
     setIsWebcamOpen: (isOpen: boolean) => void
 }
@@ -59,14 +57,12 @@ export type VideoConferenceStore = States & Actions
 
 export const useVideoConferenceStore = create<States & Actions>()(
     (set, get) => ({
-        localStream: undefined,
         peerConnectionList: {},
         socket: null,
         chatList: [],
         isLocalShareScreen: false,
         isMicOpen: true,
         isWebcamOpen: true,
-        setLocalStream: (localStream) => set({ localStream }),
 
         addIceCandidate: ({ remoteId, candidate }) =>
             set((state) => {
@@ -98,10 +94,6 @@ export const useVideoConferenceStore = create<States & Actions>()(
                     [remoteId]: { peerConnection, isScreenSharing: false },
                 },
             })),
-
-        connectSocket: () => {
-            set({ socket: io(process.env.NEXT_PUBLIC_API_URL) })
-        },
 
         removeConnectionMember: (remoteId) => {
             set((state) => {
@@ -159,9 +151,7 @@ export const useVideoConferenceStore = create<States & Actions>()(
         setIsLocalShareScreen: (isShare) =>
             set({ isLocalShareScreen: isShare }),
 
-        registerShareScreenSocketEvents: () => {
-            const { socket } = get()
-
+        registerShareScreenSocketEvents: (socket) => {
             if (!socket) return
 
             socket.on('remoteStartShare', (remoteId) => {

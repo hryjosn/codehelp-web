@@ -67,3 +67,13 @@ export interface ReplaceStreamTracks {
     isReplaceVideo?: boolean
     isReplaceAudio?: boolean
 }
+export interface StopShareScreen {
+    localVideoRef: RefObject<HTMLVideoElement>
+    paramId: string
+    socket: Socket<ServerToClientEvents, ClientToServerEvents>
+}
+export interface ShareScreen {
+    localVideoRef: RefObject<HTMLVideoElement>
+    paramId: string
+    socket: Socket<ServerToClientEvents, ClientToServerEvents>
+}

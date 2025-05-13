@@ -13,6 +13,8 @@ import {
     REPORT_TYPE,
     SendAnswerSDP_T,
     SendOfferSDP_T,
+    ShareScreen,
+    StopShareScreen,
 } from './types'
 
 // export let peerConnection: RTCPeerConnection
@@ -253,10 +255,11 @@ const getMaxBitrate = ({
     }
 }
 
-export const shareScreen = async (
-    localVideoRef: RefObject<HTMLVideoElement>,
-    paramId: string
-) => {
+export const shareScreen = async ({
+    localVideoRef,
+    paramId,
+    socket,
+}: ShareScreen) => {
     try {
         const videoStream = await navigator.mediaDevices.getDisplayMedia({
             video: true,
@@ -267,7 +270,6 @@ export const shareScreen = async (
         })
 
         const newMicTrack = applyMicState(micStream)
-        console.log()
 
         const combinedStream = new MediaStream([
             ...videoStream.getVideoTracks(),
@@ -286,8 +288,10 @@ export const shareScreen = async (
             isReplaceVideo: true,
         })
 
+        socket.emit('remoteStartShare', paramId, socket.id!)
+
         videoStream.getVideoTracks()[0].onended = () => {
-            stopShareScreen({ localVideoRef, paramId })
+            stopShareScreen({ localVideoRef, paramId, socket })
         }
         setIsLocalShareScreen(true)
     } catch (err) {
@@ -299,10 +303,8 @@ export const shareScreen = async (
 export const stopShareScreen = async ({
     localVideoRef,
     paramId,
-}: {
-    localVideoRef: RefObject<HTMLVideoElement>
-    paramId: string
-}) => {
+    socket,
+}: StopShareScreen) => {
     try {
         const { localStream } = await createLocalStream()
 
@@ -322,7 +324,6 @@ export const stopShareScreen = async ({
             })
         }
         setIsLocalShareScreen(false)
-        const { socket } = useVideoConferenceStore.getState()
 
         socket?.emit('remoteStopShare', paramId, socket?.id!)
     } catch (err) {
