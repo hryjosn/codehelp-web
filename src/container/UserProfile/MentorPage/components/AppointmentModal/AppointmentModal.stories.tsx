@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import AppointmentModal from './AppointmentModal'
+import { useAppointmentModalStore } from './store/AppointmentModalStore'
 
 const meta = {
     title: 'UserProfile/MentorPage/AppointmentModal',
@@ -11,6 +12,14 @@ const meta = {
     args: {
         bookingId: '',
     },
+    decorators: [
+        (Story) => {
+            useAppointmentModalStore.setState({
+                isOpen: true,
+            })
+            return <Story />
+        },
+    ],
 } satisfies Meta<typeof AppointmentModal>
 
 export default meta
