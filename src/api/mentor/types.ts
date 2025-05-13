@@ -51,3 +51,20 @@ export interface AppointmentRes {
 export interface AppointmentResWrapData {
     data: { message: string; status: string }
 }
+
+export interface UpdateMentorInfoData {
+    userName: string
+    gender: string
+    country: string
+    title: string
+    company: string
+    introduction: string
+    phoneNumber: string
+    level: number
+    linkedInURL: string
+    primaryExpertise: string
+    secondaryExpertise: string
+    tertiaryExpertise: string
+    education: string
+    quickReply: boolean
+}
