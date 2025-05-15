@@ -9,15 +9,14 @@ import {
     ICE_CONNECTION_STATE,
     IConnectionQuality,
     MAX_BITRATE,
-    ReplaceStreamTracks,
+    ReplaceStreamTracksParams,
     REPORT_TYPE,
     SendAnswerSDP_T,
     SendOfferSDP_T,
-    ShareScreen,
-    StopShareScreen,
+    ShareScreenParams,
+    StopShareScreenParams,
 } from './types'
 
-// export let peerConnection: RTCPeerConnection
 let connectionQualityInterval: NodeJS.Timeout | null = null
 
 const {
@@ -259,7 +258,7 @@ export const shareScreen = async ({
     localVideoRef,
     paramId,
     socket,
-}: ShareScreen) => {
+}: ShareScreenParams) => {
     try {
         const videoStream = await navigator.mediaDevices.getDisplayMedia({
             video: true,
@@ -304,7 +303,7 @@ export const stopShareScreen = async ({
     localVideoRef,
     paramId,
     socket,
-}: StopShareScreen) => {
+}: StopShareScreenParams) => {
     try {
         const { localStream } = await createLocalStream()
 
@@ -345,7 +344,7 @@ export const replaceStreamTracks = ({
     stream,
     isReplaceVideo = true,
     isReplaceAudio = true,
-}: ReplaceStreamTracks) => {
+}: ReplaceStreamTracksParams) => {
     const { peerConnectionList } = useVideoConferenceStore.getState()
 
     Object.values(peerConnectionList).forEach(({ peerConnection }) => {
