@@ -52,7 +52,7 @@ export interface AppointmentResWrapData {
     data: { message: string; status: string }
 }
 
-export interface UpdateMentorInfoData {
+export interface UpdateMentorInfoParams {
     userName: string
     gender: string
     country: string
@@ -67,4 +67,14 @@ export interface UpdateMentorInfoData {
     tertiaryExpertise: string
     education: string
     quickReply: boolean
+}
+
+export interface UpdateMentorDisciplinesParams {
+    disciplines: string[]
+}
+export interface UpdateMentorSkillsParams {
+    skills: string[]
+}
+export interface UpdateMentorToolsParams {
+    tools: string[]
 }
