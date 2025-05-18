@@ -6,3 +6,4 @@ export const loginURL = `${baseURL}/user/login`
 export const mentorInfoURL = `${baseURL}/mentor/info`
 export const userInfoURL = `${baseURL}/user/info`
 export const bookingInfoURL = `${baseURL}/user/bookingInfo`
+export const updateAvatarURL = `${baseURL}/user/update/avatar`

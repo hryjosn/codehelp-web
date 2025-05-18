@@ -6,10 +6,58 @@ import { Separator } from '../components/separator'
 import { User, Mail, Phone, MapPin, Building, Edit, Clock } from 'lucide-react'
 import Header from '~/components/Header/Header'
 import Card from '../components/Card/Card'
-import { Props } from './types'
+import { MemberProfileData, Props } from './types'
 import { GENDER_LIST, LEVEL_LIST } from '../types'
+import EditMemberProfileModal from './components/EditMemberProfileModal/EditMemberProfileModal'
+import { useEditMemberProfileModalStore } from './components/EditMemberProfileModal/store/EditMemberProfileModalStore'
+import { UpdateMemberInfoData } from '~/api/member/types'
+import { useUpdateMemberInfo } from '~/api/member/member'
+import { useQueryClient } from '@tanstack/react-query'
+import { useToast } from '~/hooks/use-toast'
+import { useUpdateAvatar } from '~/api/user/user'
 
 export default function MemberPage({ userData }: Props) {
+    const { openModal } = useEditMemberProfileModalStore()
+    const { mutate: updateInfo } = useUpdateMemberInfo()
+    const { mutateAsync: updateAvatar } = useUpdateAvatar()
+
+    const queryClient = useQueryClient()
+    const { toast } = useToast()
+
+    const profileUpdate = async (newMentorInfo: MemberProfileData) => {
+        if (userData.avatar !== newMentorInfo.avatar) {
+            const formData = new FormData()
+            formData.append('avatar', newMentorInfo.avatar)
+            await updateAvatar(formData)
+        }
+
+        const updateData: UpdateMemberInfoData = {
+            userName: newMentorInfo.userName,
+            gender: newMentorInfo.gender,
+            country: newMentorInfo.country,
+            title: newMentorInfo.title,
+            company: newMentorInfo.company,
+            introduction: newMentorInfo.introduction,
+            phoneNumber: newMentorInfo.phoneNumber,
+            level: newMentorInfo.level,
+            fieldOfWork: newMentorInfo.fieldOfWork,
+        }
+
+        updateInfo(updateData, {
+            onSuccess(res) {
+                if (res.status === 'ok') {
+                    queryClient.invalidateQueries({
+                        queryKey: ['userInfo'],
+                    })
+                    toast({
+                        title: 'Update Successful!',
+                        variant: 'hint',
+                    })
+                }
+            },
+        })
+    }
+
     return (
         <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
             <Header />
@@ -21,6 +69,7 @@ export default function MemberPage({ userData }: Props) {
                             variant="outline"
                             size="sm"
                             className="flex items-center"
+                            onClick={openModal}
                         >
                             <Edit className="mr-2 h-4 w-4" />
                             Edit Profile
@@ -37,7 +86,7 @@ export default function MemberPage({ userData }: Props) {
                                 <div className="flex flex-col items-center text-center">
                                     <Avatar className="mb-4 h-24 w-24">
                                         <AvatarImage
-                                            src={userData.avatar}
+                                            src={String(userData.avatar)}
                                             alt={userData.userName}
                                         />
                                         <AvatarFallback>
@@ -47,7 +96,7 @@ export default function MemberPage({ userData }: Props) {
                                     <h2 className="text-xl font-semibold">
                                         {userData.userName}
                                     </h2>
-                                    <div className="text-muted-foreground mt-2 flex items-center">
+                                    <div className="mt-2 flex items-center text-muted-foreground">
                                         <MapPin className="mr-1 h-4 w-4" />
                                         <span>{userData.country}</span>
                                     </div>
@@ -57,25 +106,25 @@ export default function MemberPage({ userData }: Props) {
 
                                 <div className="space-y-3">
                                     <div className="flex items-center text-sm">
-                                        <Mail className="text-muted-foreground mr-3 h-4 w-4" />
+                                        <Mail className="mr-3 h-4 w-4 text-muted-foreground" />
                                         <span>{userData.email}</span>
                                     </div>
                                     <div className="flex items-center text-sm">
-                                        <Phone className="text-muted-foreground mr-3 h-4 w-4" />
+                                        <Phone className="mr-3 h-4 w-4 text-muted-foreground" />
                                         <span>{userData.phoneNumber}</span>
                                     </div>
                                     <div className="flex items-center text-sm">
-                                        <Building className="text-muted-foreground mr-3 h-4 w-4" />
+                                        <Building className="mr-3 h-4 w-4 text-muted-foreground" />
                                         <span>{userData.company}</span>
                                     </div>
                                     <div className="flex items-center text-sm">
-                                        <User className="text-muted-foreground mr-3 h-4 w-4" />
+                                        <User className="mr-3 h-4 w-4 text-muted-foreground" />
                                         <span>
                                             {GENDER_LIST[userData.gender]}
                                         </span>
                                     </div>
                                     <div className="flex items-center text-sm">
-                                        <Clock className="text-muted-foreground mr-3 h-4 w-4" />
+                                        <Clock className="mr-3 h-4 w-4 text-muted-foreground" />
                                         <span>
                                             {LEVEL_LIST[userData.level]}
                                         </span>
@@ -88,7 +137,6 @@ export default function MemberPage({ userData }: Props) {
                     <Card
                         className="lg:col-span-3"
                         headerTitle="About Me"
-                        onClick={() => {}}
                         content={<p>{userData.introduction}</p>}
                     />
                 </div>
@@ -97,6 +145,7 @@ export default function MemberPage({ userData }: Props) {
                 <Card
                     className="mb-6"
                     headerTitle="Work Experience"
+                    isButtonVisible
                     onClick={() => {}}
                     content={
                         <div className="flex flex-wrap gap-2">
@@ -111,6 +160,10 @@ export default function MemberPage({ userData }: Props) {
                     }
                 />
             </div>
+            <EditMemberProfileModal
+                profileData={userData}
+                onSave={profileUpdate}
+            />
         </div>
     )
 }
