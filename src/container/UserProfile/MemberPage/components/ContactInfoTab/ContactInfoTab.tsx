@@ -5,6 +5,7 @@ import { Label } from '~/container/UserProfile/components/label'
 import { TabsContent } from '~/container/UserProfile/components/tabs'
 import { useEditMemberProfileModalStore } from '../EditMemberProfileModal/store/EditMemberProfileModalStore'
 import { inputChange } from '~/container/UserProfile/MemberPage/utils'
+import { MuiTelInput } from 'mui-tel-input'
 
 const ContactInfoTab = () => {
     const { newMemberInfo } = useEditMemberProfileModalStore()
@@ -18,6 +19,11 @@ const ContactInfoTab = () => {
                     name="phoneNumber"
                     value={newMemberInfo.phoneNumber || ''}
                     onChange={inputChange}
+                />
+
+                <MuiTelInput
+                    className="min-h-10 w-80 rounded-lg"
+                    defaultCountry="TW"
                 />
             </div>
 
