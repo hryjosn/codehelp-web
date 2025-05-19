@@ -62,17 +62,17 @@ export enum REPORT_TYPE {
     CANDIDATE_PAIR = 'candidate-pair',
 }
 
-export interface ReplaceStreamTracks {
+export interface ReplaceStreamTracksParams {
     stream: MediaStream
     isReplaceVideo?: boolean
     isReplaceAudio?: boolean
 }
-export interface StopShareScreen {
+export interface StopShareScreenParams {
     localVideoRef: RefObject<HTMLVideoElement>
     paramId: string
     socket: Socket<ServerToClientEvents, ClientToServerEvents>
 }
-export interface ShareScreen {
+export interface ShareScreenParams {
     localVideoRef: RefObject<HTMLVideoElement>
     paramId: string
     socket: Socket<ServerToClientEvents, ClientToServerEvents>
