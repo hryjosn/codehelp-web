@@ -30,7 +30,6 @@ const meta = {
     },
     tags: ['autodocs'],
     args: {
-        profileData: profileData,
         onSave: fn(),
     },
     decorators: [
@@ -51,14 +50,13 @@ const OpenModalButton = () => {
     return (
         <>
             <button onClick={openModal}>Open modal</button>
-            <EditMemberProfileModal profileData={profileData} onSave={fn} />
+            <EditMemberProfileModal onSave={fn} />
         </>
     )
 }
 
 export const Default: Story = {
     args: {
-        profileData: profileData,
         onSave: fn(),
     },
     render: OpenModalButton,
