@@ -19,13 +19,9 @@ import { useEditMemberProfileModalStore } from './store/EditMemberProfileModalSt
 import BasicInfoTab from '../BasicInfoTab/BasicInfoTab'
 import ContactInfoTab from '../ContactInfoTab/ContactInfoTab'
 
-export default function EditMemberProfileModal({ profileData, onSave }: Props) {
-    const { isOpen, newMemberInfo, closeModal, setInitialInfo } =
+export default function EditMemberProfileModal({ onSave }: Props) {
+    const { isOpen, newMemberInfo, closeModal } =
         useEditMemberProfileModalStore()
-
-    useEffect(() => {
-        setInitialInfo(profileData)
-    }, [setInitialInfo, profileData])
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()

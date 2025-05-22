@@ -7,7 +7,7 @@ export interface Props {
 export interface MemberProfileData {
     userName: string
     email: string
-    avatar: string | File
+    avatar: string
     gender: GenderCode
     country: string
     title: string

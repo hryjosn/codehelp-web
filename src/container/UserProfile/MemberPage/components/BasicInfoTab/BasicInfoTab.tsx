@@ -26,14 +26,14 @@ import {
 import levelList from '~/constant/data/level.json'
 
 const BasicInfoTab = () => {
-    const { newMemberInfo, avatarPreview } = useEditMemberProfileModalStore()
+    const { newMemberInfo } = useEditMemberProfileModalStore()
 
     return (
         <TabsContent value="basic" className="mt-4 space-y-4">
             <div className="mb-4">
                 <UploadAvatar
                     userName={newMemberInfo.userName}
-                    avatarPreview={avatarPreview}
+                    avatarPreview={newMemberInfo.avatar}
                     onChange={avatarChange}
                 />
             </div>

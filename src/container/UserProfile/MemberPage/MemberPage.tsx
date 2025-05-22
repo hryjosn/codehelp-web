@@ -17,7 +17,8 @@ import { useToast } from '~/hooks/use-toast'
 import { useUpdateAvatar } from '~/api/user/user'
 
 export default function MemberPage({ userData }: Props) {
-    const { openModal } = useEditMemberProfileModalStore()
+    const { avatarFile, openModal, setInitialInfo } =
+        useEditMemberProfileModalStore()
     const { mutate: updateInfo } = useUpdateMemberInfo()
     const { mutateAsync: updateAvatar } = useUpdateAvatar()
 
@@ -25,9 +26,9 @@ export default function MemberPage({ userData }: Props) {
     const { toast } = useToast()
 
     const profileUpdate = async (newMentorInfo: MemberProfileData) => {
-        if (userData.avatar !== newMentorInfo.avatar) {
+        if (userData.avatar !== newMentorInfo.avatar && avatarFile) {
             const formData = new FormData()
-            formData.append('avatar', newMentorInfo.avatar)
+            formData.append('avatar', avatarFile)
             await updateAvatar(formData)
         }
 
@@ -69,7 +70,10 @@ export default function MemberPage({ userData }: Props) {
                             variant="outline"
                             size="sm"
                             className="flex items-center"
-                            onClick={openModal}
+                            onClick={() => {
+                                setInitialInfo(userData)
+                                openModal()
+                            }}
                         >
                             <Edit className="mr-2 h-4 w-4" />
                             Edit Profile
@@ -160,10 +164,7 @@ export default function MemberPage({ userData }: Props) {
                     }
                 />
             </div>
-            <EditMemberProfileModal
-                profileData={userData}
-                onSave={profileUpdate}
-            />
+            <EditMemberProfileModal onSave={profileUpdate} />
         </div>
     )
 }

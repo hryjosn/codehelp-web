@@ -1,7 +1,7 @@
 import { useEditMemberProfileModalStore } from './components/EditMemberProfileModal/store/EditMemberProfileModalStore'
 import compressImage from '~/utils/compressImage'
 
-const { setNewMemberInfo, setAvatarPreview } =
+const { setNewMemberInfo, setAvatarFile } =
     useEditMemberProfileModalStore.getState()
 
 export const inputChange = (
@@ -30,8 +30,8 @@ export const avatarChange = async (
         const compressedImage = await compressImage(event)
         if (compressedImage) {
             const imageURL = URL.createObjectURL(compressedImage)
-            setAvatarPreview(imageURL)
-            setNewMemberInfo({ avatar: compressedImage })
+            setAvatarFile(compressedImage)
+            setNewMemberInfo({ avatar: imageURL })
         }
     }
 }
