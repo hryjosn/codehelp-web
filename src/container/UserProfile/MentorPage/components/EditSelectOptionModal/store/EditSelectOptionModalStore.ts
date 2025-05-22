@@ -17,7 +17,7 @@ type Action = {
     setTitle: (title: string) => void
     onSave: (data: string[]) => void
     submitFunction?: (state: string[]) => void
-    setSubmitFunction: (query: (state: string[]) => void) => void
+    setSubmitFunction: (fn: (state: string[]) => void) => void
 }
 
 export const useEditSelectOptionModalStore = create<State & Action>()(
@@ -38,6 +38,6 @@ export const useEditSelectOptionModalStore = create<State & Action>()(
         setSelectedOptionList: (data) => set({ selectedOptionList: data }),
         setSelectedError: (msg) => set({ selectedError: msg }),
         setTitle: (title) => set({ title }),
-        setSubmitFunction: (query) => set({ submitFunction: query }),
+        setSubmitFunction: (fn) => set({ submitFunction: fn }),
     })
 )
