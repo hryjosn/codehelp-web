@@ -1,5 +1,5 @@
 [
-    { "name": "Intermediate ", "code": "0" },
+    { "name": "Intermediate", "code": "0" },
     { "name": "Senior", "code": "1" },
     { "name": "Manager", "code": "2" },
     { "name": "Director", "code": "3" },

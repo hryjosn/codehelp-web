@@ -16,18 +16,6 @@ const ContactInfoTab = () => {
     return (
         <TabsContent value="contact" className="mt-4 space-y-4">
             <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                    id="email"
-                    name="email"
-                    type="email"
-                    value={newMentorInfo.email || ''}
-                    onChange={inputChange}
-                    required
-                />
-            </div>
-
-            <div className="space-y-2">
                 <Label htmlFor="phoneNumber">Phone Number</Label>
                 <Input
                     id="phoneNumber"

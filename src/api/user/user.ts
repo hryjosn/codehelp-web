@@ -47,6 +47,7 @@ export const useGetUserInfo = () => {
         },
     })
 }
+
 export const useGetBookingInfo = () => {
     return useQuery({
         queryKey: ['bookingInfo'],
@@ -54,6 +55,17 @@ export const useGetBookingInfo = () => {
             const res = await apiHandler<BookingInfoResT>({
                 url: bookingInfoURL,
                 method: 'get',
+            })
+            return res.data
+        },
+    })
+}
+
+export const useUpdateAvatar = () => {
+    return useMutation({
+        mutationFn: async (data: FormData) => {
+            const res = await axios.put('/api/user/avatar', data, {
+                headers: { 'Content-Type': 'multipart/form-data' },
             })
             return res.data
         },
