@@ -98,7 +98,7 @@ export default function MentorPage({ userData }: Props) {
         openModal: openEditSelectOptionModal,
         setTitle,
         setDataList,
-        setQueryFunction,
+        setSubmitFunction,
     } = useEditSelectOptionModalStore()
 
     const [bookingId, setBookingId] = useState('')
@@ -403,7 +403,7 @@ export default function MentorPage({ userData }: Props) {
                         setDataList(disciplineList)
                         setTitle('Disciplines')
                         openEditSelectOptionModal()
-                        setQueryFunction(disciplinesUpdate)
+                        setSubmitFunction(disciplinesUpdate)
                     }}
                     content={
                         <div className="flex flex-wrap gap-2">
@@ -430,7 +430,7 @@ export default function MentorPage({ userData }: Props) {
                             setDataList(skillList)
                             setTitle('Skills')
                             openEditSelectOptionModal()
-                            setQueryFunction(skillsUpdate)
+                            setSubmitFunction(skillsUpdate)
                         }}
                         content={
                             <div className="flex flex-wrap gap-2">
@@ -450,7 +450,7 @@ export default function MentorPage({ userData }: Props) {
                             setDataList(toolList)
                             setTitle('Tools')
                             openEditSelectOptionModal()
-                            setQueryFunction(toolsUpdate)
+                            setSubmitFunction(toolsUpdate)
                         }}
                         content={
                             <div className="flex flex-wrap gap-2">

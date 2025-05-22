@@ -16,8 +16,8 @@ type Action = {
     setSelectedError: (msg: string) => void
     setTitle: (title: string) => void
     onSave: (data: string[]) => void
-    queryFunction?: (state: string[]) => void
-    setQueryFunction: (query: (state: string[]) => void) => void
+    submitFunction?: (state: string[]) => void
+    setSubmitFunction: (query: (state: string[]) => void) => void
 }
 
 export const useEditSelectOptionModalStore = create<State & Action>()(
@@ -28,8 +28,8 @@ export const useEditSelectOptionModalStore = create<State & Action>()(
         selectedError: '',
         title: '',
         onSave: (data) => {
-            const { queryFunction } = get()
-            queryFunction?.(data)
+            const { submitFunction } = get()
+            submitFunction?.(data)
         },
         openModal: () => set({ isOpen: true }),
         closeModal: () =>
@@ -38,6 +38,6 @@ export const useEditSelectOptionModalStore = create<State & Action>()(
         setSelectedOptionList: (data) => set({ selectedOptionList: data }),
         setSelectedError: (msg) => set({ selectedError: msg }),
         setTitle: (title) => set({ title }),
-        setQueryFunction: (query) => set({ queryFunction: query }),
+        setSubmitFunction: (query) => set({ submitFunction: query }),
     })
 )

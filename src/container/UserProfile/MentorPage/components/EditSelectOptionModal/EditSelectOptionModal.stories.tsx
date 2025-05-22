@@ -31,8 +31,8 @@ const OpenModalButton = () => {
         (state) => state.setDataList
     )
     const setTitle = useEditSelectOptionModalStore((state) => state.setTitle)
-    const setQueryFunction = useEditSelectOptionModalStore(
-        (state) => state.setQueryFunction
+    const setSubmitFunction = useEditSelectOptionModalStore(
+        (state) => state.setSubmitFunction
     )
 
     const disciplinesUpdate = (state: string[]) => {
@@ -45,7 +45,7 @@ const OpenModalButton = () => {
                     openModal()
                     setDataList(disciplineList)
                     setTitle('Disciplines')
-                    setQueryFunction(disciplinesUpdate)
+                    setSubmitFunction(disciplinesUpdate)
                 }}
             >
                 Open modal
