@@ -1,11 +1,16 @@
 import { useInfiniteQuery, useMutation, useQuery } from '@tanstack/react-query'
-import { MentorT } from '~/api/mentor/types'
+import {
+    MentorT,
+    UpdateMentorDisciplinesParams,
+    UpdateMentorSkillsParams,
+    UpdateMentorToolsParams,
+} from '~/api/mentor/types'
 import apiHandler from '../api'
 import { getMentorInfoURL, saveAppointmentURL } from './route'
 import {
     AppointmentReq,
     AppointmentResWrapData,
-    UpdateMentorInfoData,
+    UpdateMentorInfoParams,
 } from './types'
 import axios from 'axios'
 
@@ -94,8 +99,35 @@ export const useSaveAppointment = () => {
 
 export const useUpdateMentorInfo = () => {
     return useMutation({
-        mutationFn: async (data: UpdateMentorInfoData) => {
+        mutationFn: async (data: UpdateMentorInfoParams) => {
             const res = await axios.put('/api/mentor/info', { data })
+            return res.data
+        },
+    })
+}
+
+export const useUpdateMentorDisciplines = () => {
+    return useMutation({
+        mutationFn: async (data: UpdateMentorDisciplinesParams) => {
+            const res = await axios.put('/api/mentor/disciplines', { data })
+            return res.data
+        },
+    })
+}
+
+export const useUpdateMentorSkills = () => {
+    return useMutation({
+        mutationFn: async (data: UpdateMentorSkillsParams) => {
+            const res = await axios.put('/api/mentor/skills', { data })
+            return res.data
+        },
+    })
+}
+
+export const useUpdateMentorTools = () => {
+    return useMutation({
+        mutationFn: async (data: UpdateMentorToolsParams) => {
+            const res = await axios.put('/api/mentor/tools', { data })
             return res.data
         },
     })

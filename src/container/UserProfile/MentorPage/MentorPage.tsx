@@ -16,12 +16,25 @@ import {
     GraduationCap,
     Link,
 } from 'lucide-react'
-import { Discipline, EDUCATION, Props, Skill, Tool, WEEK_DAYS } from './types'
+import {
+    Discipline,
+    EDUCATION,
+    MentorProfileData,
+    Props,
+    Skill,
+    Tool,
+    WEEK_DAYS,
+} from './types'
 import Header from '~/components/Header/Header'
 import Card from '../components/Card/Card'
 import { GENDER_LIST, LEVEL_LIST } from '../types'
 import { useGetBookingRecordList } from '~/api/booking/booking'
-import { useUpdateMentorInfo } from '~/api/mentor/mentor'
+import {
+    useUpdateMentorInfo,
+    useUpdateMentorDisciplines,
+    useUpdateMentorSkills,
+    useUpdateMentorTools,
+} from '~/api/mentor/mentor'
 import { useEffect, useMemo, useState } from 'react'
 import AppointmentButton from './components/AppointmentButton/AppointmentButton'
 import { useAppointmentModalStore } from './components/AppointmentModal/store/AppointmentModalStore'
@@ -30,11 +43,16 @@ import { useInView } from 'react-intersection-observer'
 import AppointmentModal from './components/AppointmentModal/AppointmentModal'
 import ImageModal from './components/ImageModal/ImageModal'
 import EditProfileModal from './components/EditProfileModal/EditProfileModal'
-import { UpdateMentorInfoData } from '~/api/mentor/types'
+import { UpdateMentorInfoParams } from '~/api/mentor/types'
 import { useQueryClient } from '@tanstack/react-query'
 import { useToast } from '~/hooks/use-toast'
 import { timeCodeList } from './constants'
 import Square from './components/Square/Square'
+import disciplineList from '~/constant/data/disciplines.json'
+import toolList from '~/constant/data/tools.json'
+import skillList from '~/constant/data/skills.json'
+import EditSelectOptionModal from './components/EditSelectOptionModal/EditSelectOptionModal'
+import { useEditSelectOptionModalStore } from './components/EditSelectOptionModal/store/EditSelectOptionModalStore'
 
 // This would typically come from an API or database
 const mentorData = {
@@ -70,10 +88,18 @@ export default function MentorPage({ userData }: Props) {
         fetchNextPage,
     } = useGetBookingRecordList()
     const { mutate: updateInfo } = useUpdateMentorInfo()
+    const { mutate: updateDisciplines } = useUpdateMentorDisciplines()
+    const { mutate: updateSkills } = useUpdateMentorSkills()
+    const { mutate: updateTools } = useUpdateMentorTools()
 
     const { openModal: openAppointmentModal } = useAppointmentModalStore()
-    const { openModal: openEditProfileModal, newMentorInfo } =
-        useEditProfileModalStore()
+    const { openModal: openEditProfileModal } = useEditProfileModalStore()
+    const {
+        openModal: openEditSelectOptionModal,
+        setTitle,
+        setDataList,
+        setSubmitFunction,
+    } = useEditSelectOptionModalStore()
 
     const [bookingId, setBookingId] = useState('')
 
@@ -91,8 +117,8 @@ export default function MentorPage({ userData }: Props) {
         )
     }, [bookingRecordListData])
 
-    const profileUpdate = () => {
-        const updateData: UpdateMentorInfoData = {
+    const profileUpdate = (newMentorInfo: MentorProfileData) => {
+        const updateData: UpdateMentorInfoParams = {
             userName: newMentorInfo.userName,
             gender: newMentorInfo.gender,
             country: newMentorInfo.country,
@@ -111,15 +137,58 @@ export default function MentorPage({ userData }: Props) {
         updateInfo(updateData, {
             onSuccess(res) {
                 if (res.status === 'ok') {
-                    queryClient.invalidateQueries({
-                        queryKey: ['userInfo'],
-                    })
-                    toast({
-                        title: 'Update Successful!',
-                        variant: 'hint',
-                    })
+                    updateDataSuccess()
                 }
             },
+        })
+    }
+
+    const disciplinesUpdate = (state: string[]) => {
+        updateDisciplines(
+            { disciplines: state },
+            {
+                onSuccess(res) {
+                    if (res.status === 'ok') {
+                        updateDataSuccess()
+                    }
+                },
+            }
+        )
+    }
+
+    const skillsUpdate = (state: string[]) => {
+        updateSkills(
+            { skills: state },
+            {
+                onSuccess(res) {
+                    if (res.status === 'ok') {
+                        updateDataSuccess()
+                    }
+                },
+            }
+        )
+    }
+
+    const toolsUpdate = (state: string[]) => {
+        updateTools(
+            { tools: state },
+            {
+                onSuccess(res) {
+                    if (res.status === 'ok') {
+                        updateDataSuccess()
+                    }
+                },
+            }
+        )
+    }
+
+    const updateDataSuccess = () => {
+        queryClient.invalidateQueries({
+            queryKey: ['userInfo'],
+        })
+        toast({
+            title: 'Update Successful!',
+            variant: 'hint',
         })
     }
 
@@ -246,7 +315,7 @@ export default function MentorPage({ userData }: Props) {
                                                     />
                                                 ))}
                                             </div>
-                                            <div>24</div>
+                                            <div>23</div>
                                         </div>
                                     </div>
                                 ))}
@@ -286,6 +355,7 @@ export default function MentorPage({ userData }: Props) {
 
                 {/* Expertise Section */}
                 <Card
+                    className="mb-6"
                     headerTitle={
                         <div className="flex items-center">
                             <Award className="mr-2 h-5 w-5 text-muted-foreground" />
@@ -329,14 +399,19 @@ export default function MentorPage({ userData }: Props) {
                     className="mb-6"
                     isButtonVisible
                     headerTitle="Disciplines"
-                    onClick={() => {}}
+                    onClick={() => {
+                        setDataList(disciplineList)
+                        setTitle('Disciplines')
+                        openEditSelectOptionModal()
+                        setSubmitFunction(disciplinesUpdate)
+                    }}
                     content={
                         <div className="flex flex-wrap gap-2">
                             {userData.mentorDisciplines.map(
                                 (discipline: Discipline) => (
                                     <Badge
                                         key={discipline.id}
-                                        variant="secondary"
+                                        variant="outline"
                                     >
                                         {discipline.discipline}
                                     </Badge>
@@ -351,7 +426,12 @@ export default function MentorPage({ userData }: Props) {
                     <Card
                         headerTitle="Skills"
                         isButtonVisible
-                        onClick={() => {}}
+                        onClick={() => {
+                            setDataList(skillList)
+                            setTitle('Skills')
+                            openEditSelectOptionModal()
+                            setSubmitFunction(skillsUpdate)
+                        }}
                         content={
                             <div className="flex flex-wrap gap-2">
                                 {userData.mentorSkills.map((skill: Skill) => (
@@ -366,7 +446,12 @@ export default function MentorPage({ userData }: Props) {
                     <Card
                         headerTitle="Tools"
                         isButtonVisible
-                        onClick={() => {}}
+                        onClick={() => {
+                            setDataList(toolList)
+                            setTitle('Tools')
+                            openEditSelectOptionModal()
+                            setSubmitFunction(toolsUpdate)
+                        }}
                         content={
                             <div className="flex flex-wrap gap-2">
                                 {userData.mentorTools.map((tool: Tool) => (
@@ -437,6 +522,7 @@ export default function MentorPage({ userData }: Props) {
             <AppointmentModal bookingId={bookingId} />
             <ImageModal />
             <EditProfileModal profileData={userData} onSave={profileUpdate} />
+            <EditSelectOptionModal />
         </div>
     )
 }
