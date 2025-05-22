@@ -25,7 +25,7 @@ const HeaderSection: FC = () => {
         setDropDown(null)
     }
 
-    const Logout = async () => {
+    const logout = async () => {
         try {
             signOut({ callbackUrl: '/' })
             await axios.delete('/api/auth/token')
@@ -83,7 +83,7 @@ const HeaderSection: FC = () => {
                 <MenuItem
                     onClick={() => {
                         closeDropDown()
-                        Logout()
+                        logout()
                     }}
                 >
                     Logout
