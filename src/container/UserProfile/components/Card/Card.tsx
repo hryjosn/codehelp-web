@@ -2,7 +2,7 @@ import * as React from 'react'
 
 import { cn } from '~/lib/utils'
 import CardHeader from '../CardHeader/CardHeader'
-import { CardContent } from '../card'
+import { CardContent } from '~/components/ui/card'
 import { Props } from './types'
 
 const Card = ({
@@ -15,7 +15,7 @@ const Card = ({
 }: Props) => (
     <div
         className={cn(
-            'bg-card text-card-foreground rounded-lg border shadow-sm',
+            'rounded-lg border bg-card text-card-foreground shadow-sm',
             className
         )}
         {...props}

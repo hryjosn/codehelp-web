@@ -1,9 +1,5 @@
 'use client'
-import {
-    Avatar,
-    AvatarFallback,
-    AvatarImage,
-} from '../EditProfileModal/components/ui/avatar'
+import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar'
 import { Props } from './types'
 
 const UploadAvatar = ({ avatarPreview, userName, onChange }: Props) => {

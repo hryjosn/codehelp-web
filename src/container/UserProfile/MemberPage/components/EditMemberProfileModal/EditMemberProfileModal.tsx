@@ -7,13 +7,9 @@ import {
     DialogHeader,
     DialogTitle,
     DialogFooter,
-} from '~/container/UserProfile/components/dialog'
-import { Button } from '~/container/UserProfile/components/button'
-import {
-    Tabs,
-    TabsList,
-    TabsTrigger,
-} from '~/container/UserProfile/components/tabs'
+} from '~/components/ui/dialog'
+import { Button } from '~/components/ui/button'
+import { Tabs, TabsList, TabsTrigger } from '~/components/ui/tabs'
 import { Props } from './types'
 import { useEditMemberProfileModalStore } from './store/EditMemberProfileModalStore'
 import BasicInfoTab from '../BasicInfoTab/BasicInfoTab'

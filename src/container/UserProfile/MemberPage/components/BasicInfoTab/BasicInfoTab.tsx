@@ -1,20 +1,17 @@
 'use client'
 
-import { Input } from '~/container/UserProfile/components/input'
-import { Label } from '~/container/UserProfile/components/label'
-import { Textarea } from '~/container/UserProfile/components/textarea'
+import { Input } from '~/components/ui/input'
+import { Label } from '~/components/ui/label'
+import { Textarea } from '~/components/ui/textarea'
 import {
     Select,
     SelectContent,
     SelectItem,
     SelectTrigger,
     SelectValue,
-} from '~/container/UserProfile/components/select'
-import {
-    RadioGroup,
-    RadioGroupItem,
-} from '~/container/UserProfile/components/radio-group'
-import { TabsContent } from '~/container/UserProfile/components/tabs'
+} from '~/components/ui/select'
+import { RadioGroup, RadioGroupItem } from '~/components/ui/radio-group'
+import { TabsContent } from '~/components/ui/tabs'
 import countryList from '~/constant/data/countries.json'
 import UploadAvatar from '~/container/UserProfile/MentorPage/components/UploadAvatar/UploadAvatar'
 import { useEditMemberProfileModalStore } from '../EditMemberProfileModal/store/EditMemberProfileModalStore'

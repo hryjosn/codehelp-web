@@ -1,9 +1,9 @@
 'use client'
 
-import { Input } from '../ui/input'
-import { Label } from '../ui/label'
-import { TabsContent } from '../ui/tabs'
-import { Switch } from '../ui/switch'
+import { Input } from '~/components/ui/input'
+import { Label } from '~/components/ui/label'
+import { TabsContent } from '~/components/ui/tabs'
+import { Switch } from '~/components/ui/switch'
 import { useEditProfileModalStore } from '../../store/EditProfileModalStore'
 import {
     inputChange,
@@ -50,7 +50,7 @@ const ContactInfoTab = () => {
                 <Label htmlFor="linkedinUrl">LinkedIn URL</Label>
                 <Input
                     id="linkedinUrl"
-                    name="linkedinUrl"
+                    name="url"
                     type="url"
                     value={newMentorInfo.url || ''}
                     onChange={inputChange}

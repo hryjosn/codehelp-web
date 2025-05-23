@@ -1,12 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import ExpertiseDropDown from './ExpertiseDropDown'
-import { Tabs } from '../ui/tabs'
 import { fn } from '@storybook/test'
 import React from 'react'
 import { useEditProfileModalStore } from '../../store/EditProfileModalStore'
 import { selectChange } from '~/container/UserProfile/MentorPage/utils'
 import expertiseList from '~/constant/data/expertise.json'
-import { SelectItem } from '../ui/select'
+import { SelectItem } from '~/components/ui/select'
 
 const meta = {
     title: 'UserProfile/MentorPage/EditProfileModal/ExpertiseDropDown',

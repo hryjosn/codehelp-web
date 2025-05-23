@@ -1,8 +1,8 @@
 import * as React from 'react'
 import { cn } from '~/lib/utils'
 import { Props } from './types'
-import { CardTitle } from '../card'
-import { Button } from '../button'
+import { CardTitle } from '~/components/ui/card'
+import { Button } from '~/components/ui/button'
 import { Edit } from 'lucide-react'
 
 const CardHeader = ({

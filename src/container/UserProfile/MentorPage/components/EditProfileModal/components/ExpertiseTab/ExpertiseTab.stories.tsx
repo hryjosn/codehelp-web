@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import ExpertiseTab from './ExpertiseTab'
-import { Tabs } from '../ui/tabs'
+import { Tabs } from '~/components/ui/tabs'
 
 const meta = {
     title: 'UserProfile/MentorPage/EditProfileModal/ExpertiseTab',
