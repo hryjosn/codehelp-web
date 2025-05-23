@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import ContactInfoTab from './ContactInfoTab'
-import { Tabs } from '~/container/UserProfile/components/tabs'
+import { Tabs } from '~/components/ui/tabs'
 
 const meta = {
     title: 'UserProfile/MemberPage/ContactInfoTab',

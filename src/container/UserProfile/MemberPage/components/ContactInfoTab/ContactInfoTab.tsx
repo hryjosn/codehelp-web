@@ -1,8 +1,8 @@
 'use client'
 
-import { Input } from '~/container/UserProfile/components/input'
-import { Label } from '~/container/UserProfile/components/label'
-import { TabsContent } from '~/container/UserProfile/components/tabs'
+import { Input } from '~/components/ui/input'
+import { Label } from '~/components/ui/label'
+import { TabsContent } from '~/components/ui/tabs'
 import { useEditMemberProfileModalStore } from '../EditMemberProfileModal/store/EditMemberProfileModalStore'
 import { inputChange } from '~/container/UserProfile/MemberPage/utils'
 

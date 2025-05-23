@@ -1,7 +1,7 @@
 'use client'
 
-import { SelectItem } from '../ui/select'
-import { TabsContent } from '../ui/tabs'
+import { SelectItem } from '~/components/ui/select'
+import { TabsContent } from '~/components/ui/tabs'
 import expertiseList from '~/constant/data/expertise.json'
 import { useEditProfileModalStore } from '../../store/EditProfileModalStore'
 import { selectChange } from '~/container/UserProfile/MentorPage/utils'

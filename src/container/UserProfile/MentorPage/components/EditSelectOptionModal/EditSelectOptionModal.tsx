@@ -6,14 +6,14 @@ import {
     DialogHeader,
     DialogTitle,
     DialogFooter,
-} from '../EditProfileModal/components/ui/dialog'
-import { Button } from '../EditProfileModal/components/ui/button'
-import { Label } from './components/ui/label'
-import { Badge } from './components/ui/badge'
+} from '~/components/ui/dialog'
+import { Button } from '~/components/ui/button'
+import { Label } from '~/components/ui/label'
+import { Badge } from '~/components/ui/badge'
 
 import { X } from 'lucide-react'
 import { useEditSelectOptionModalStore } from './store/EditSelectOptionModalStore'
-import { Separator } from '~/container/UserProfile/components/separator'
+import { Separator } from '~/components/ui/separator'
 
 export default function EditSelectOptionModal() {
     const {
@@ -65,32 +65,35 @@ export default function EditSelectOptionModal() {
                             <Label>Selected {title} (Max 3)</Label>
                             <div className="mb-2 flex flex-wrap gap-2">
                                 {selectedOptionList.length > 0 ? (
-                                    selectedOptionList.map((option, index) => (
-                                        <Badge
-                                            key={index}
-                                            variant="secondary"
-                                            className="flex items-center gap-1 px-3 py-1"
-                                        >
-                                            {option}
-                                            <button
-                                                type="button"
-                                                onClick={() =>
-                                                    setSelectedOptionList(
-                                                        selectedOptionList.filter(
-                                                            (item) =>
-                                                                item !== option
-                                                        )
-                                                    )
-                                                }
-                                                className="text-muted-foreground hover:text-foreground"
+                                    selectedOptionList.map(
+                                        (option: string, index: number) => (
+                                            <Badge
+                                                key={index}
+                                                variant="secondary"
+                                                className="flex items-center gap-1 px-3 py-1"
                                             >
-                                                <X className="h-3 w-3" />
-                                                <span className="sr-only">
-                                                    Remove {option}
-                                                </span>
-                                            </button>
-                                        </Badge>
-                                    ))
+                                                {option}
+                                                <button
+                                                    type="button"
+                                                    onClick={() =>
+                                                        setSelectedOptionList(
+                                                            selectedOptionList.filter(
+                                                                (item) =>
+                                                                    item !==
+                                                                    option
+                                                            )
+                                                        )
+                                                    }
+                                                    className="text-muted-foreground hover:text-foreground"
+                                                >
+                                                    <X className="h-3 w-3" />
+                                                    <span className="sr-only">
+                                                        Remove {option}
+                                                    </span>
+                                                </button>
+                                            </Badge>
+                                        )
+                                    )
                                 ) : (
                                     <div className="py-2 text-sm text-muted-foreground">
                                         No option selected

@@ -1,7 +1,12 @@
 'use client'
 
-import { Label } from '../ui/label'
-import { Select, SelectContent, SelectTrigger, SelectValue } from '../ui/select'
+import { Label } from '~/components/ui/label'
+import {
+    Select,
+    SelectContent,
+    SelectTrigger,
+    SelectValue,
+} from '~/components/ui/select'
 import { Props } from './types'
 
 const ExpertiseDropDown = ({
