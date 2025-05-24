@@ -22,9 +22,6 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 const RenderUploadAvatar = () => {
-    const avatarPreview = useEditProfileModalStore(
-        (state) => state.avatarPreview
-    )
     const newMentorInfo = useEditProfileModalStore(
         (state) => state.newMentorInfo
     )
@@ -32,7 +29,7 @@ const RenderUploadAvatar = () => {
     return (
         <UploadAvatar
             userName={newMentorInfo.userName}
-            avatarPreview={avatarPreview}
+            avatarPreview={newMentorInfo.avatar}
             onChange={avatarChange}
         />
     )

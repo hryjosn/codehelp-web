@@ -16,13 +16,8 @@ import BasicInfoTab from './components/BasicInfoTab/BasicInfoTab'
 import ContactInfoTab from './components/ContactInfoTab/ContactInfoTab'
 import ExpertiseTab from './components/ExpertiseTab/ExpertiseTab'
 
-export default function EditProfileModal({ profileData, onSave }: Props) {
-    const { isOpen, newMentorInfo, closeModal, initializeUserInfo } =
-        useEditProfileModalStore()
-
-    useEffect(() => {
-        initializeUserInfo(profileData)
-    }, [initializeUserInfo, profileData])
+export default function EditProfileModal({ onSave }: Props) {
+    const { isOpen, newMentorInfo, closeModal } = useEditProfileModalStore()
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
