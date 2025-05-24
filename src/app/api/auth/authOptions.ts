@@ -36,15 +36,23 @@ export const authOptions: NextAuthOptions = {
             },
         }),
     ],
+    session: {
+        strategy: 'jwt',
+        maxAge: 30 * 24 * 60 * 60,
+    },
     callbacks: {
-        async jwt({ token, user }: { token: JWT; user: User }) {
+        async jwt({ token, trigger, user, session }) {
             if (user) {
                 token.user = user
                 token.accessToken = user.token
             }
+
+            if (trigger === 'update' && session?.user?.avatar) {
+                token.user.avatar = session?.user?.avatar
+            }
             return token
         },
-        async session({ session, token }: { session: Session; token: JWT }) {
+        async session({ session, token }) {
             if (token.user) {
                 session.user = token.user
                 session.accessToken = token.accessToken

@@ -15,12 +15,15 @@ import { useUpdateMemberInfo } from '~/api/member/member'
 import { useQueryClient } from '@tanstack/react-query'
 import { useToast } from '~/hooks/use-toast'
 import { useUpdateAvatar } from '~/api/user/user'
+import { useSession } from 'next-auth/react'
 
 export default function MemberPage({ userData }: Props) {
     const { avatarFile, openModal, setInitialInfo } =
         useEditMemberProfileModalStore()
     const { mutate: updateInfo } = useUpdateMemberInfo()
     const { mutateAsync: updateAvatar } = useUpdateAvatar()
+
+    const { update } = useSession()
 
     const queryClient = useQueryClient()
     const { toast } = useToast()
@@ -54,6 +57,7 @@ export default function MemberPage({ userData }: Props) {
                         title: 'Update Successful!',
                         variant: 'hint',
                     })
+                    update({ user: { avatar: newMentorInfo.avatar } })
                 }
             },
         })

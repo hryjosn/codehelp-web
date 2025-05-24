@@ -5,8 +5,7 @@ import { useEditProfileModalStore } from './components/EditProfileModal/store/Ed
 import compressImage from '~/utils/compressImage'
 import educationList from '~/constant/data/education.json'
 
-const { setNewMentorInfo, setAvatarPreview } =
-    useEditProfileModalStore.getState()
+const { setNewMentorInfo, setAvatarFile } = useEditProfileModalStore.getState()
 
 export const adjustTimeZone = (date: Date) => {
     const newDate = new Date(date)
@@ -64,7 +63,7 @@ export const avatarChange = async (
         const compressedImage = await compressImage(event)
         if (compressedImage) {
             const imageURL = URL.createObjectURL(compressedImage)
-            setAvatarPreview(imageURL)
+            setAvatarFile(compressedImage)
             setNewMentorInfo({ avatar: imageURL })
         }
     }

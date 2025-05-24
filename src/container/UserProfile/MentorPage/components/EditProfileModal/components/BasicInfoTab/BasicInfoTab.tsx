@@ -22,16 +22,17 @@ import {
     inputChange,
     selectChange,
 } from '~/container/UserProfile/MentorPage/utils'
+import levelList from '~/constant/data/level.json'
 
 const BasicInfoTab = () => {
-    const { newMentorInfo, avatarPreview } = useEditProfileModalStore()
+    const { newMentorInfo } = useEditProfileModalStore()
 
     return (
         <TabsContent value="basic" className="mt-4 space-y-4">
             <div className="mb-4">
                 <UploadAvatar
                     userName={newMentorInfo.userName}
-                    avatarPreview={avatarPreview}
+                    avatarPreview={newMentorInfo.avatar}
                     onChange={avatarChange}
                 />
             </div>
@@ -89,17 +90,27 @@ const BasicInfoTab = () => {
                 </div>
 
                 <div className="space-y-2">
-                    <Label htmlFor="level">Experience Level (years)</Label>
-                    <Input
-                        id="level"
-                        name="level"
-                        type="number"
-                        min="0"
-                        max="6"
-                        value={newMentorInfo.level || 0}
-                        onChange={inputChange}
-                        required
-                    />
+                    <Label htmlFor="level">Experience Level</Label>
+                    <Select
+                        value={String(newMentorInfo.level) || ''}
+                        onValueChange={(value) => {
+                            selectChange({
+                                name: 'level',
+                                value,
+                            })
+                        }}
+                    >
+                        <SelectTrigger>
+                            <SelectValue placeholder="Select a level" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {levelList.map((level) => (
+                                <SelectItem key={level.code} value={level.code}>
+                                    {level.name}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
                 </div>
             </div>
 

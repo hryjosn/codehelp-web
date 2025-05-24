@@ -53,6 +53,8 @@ import toolList from '~/constant/data/tools.json'
 import skillList from '~/constant/data/skills.json'
 import EditSelectOptionModal from './components/EditSelectOptionModal/EditSelectOptionModal'
 import { useEditSelectOptionModalStore } from './components/EditSelectOptionModal/store/EditSelectOptionModalStore'
+import { useUpdateAvatar } from '~/api/user/user'
+import { useSession } from 'next-auth/react'
 
 // This would typically come from an API or database
 const mentorData = {
@@ -91,9 +93,16 @@ export default function MentorPage({ userData }: Props) {
     const { mutate: updateDisciplines } = useUpdateMentorDisciplines()
     const { mutate: updateSkills } = useUpdateMentorSkills()
     const { mutate: updateTools } = useUpdateMentorTools()
+    const { mutateAsync: updateAvatar } = useUpdateAvatar()
+
+    const { update } = useSession()
 
     const { openModal: openAppointmentModal } = useAppointmentModalStore()
-    const { openModal: openEditProfileModal } = useEditProfileModalStore()
+    const {
+        openModal: openEditProfileModal,
+        avatarFile,
+        setInitialUserInfo,
+    } = useEditProfileModalStore()
     const {
         openModal: openEditSelectOptionModal,
         setTitle,
@@ -117,7 +126,12 @@ export default function MentorPage({ userData }: Props) {
         )
     }, [bookingRecordListData])
 
-    const profileUpdate = (newMentorInfo: MentorProfileData) => {
+    const profileUpdate = async (newMentorInfo: MentorProfileData) => {
+        if (userData.avatar !== newMentorInfo.avatar && avatarFile) {
+            const formData = new FormData()
+            formData.append('avatar', avatarFile)
+            await updateAvatar(formData)
+        }
         const updateData: UpdateMentorInfoParams = {
             userName: newMentorInfo.userName,
             gender: newMentorInfo.gender,
@@ -138,6 +152,7 @@ export default function MentorPage({ userData }: Props) {
             onSuccess(res) {
                 if (res.status === 'ok') {
                     updateDataSuccess()
+                    update({ user: { avatar: newMentorInfo.avatar } })
                 }
             },
         })
@@ -209,7 +224,10 @@ export default function MentorPage({ userData }: Props) {
                             variant="outline"
                             size="sm"
                             className="flex items-center"
-                            onClick={openEditProfileModal}
+                            onClick={() => {
+                                setInitialUserInfo(userData)
+                                openEditProfileModal()
+                            }}
                         >
                             <Edit className="mr-2 h-4 w-4" />
                             Edit Profile
@@ -521,7 +539,7 @@ export default function MentorPage({ userData }: Props) {
             </div>
             <AppointmentModal bookingId={bookingId} />
             <ImageModal />
-            <EditProfileModal profileData={userData} onSave={profileUpdate} />
+            <EditProfileModal onSave={profileUpdate} />
             <EditSelectOptionModal />
         </div>
     )
