@@ -1,6 +1,7 @@
 import React from 'react'
 import TextField, { TextFieldProps } from '@mui/material/TextField'
 import { Controller, useFormContext } from 'react-hook-form'
+import { useTranslations } from 'next-intl'
 
 export type FormInputProps = {
     title: string
@@ -12,8 +13,11 @@ const FormInput = ({ title, valueName, ...restProps }: FormInputProps) => {
         control,
         formState: { errors },
     } = useFormContext()
+    const t = useTranslations('Login')
 
-    const errorMessage = errors[valueName]?.message as string
+    const rawError = errors[valueName]?.message as string
+    const errorMessage = rawError ? t(rawError) : ''
+
     return (
         <div className="flex flex-col items-center gap-1">
             <div>
@@ -36,7 +40,7 @@ const FormInput = ({ title, valueName, ...restProps }: FormInputProps) => {
                     )}
                 />
             </div>
-            <div className="text-red-500 min-h-6">{errorMessage}</div>
+            <div className="min-h-6 text-red-500">{errorMessage}</div>
         </div>
     )
 }
