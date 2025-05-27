@@ -11,15 +11,21 @@ import LinkText from './components/LinkText/LinkText'
 import { LoginDataT, RESPONSE_CODE } from './types'
 import loginHandler from '~/utils/loginHandler'
 import { useRouter } from '~/i18n/routing'
+import { useTranslations } from 'next-intl'
 
 const Login = () => {
     const router = useRouter()
     const [errorText, setErrorText] = useState('')
     const schema = Joi.object({
-        email: Joi.string().email().required(),
-        password: Joi.string().min(8).max(30).required(),
-    }).messages({
-        'any.required': 'is a required field',
+        email: Joi.string().email().required().messages({
+            'string.empty': 'email-joi-required',
+            'string.email': 'email-joi-email',
+        }),
+        password: Joi.string().min(8).max(30).required().messages({
+            'string.empty': 'password-joi-required',
+            'string.min': 'password-joi-min',
+            'string.max': 'password-joi-max',
+        }),
     })
     const methods = useForm({
         mode: 'onChange',
@@ -35,6 +41,8 @@ const Login = () => {
         formState: { errors },
     } = methods
 
+    const t = useTranslations('Login')
+
     const onSubmit = async (data: LoginDataT) => {
         const res = await loginHandler({ data, router })
 
@@ -42,13 +50,13 @@ const Login = () => {
             reset()
             switch (res.code) {
                 case RESPONSE_CODE.VALIDATE_ERROR:
-                    setErrorText('Validate error')
+                    setErrorText(t('validate-error'))
                     break
                 case RESPONSE_CODE.USER_DATA_ERROR:
-                    setErrorText('Email or password is wrong')
+                    setErrorText(t('email-password-error'))
                     break
                 default:
-                    setErrorText('Unknown error')
+                    setErrorText(t('unknown-error'))
             }
         }
     }
@@ -60,21 +68,26 @@ const Login = () => {
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <div className="flex w-full flex-col items-center justify-center gap-5">
                             <div className="text-3xl font-bold">
-                                <div>Welcome to the Codehelp</div>
-                                <div>Log in to continue</div>
+                                <div>{t('welcome-title')}</div>
+                                <div>{t('login-subtitle')}</div>
                             </div>
                             <LinkText
                                 href="/signup"
-                                value={`Don\'t have an account? Create a new account.`}
+                                value={t('sign-up-link')}
                             />
                             <div className="flex flex-col items-center gap-1">
-                                <FormInput title="E-mail" valueName="email" />
                                 <FormInput
-                                    title="Password"
+                                    title={t('email')}
+                                    valueName="email"
+                                />
+                                <FormInput
+                                    title={t('password')}
                                     valueName="password"
                                     type="password"
                                 />
-                                <Button errors={errors}>Login</Button>
+                                <Button errors={errors}>
+                                    {t('login-button-title')}
+                                </Button>
                                 <p className="mt-6 min-h-6 text-red-500">
                                     {errorText}
                                 </p>

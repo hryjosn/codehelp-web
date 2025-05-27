@@ -2,8 +2,25 @@
     "MentorCard": {
         "avg-attendance": "Avg. Attendance"
     },
-    "Time":{
+    "Time": {
         "h": "h",
         "m": "m"
+    }, 
+    "Login": {
+        "welcome-title": "Welcome to the Codehelp",
+        "login-subtitle": "Log in to continue",
+        "sign-up-link": "Don't have an account? Create a new account.",
+        "email": "E-mail",
+        "password": "Password",
+        "login-button-title": "Login",
+        "validate-error": "Validate error",
+        "email-password-error": "Email or password is wrong",
+        "unknown-error": "Unknown error",
+        "require-joi": "is a required field",
+        "password-joi-max":"Password length must be less than or equal to 30 characters long",
+        "password-joi-min":"Password length must be at least 8 characters long",
+        "password-joi-required":"Password is require",
+        "email-joi-required":"Email is require",
+        "email-joi-email":"Please enter a valid email"
     }
 }
