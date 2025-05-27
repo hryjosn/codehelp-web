@@ -25,23 +25,23 @@ export default function MemberPage({ userData }: Props) {
     const queryClient = useQueryClient()
     const { toast } = useToast()
 
-    const profileUpdate = async (newMentorInfo: MemberProfileData) => {
-        if (userData.avatar !== newMentorInfo.avatar && avatarFile) {
+    const profileUpdate = async (newMemberInfo: MemberProfileData) => {
+        if (userData.avatar !== newMemberInfo.avatar && avatarFile) {
             const formData = new FormData()
             formData.append('avatar', avatarFile)
             await updateAvatar(formData)
         }
 
         const updateData: UpdateMemberInfoData = {
-            userName: newMentorInfo.userName,
-            gender: newMentorInfo.gender,
-            country: newMentorInfo.country,
-            title: newMentorInfo.title,
-            company: newMentorInfo.company,
-            introduction: newMentorInfo.introduction,
-            phoneNumber: newMentorInfo.phoneNumber,
-            level: newMentorInfo.level,
-            fieldOfWork: newMentorInfo.fieldOfWork,
+            userName: newMemberInfo.userName,
+            gender: newMemberInfo.gender,
+            country: newMemberInfo.country,
+            title: newMemberInfo.title,
+            company: newMemberInfo.company,
+            introduction: newMemberInfo.introduction,
+            phoneNumber: newMemberInfo.phoneNumber,
+            level: newMemberInfo.level,
+            fieldOfWork: newMemberInfo.fieldOfWork,
         }
 
         updateInfo(updateData, {
