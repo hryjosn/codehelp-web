@@ -66,7 +66,7 @@ export const useVideoConferenceStore = create<States & Actions>()(
 
         addIceCandidate: ({ remoteId, candidate }) =>
             set((state) => {
-                const peerData = state.peerConnectionList[remoteId]
+                const peerData = state?.peerConnectionList[remoteId]
                 if (peerData) {
                     peerData.peerConnection.addIceCandidate(candidate)
                 }
@@ -75,17 +75,26 @@ export const useVideoConferenceStore = create<States & Actions>()(
 
         setRemoteDescription: ({ remoteId, desc }) =>
             set((state) => {
-                const peerData = state.peerConnectionList[remoteId]
+                const peerData = state?.peerConnectionList[remoteId]
                 if (peerData) {
                     peerData.peerConnection.setRemoteDescription(desc)
                 }
                 return state
             }),
 
-        clearPeerConnections: () =>
-            set({
-                peerConnectionList: {},
-            }),
+        clearPeerConnections: () => {
+            const { peerConnectionList } = get()
+            if (!peerConnectionList) return
+
+            Object.values(peerConnectionList).forEach(({ peerConnection }) => {
+                try {
+                    peerConnection.close()
+                } catch (err) {
+                    console.warn('Failed to close peerConnection', err)
+                }
+            })
+            set({ peerConnectionList: {} })
+        },
 
         addPeer: ({ remoteId, peerConnection }) =>
             set((state) => ({
@@ -97,7 +106,7 @@ export const useVideoConferenceStore = create<States & Actions>()(
 
         removeConnectionMember: (remoteId) => {
             set((state) => {
-                const peerData = state.peerConnectionList[remoteId]
+                const peerData = state?.peerConnectionList[remoteId]
 
                 if (peerData) {
                     peerData.peerConnection.onicecandidate = null
@@ -118,7 +127,7 @@ export const useVideoConferenceStore = create<States & Actions>()(
 
         updatePeerIsScreenSharing: ({ remoteId, isSharing }) =>
             set((state) => {
-                const existing = state.peerConnectionList[remoteId]
+                const existing = state?.peerConnectionList[remoteId]
 
                 if (!existing) return {}
 

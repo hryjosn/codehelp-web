@@ -10,29 +10,52 @@ const RemoteVideo = ({ remoteId }: Props) => {
     } = useStore()
 
     const videoRef = useRef<HTMLVideoElement>(null)
+    const containerRef = useRef<HTMLDivElement>(null)
+
+    const handleFullscreen = () => {
+        const containerElement = containerRef.current
+        if (!containerElement) return
+
+        if (document.fullscreenElement) {
+            document.exitFullscreen()
+        } else {
+            try {
+                containerElement.requestFullscreen()
+            } catch (error) {
+                console.error('Failed to enter fullscreen:', error)
+            }
+        }
+    }
 
     useEffect(() => {
-        if (!peerConnectionList[remoteId]) return
+        if (!peerConnectionList?.[remoteId]) return
 
         peerConnectionList[remoteId].peerConnection.ontrack = (event) => {
-            console.log('監聽到遠端媒體軌道')
             const [stream] = event.streams
 
             if (videoRef.current) {
                 videoRef.current.srcObject = stream
             }
         }
-    }, [peerConnectionList])
+    }, [peerConnectionList, remoteId])
 
     return (
-        <video
-            ref={videoRef}
-            className={cn('w-full rounded-3xl border-2 border-white', {
-                'scale-x-[-1]': !peerConnectionList[remoteId].isScreenSharing,
-            })}
-            autoPlay
-            id={remoteId}
-        />
+        <div
+            ref={containerRef}
+            className="flex flex-1 cursor-pointer justify-center px-5 pt-5"
+            title="點擊切換全螢幕模式"
+            onClick={handleFullscreen}
+        >
+            <video
+                ref={videoRef}
+                className={cn('w-full rounded-3xl border border-white', {
+                    'scale-x-[-1]':
+                        !peerConnectionList?.[remoteId].isScreenSharing,
+                })}
+                autoPlay
+                id={remoteId}
+            />
+        </div>
     )
 }
 

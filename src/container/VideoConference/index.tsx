@@ -186,27 +186,16 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
                             ref={localVideoRef}
                             autoPlay
                             muted
-                            className={cn(
-                                'w-2/3 rounded-3xl border-2 border-white',
-                                {
-                                    'scale-x-[-1]': !isLocalShareScreen,
-                                    'w-full':
-                                        Object.keys(peerConnectionList).length >
-                                        0,
-                                }
-                            )}
+                            className={cn('rounded-3xl border-2 border-white', {
+                                'scale-x-[-1]': !isLocalShareScreen,
+                            })}
                         >
                             user1
                         </video>
                     </div>
                     {Object.keys(peerConnectionList).length > 0 &&
                         Object.keys(peerConnectionList).map((key) => (
-                            <div
-                                key={key}
-                                className="flex flex-1 justify-center px-5 pt-5"
-                            >
-                                <RemoteVideo remoteId={key} />
-                            </div>
+                            <RemoteVideo key={key} remoteId={key} />
                         ))}
                 </div>
                 {isChatOpen && (
