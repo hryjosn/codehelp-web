@@ -43,7 +43,7 @@ const RemoteVideo = ({ remoteId }: Props) => {
         <div
             ref={containerRef}
             className="flex flex-1 cursor-pointer justify-center px-5 pt-5"
-            title="點擊切換全螢幕模式"
+            title="switch to fullscreen"
             onClick={handleFullscreen}
         >
             <video
