@@ -57,7 +57,7 @@ export default function MemberPage({ userData }: Props) {
                         title: 'Update Successful!',
                         variant: 'hint',
                     })
-                    update({ user: { avatar: newMentorInfo.avatar } })
+                    update({ user: { avatar: newMemberInfo.avatar } })
                 }
             },
         })
