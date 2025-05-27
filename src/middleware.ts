@@ -81,5 +81,5 @@ export default function middleware(req: NextRequest) {
 }
 
 export const config = {
-    matcher: ['/', '/(zh|en)/:path*'],
+    matcher: '/((?!api|trpc|_next|_vercel|.*\\..*).*)',
 }
