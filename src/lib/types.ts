@@ -55,3 +55,7 @@ export interface ClientToServerEvents {
     hangup: (room: string, remoteId: string) => void
     sendMessage: (messageData: MessageData) => void
 }
+export interface UpdatePhoneNumberParams {
+    phoneNumber: string
+    countryCode: string
+}
