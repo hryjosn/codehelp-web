@@ -9,6 +9,7 @@ import { ReactQueryClientProvider } from '~/components/ReactQueryClientProvider/
 import { routing } from '~/i18n/routing'
 import { RootStoreProvider } from '~/store/rootStoreProvider'
 import { Toaster } from '~/components/ui/toaster'
+import 'react-phone-input-2/lib/style.css'
 
 import '~/styles/globals.css'
 if (process.env.MOCK === 'true') {

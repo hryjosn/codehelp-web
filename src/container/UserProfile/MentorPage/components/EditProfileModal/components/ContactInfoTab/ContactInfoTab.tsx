@@ -9,19 +9,26 @@ import {
     inputChange,
     selectChange,
 } from '~/container/UserProfile/MentorPage/utils'
+import { CountryData } from 'react-phone-input-2'
+import PhoneNumberInput from '~/container/UserProfile/components/PhoneNumberInput/PhoneNumberInput'
 
 const ContactInfoTab = () => {
-    const { newMentorInfo } = useEditProfileModalStore()
+    const { newMentorInfo, setPhoneNumber, setCountryCode } =
+        useEditProfileModalStore()
+
+    const phoneChange = (value: string, data: CountryData) => {
+        setCountryCode(`${data.dialCode}`)
+        setPhoneNumber(value)
+    }
 
     return (
         <TabsContent value="contact" className="mt-4 space-y-4">
             <div className="space-y-2">
                 <Label htmlFor="phoneNumber">Phone Number</Label>
-                <Input
-                    id="phoneNumber"
-                    name="phoneNumber"
-                    value={newMentorInfo.phoneNumber || ''}
-                    onChange={inputChange}
+                <PhoneNumberInput
+                    initialCountry="tw"
+                    phoneNumber={newMentorInfo.phoneNumber}
+                    onChange={phoneChange}
                 />
             </div>
 

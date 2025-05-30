@@ -3,9 +3,9 @@ import { NextIntlClientProvider } from 'next-intl';
 import { RootStoreProvider } from '../src/store/rootStoreProvider'
 import { ReactQueryClientProvider } from '../src/components/ReactQueryClientProvider/ReactQueryClientProvider'
 import "../src/styles/globals.css"
-import React from 'react';
 import enMessages from '../messages/en.json'
 import zhMessages from '../messages/zh.json'
+import 'react-phone-input-2/lib/style.css'
 
 const Messages = {
   en: enMessages,

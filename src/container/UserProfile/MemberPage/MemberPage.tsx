@@ -16,9 +16,10 @@ import { useQueryClient } from '@tanstack/react-query'
 import { useToast } from '~/hooks/use-toast'
 import { useUpdateAvatar } from '~/api/user/user'
 import { useSession } from 'next-auth/react'
+import { refactorPhoneNumber } from '~/lib/utils'
 
 export default function MemberPage({ userData }: Props) {
-    const { avatarFile, openModal, setInitialInfo } =
+    const { avatarFile, countryCode, openModal, setInitialInfo } =
         useEditMemberProfileModalStore()
     const { mutate: updateInfo } = useUpdateMemberInfo()
     const { mutateAsync: updateAvatar } = useUpdateAvatar()
@@ -29,10 +30,17 @@ export default function MemberPage({ userData }: Props) {
     const { toast } = useToast()
 
     const profileUpdate = async (newMemberInfo: MemberProfileData) => {
+        let newPhoneNumber = newMemberInfo.phoneNumber
         if (userData.avatar !== newMemberInfo.avatar && avatarFile) {
             const formData = new FormData()
             formData.append('avatar', avatarFile)
             await updateAvatar(formData)
+        }
+        if (userData.phoneNumber !== newMemberInfo.phoneNumber) {
+            newPhoneNumber = refactorPhoneNumber({
+                phoneNumber: newPhoneNumber,
+                countryCode,
+            })
         }
 
         const updateData: UpdateMemberInfoData = {
@@ -42,7 +50,7 @@ export default function MemberPage({ userData }: Props) {
             title: newMemberInfo.title,
             company: newMemberInfo.company,
             introduction: newMemberInfo.introduction,
-            phoneNumber: newMemberInfo.phoneNumber,
+            phoneNumber: newPhoneNumber,
             level: newMemberInfo.level,
             fieldOfWork: newMemberInfo.fieldOfWork,
         }
