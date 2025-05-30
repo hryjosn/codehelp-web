@@ -1,8 +1,8 @@
-import { RefObject } from 'react'
+import { MutableRefObject, RefObject } from 'react'
 import { Socket } from 'socket.io-client'
 import { ServerToClientEvents, ClientToServerEvents } from '~/lib/types'
 export interface CreatePeerConnectionT {
-    localStream: MediaStream
+    localStreamRef: MutableRefObject<MediaStream | undefined>
     remoteId: string
     socket: Socket<ServerToClientEvents, ClientToServerEvents>
 }
@@ -16,18 +16,18 @@ export interface PeerConnectionListT {
 
 export interface HangupT {
     roomId: string
-    localStream: MediaStream
+    localStreamRef: MutableRefObject<MediaStream | undefined>
     remoteId: string
     socket: Socket<ServerToClientEvents, ClientToServerEvents>
     localVideoRef: RefObject<HTMLVideoElement>
 }
 export interface SendOfferSDP_T {
-    localStream: MediaStream
+    localStreamRef: MutableRefObject<MediaStream | undefined>
     remoteId: string
     socket: Socket<ServerToClientEvents, ClientToServerEvents>
 }
 export interface SendAnswerSDP_T {
-    localStream: MediaStream
+    localStreamRef: MutableRefObject<MediaStream | undefined>
     remoteId: string
     desc: RTCSessionDescription
     socket: Socket<ServerToClientEvents, ClientToServerEvents>
@@ -68,11 +68,13 @@ export interface ReplaceStreamTracksParams {
     isReplaceAudio?: boolean
 }
 export interface StopShareScreenParams {
+    localStreamRef: MutableRefObject<MediaStream | undefined>
     localVideoRef: RefObject<HTMLVideoElement>
     paramId: string
     socket: Socket<ServerToClientEvents, ClientToServerEvents>
 }
 export interface ShareScreenParams {
+    localStreamRef: MutableRefObject<MediaStream | undefined>
     localVideoRef: RefObject<HTMLVideoElement>
     paramId: string
     socket: Socket<ServerToClientEvents, ClientToServerEvents>
