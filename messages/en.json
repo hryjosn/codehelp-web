@@ -22,5 +22,11 @@
         "password-joi-required":"Password is require",
         "email-joi-required":"Email is require",
         "email-joi-email":"Please enter a valid email"
+    },
+    "Chat" :{
+        "messages": "Messages",
+        "looking_for_some_mentors_to": "Looking for some mentors to",
+        "discuss_your_problems_together": "discuss your problems together",
+        "message_input_placeholder": "Send the messages"
     }
 }

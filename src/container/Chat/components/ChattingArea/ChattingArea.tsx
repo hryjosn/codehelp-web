@@ -13,6 +13,7 @@ import {
 import { useQueryClient } from '@tanstack/react-query'
 import { useGetUserInfo } from '~/api/user/user'
 import Avatar from '~/components/Avatar/Avatar'
+import { useTranslations } from 'next-intl'
 
 const ChattingArea = ({ chatroomId }: Props) => {
     const date = new Date()
@@ -25,6 +26,8 @@ const ChattingArea = ({ chatroomId }: Props) => {
     } = useGetMessageRecord(chatroomId)
     const { data: userData } = useGetUserInfo()
     const { data: chatroomData } = useGetChatroomInfo(chatroomId)
+
+    const t = useTranslations('Chat')
 
     const [content, setContent] = useState('')
     const socket = useChatroomStore((state) => state.socket)
@@ -115,7 +118,7 @@ const ChattingArea = ({ chatroomId }: Props) => {
                 <ButtonInput
                     value={content}
                     maxRows={17}
-                    placeholder="Write something..."
+                    placeholder={t('message_input_placeholder')}
                     onChange={(e) => {
                         setContent(e.target.value)
                     }}
