@@ -50,15 +50,16 @@ export const createLocalStream = async () => {
 }
 
 export const createPeerConnection = async ({
-    localStream,
+    localStreamRef,
     remoteId,
     socket,
 }: CreatePeerConnectionT) => {
     const peerConnection = new RTCPeerConnection(PC_CONFIG)
-
-    localStream?.getTracks().forEach((track) => {
-        peerConnection.addTrack(track, localStream)
-    })
+    if (localStreamRef.current) {
+        localStreamRef.current.getTracks().forEach((track) => {
+            peerConnection.addTrack(track, localStreamRef.current!)
+        })
+    }
 
     peerConnection.onicecandidate = (e) => {
         if (e.candidate && socket.id) {
@@ -112,7 +113,7 @@ export const createPeerConnection = async ({
 
 export const hangup = async ({
     roomId,
-    localStream,
+    localStreamRef,
     remoteId,
     socket,
     localVideoRef,
@@ -123,10 +124,11 @@ export const hangup = async ({
         clearCurrentVideo(localVideoRef)
         setIsLocalShareScreen(false)
     }
-
-    localStream.getTracks().forEach((track) => {
-        track.stop()
-    })
+    if (localStreamRef.current) {
+        localStreamRef.current.getTracks().forEach((track) => {
+            track.stop()
+        })
+    }
 
     if (connectionQualityInterval) {
         clearInterval(connectionQualityInterval)
@@ -137,12 +139,12 @@ export const hangup = async ({
 }
 
 export const sendOfferSDP = async ({
-    localStream,
+    localStreamRef,
     remoteId,
     socket,
 }: SendOfferSDP_T) => {
     const peerConnection = await createPeerConnection({
-        localStream,
+        localStreamRef,
         remoteId,
         socket,
     })
@@ -161,13 +163,13 @@ export const sendOfferSDP = async ({
 }
 
 export const sendAnswerSDP = async ({
-    localStream,
+    localStreamRef,
     remoteId,
     desc,
     socket,
 }: SendAnswerSDP_T) => {
     const peerConnection = await createPeerConnection({
-        localStream,
+        localStreamRef,
         remoteId,
         socket,
     })
@@ -258,6 +260,7 @@ export const shareScreen = async ({
     localVideoRef,
     paramId,
     socket,
+    localStreamRef,
 }: ShareScreenParams) => {
     try {
         const videoStream = await navigator.mediaDevices.getDisplayMedia({
@@ -290,7 +293,7 @@ export const shareScreen = async ({
         socket.emit('remoteStartShare', paramId, socket.id!)
 
         videoStream.getVideoTracks()[0].onended = () => {
-            stopShareScreen({ localVideoRef, paramId, socket })
+            stopShareScreen({ localVideoRef, paramId, socket, localStreamRef })
         }
         setIsLocalShareScreen(true)
     } catch (err) {
@@ -303,21 +306,23 @@ export const stopShareScreen = async ({
     localVideoRef,
     paramId,
     socket,
+    localStreamRef,
 }: StopShareScreenParams) => {
     try {
-        const { localStream } = await createLocalStream()
+        const { localStream: localStreamData } = await createLocalStream()
 
         clearCurrentVideo(localVideoRef)
 
-        if (localStream) {
-            applyMicState(localStream)
+        if (localStreamData) {
+            applyMicState(localStreamData)
 
-            if (localVideoRef.current) {
-                localVideoRef.current.srcObject = localStream
+            if (localVideoRef.current && localStreamRef.current) {
+                localVideoRef.current.srcObject = localStreamData
+                localStreamRef.current = localStreamData
             }
 
             replaceStreamTracks({
-                stream: localStream,
+                stream: localStreamData,
                 isReplaceAudio: true,
                 isReplaceVideo: true,
             })

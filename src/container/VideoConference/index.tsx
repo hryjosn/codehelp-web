@@ -25,7 +25,6 @@ import { useToast } from '~/hooks/use-toast'
 import { io, Socket } from 'socket.io-client'
 import { ServerToClientEvents, ClientToServerEvents } from '~/lib/types'
 
-let localStream: MediaStream | undefined
 let socket: Socket<ServerToClientEvents, ClientToServerEvents> | null
 
 const VideoConference = ({ params }: { params: { id: string } }) => {
@@ -54,6 +53,7 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
     const [isChatOpen, setIsChatOpen] = useState(false)
     const [content, setContent] = useState('')
     const localVideoRef = useRef<HTMLVideoElement>(null)
+    const localStreamRef = useRef<MediaStream | undefined>(undefined)
     const { toast } = useToast()
 
     const router = useRouter()
@@ -64,7 +64,7 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
             const { localStream: localStreamData, errMsg } =
                 await createLocalStream()
 
-            localStream = localStreamData
+            localStreamRef.current = localStreamData
 
             if (errMsg) {
                 toast({
@@ -76,8 +76,8 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
                 return
             }
 
-            if (localVideoRef.current && localStream && socket) {
-                localVideoRef.current.srcObject = localStream
+            if (localVideoRef.current && localStreamRef.current && socket) {
+                localVideoRef.current.srcObject = localStreamRef.current
                 socket.emit('join', params.id)
             }
         })()
@@ -88,7 +88,7 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
                     if (remoteId === id) {
                         sendOfferSDP({
                             remoteId,
-                            localStream: localStream!,
+                            localStreamRef,
                             socket: socket!,
                         })
                     }
@@ -103,7 +103,7 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
         socket?.on('offer', async (desc, remoteId) => {
             console.log('收到 offer')
             await sendAnswerSDP({
-                localStream: localStream!,
+                localStreamRef,
                 remoteId,
                 desc,
                 socket: socket!,
@@ -291,6 +291,7 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
                                     localVideoRef,
                                     paramId: params.id,
                                     socket,
+                                    localStreamRef,
                                 })
                             }
                         }}
@@ -306,6 +307,7 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
                                     localVideoRef,
                                     paramId: params.id,
                                     socket,
+                                    localStreamRef,
                                 })
                             }
                         }}
@@ -319,13 +321,13 @@ const VideoConference = ({ params }: { params: { id: string } }) => {
                     <ImPhoneHangUp
                         onClick={() => {
                             if (
-                                localStream &&
+                                localStreamRef.current &&
                                 socket?.id &&
                                 localVideoRef.current
                             ) {
                                 hangup({
                                     roomId: params.id,
-                                    localStream,
+                                    localStreamRef,
                                     remoteId: socket.id,
                                     socket,
                                     localVideoRef,
