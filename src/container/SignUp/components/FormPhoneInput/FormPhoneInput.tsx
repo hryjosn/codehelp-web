@@ -1,7 +1,8 @@
 import { useEffect } from 'react'
 import { Controller, useFormContext } from 'react-hook-form'
-import { MuiTelInput } from 'mui-tel-input'
 import { useStore } from '~/store/rootStoreProvider'
+import PhoneInput, { CountryData } from 'react-phone-input-2'
+
 interface FormPhoneInputProps {
     registerName: string
     label: string
@@ -14,7 +15,7 @@ const FormPhoneInput = ({ label, registerName }: FormPhoneInputProps) => {
         formState: { errors },
     } = useFormContext()
     const {
-        signUpStore: { getFormData },
+        signUpStore: { getFormData, setCountryCode },
     } = useStore()
     useEffect(() => {
         if (getFormData(registerName)) {
@@ -33,11 +34,20 @@ const FormPhoneInput = ({ label, registerName }: FormPhoneInputProps) => {
                     name={registerName}
                     control={control}
                     defaultValue={''}
-                    render={({ field }) => (
-                        <MuiTelInput
-                            className="min-h-10 w-80 rounded-lg"
-                            defaultCountry="TW"
-                            {...field}
+                    render={({ field: { onChange, onBlur } }) => (
+                        <PhoneInput
+                            inputClass="!min-h-14 !w-80 !rounded-lg"
+                            country={'tw'}
+                            inputProps={{
+                                required: true,
+                                autoFocus: true,
+                            }}
+                            enableSearch
+                            onChange={(value: string, data: CountryData) => {
+                                setCountryCode(data.dialCode)
+                                onChange(value)
+                            }}
+                            onBlur={onBlur}
                         />
                     )}
                 />
