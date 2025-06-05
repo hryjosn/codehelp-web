@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import Login from './Login'
+import TitleSection from './TitleSection'
 
 const meta = {
-    title: 'Login',
-    component: Login,
+    title: 'Chat/TitleSection',
+    component: TitleSection,
     parameters: {
         layout: 'centered',
         nextjs: {
@@ -11,7 +11,8 @@ const meta = {
         },
     },
     args: {},
-} satisfies Meta<typeof Login>
+    tags: ['autodocs'],
+} satisfies Meta<typeof TitleSection>
 
 export default meta
 type Story = StoryObj<typeof meta>

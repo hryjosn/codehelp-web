@@ -22,5 +22,11 @@
         "password-joi-required": "請輸入密碼",
         "email-joi-required": "請輸入電子郵件",
         "email-joi-email": "請輸入有效的電子郵件地址"
+    },
+    "Chat" :{
+        "messages": "訊息",
+        "looking_for_some_mentors_to": "找幾位導師來",
+        "discuss_your_problems_together": "一起討論你的問題吧",
+        "message_input_placeholder": "發送訊息"
     }
 }
