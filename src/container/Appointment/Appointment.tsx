@@ -11,7 +11,7 @@ import { Button } from '~/components/Button/Button'
 import { useSaveAppointment } from '~/api/mentor/mentor'
 
 const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-const TIMECODES = [...Array(24)]
+const TIMECODES = [...Array(48)]
 
 const Appointment = () => {
     const [selectedItems, setSelectedItems] = useState<SelectedItem>({})
@@ -30,7 +30,12 @@ const Appointment = () => {
         })
     }
     const reset = () => {
-        setSelectedItems({})
+        const result = window.confirm(
+            'Are you sure to reset appointment time？'
+        )
+        if (result) {
+            setSelectedItems({})
+        }
     }
     const save = () => {
         const selectedList = Object.values(selectedItems)
@@ -96,7 +101,7 @@ const Appointment = () => {
                         ))}
                     </tbody>
                 </table>
-                <div className="flex flex-col items-center justify-center gap-5 pt-4">
+                <div className="flex flex-col items-center gap-5 pt-4">
                     <p className="mb-5 text-3xl">
                         Select your availability Times
                     </p>

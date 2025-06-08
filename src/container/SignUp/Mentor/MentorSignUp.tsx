@@ -16,6 +16,7 @@ import Lottie from 'lottie-react'
 import LoadAnimation from '~/../public/Lottie/loading.json'
 import loginHandler from '~/utils/loginHandler'
 import { useStore } from '~/store/rootStoreProvider'
+import { refactorPhoneNumber } from '~/lib/utils'
 
 const MentorSignUp = () => {
     const { mutate: mentorSignUp, isPending } = useMentorSignUp()
@@ -24,8 +25,9 @@ const MentorSignUp = () => {
     const [errorText, setErrorText] = useState('')
 
     const {
-        signUpStore: { userName, password, email, avatar },
+        signUpStore: { userName, password, email, avatar, countryCode },
     } = useStore()
+
     const onSubmit = async ({
         gender,
         country,
@@ -41,6 +43,12 @@ const MentorSignUp = () => {
         level,
         education,
     }: mentorSignUpT) => {
+        let newPhoneNumber = ''
+
+        newPhoneNumber = refactorPhoneNumber({
+            phoneNumber,
+            countryCode,
+        })
         const formData = new FormData()
 
         if (!avatar) return
@@ -55,7 +63,7 @@ const MentorSignUp = () => {
         formData.append('company', company)
         formData.append('level', level)
         formData.append('introduction', introduction)
-        formData.append('phoneNumber', phoneNumber)
+        formData.append('phoneNumber', newPhoneNumber)
         formData.append('linkedInURL', linkedIn)
         formData.append('education', education)
         formData.append('primaryExpertise', expertise[0])

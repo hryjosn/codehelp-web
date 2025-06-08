@@ -5,6 +5,7 @@ type State = {
     isOpen: boolean
     newMentorInfo: MentorProfileData
     avatarFile: File | null
+    countryCode: string
 }
 
 type Action = {
@@ -13,12 +14,15 @@ type Action = {
     setNewMentorInfo: (newData: Partial<MentorProfileData>) => void
     setAvatarFile: (file: File) => void
     setInitialUserInfo: (data: MentorProfileData) => void
+    setPhoneNumber: (number: string) => void
+    setCountryCode: (countryCode: string) => void
 }
 
 export const useEditProfileModalStore = create<State & Action>()((set) => ({
     isOpen: false,
     newMentorInfo: {} as MentorProfileData,
     avatarFile: null,
+    countryCode: '',
     openModal: () => set({ isOpen: true }),
     closeModal: () => set({ isOpen: false }),
     setNewMentorInfo: (newData) =>
@@ -30,4 +34,9 @@ export const useEditProfileModalStore = create<State & Action>()((set) => ({
         set({
             newMentorInfo: data,
         }),
+    setPhoneNumber: (number) =>
+        set((state) => ({
+            newMentorInfo: { ...state.newMentorInfo, phoneNumber: number },
+        })),
+    setCountryCode: (countryCode) => set({ countryCode }),
 }))

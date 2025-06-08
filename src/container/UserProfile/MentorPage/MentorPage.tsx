@@ -55,6 +55,7 @@ import EditSelectOptionModal from './components/EditSelectOptionModal/EditSelect
 import { useEditSelectOptionModalStore } from './components/EditSelectOptionModal/store/EditSelectOptionModalStore'
 import { useUpdateAvatar } from '~/api/user/user'
 import { useSession } from 'next-auth/react'
+import { refactorPhoneNumber } from '~/lib/utils'
 
 // This would typically come from an API or database
 const mentorData = {
@@ -101,6 +102,7 @@ export default function MentorPage({ userData }: Props) {
     const {
         openModal: openEditProfileModal,
         avatarFile,
+        countryCode,
         setInitialUserInfo,
     } = useEditProfileModalStore()
     const {
@@ -127,10 +129,18 @@ export default function MentorPage({ userData }: Props) {
     }, [bookingRecordListData])
 
     const profileUpdate = async (newMentorInfo: MentorProfileData) => {
+        let newPhoneNumber = newMentorInfo.phoneNumber
         if (userData.avatar !== newMentorInfo.avatar && avatarFile) {
             const formData = new FormData()
             formData.append('avatar', avatarFile)
             await updateAvatar(formData)
+        }
+
+        if (userData.phoneNumber !== newMentorInfo.phoneNumber) {
+            newPhoneNumber = refactorPhoneNumber({
+                phoneNumber: newPhoneNumber,
+                countryCode,
+            })
         }
         const updateData: UpdateMentorInfoParams = {
             userName: newMentorInfo.userName,
@@ -139,7 +149,7 @@ export default function MentorPage({ userData }: Props) {
             title: newMentorInfo.title,
             company: newMentorInfo.company,
             introduction: newMentorInfo.introduction,
-            phoneNumber: newMentorInfo.phoneNumber,
+            phoneNumber: newPhoneNumber,
             level: newMentorInfo.level,
             linkedInURL: newMentorInfo.url,
             primaryExpertise: newMentorInfo.primaryExpertise,
