@@ -1,7 +1,7 @@
 export interface Props {
     mentorId: string
     selectedDate: Date
-    selectedTime: string
+    selectedTimeCode: number
     isOpen: boolean
     onClose: () => void
 }
