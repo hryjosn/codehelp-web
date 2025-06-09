@@ -5,6 +5,7 @@ import {
     MENTOR_DISCIPLINES,
     MENTOR_TOOLS,
 } from '~/container/SignUp/store/types'
+import { Days } from '~/container/MentorProfile/components/Booking/types'
 
 export interface MentorT {
     id: string
@@ -30,6 +31,8 @@ export interface MentorT {
     education: string
     createdAt: string
     updatedAt: string
+    mentorAvailableTimes: MentorAvailableTimes[]
+    mentorBookedTimes: MentorBookedTimes[]
 }
 
 export interface GetMentorInfoReqT {}
@@ -77,4 +80,17 @@ export interface UpdateMentorSkillsParams {
 }
 export interface UpdateMentorToolsParams {
     tools: string[]
+}
+
+export interface MentorAvailableTimes {
+    id: string
+    mentorId: string
+    day: keyof typeof Days
+    timeCode: number[]
+}
+export interface MentorBookedTimes {
+    id: string
+    mentorId: string
+    day: keyof typeof Days
+    timeCode: number[]
 }

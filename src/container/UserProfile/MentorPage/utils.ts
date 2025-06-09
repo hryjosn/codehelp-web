@@ -1,5 +1,5 @@
 import prettyMilliseconds from 'pretty-ms'
-import { AdjustMinuteToHour, TimeCode } from './types'
+import { AdjustMinuteToHour } from './types'
 import { format, parseISO } from 'date-fns'
 import { useEditProfileModalStore } from './components/EditProfileModal/store/EditProfileModalStore'
 import compressImage from '~/utils/compressImage'
@@ -28,13 +28,6 @@ export const adjustMinuteToHour = ({ minute, t }: AdjustMinuteToHour) => {
     const refactorTime = prettyMilliseconds(minute * 60 * 1000)
 
     return refactorTime.replace('h', t('h')).replace('m', t('m'))
-}
-
-export const convertTimeCode = (timeCode: number) => {
-    const utcTime = `1970-01-01T${TimeCode[timeCode - 1]}`
-    const convertTime = format(parseISO(utcTime), 'h:mm a')
-
-    return convertTime
 }
 
 export const inputChange = (

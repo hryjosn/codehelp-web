@@ -9,11 +9,12 @@ import Input from '~/components/Input/Input'
 import UploadImage from '~/components/UploadImage/UploadImage'
 import { useStore } from '~/store/rootStoreProvider'
 import { Props } from './types'
+import { convertTimeCode } from '~/container/MentorProfile/components/Booking/utils'
 
 const BookingModal = ({
     mentorId,
     selectedDate,
-    selectedTime,
+    selectedTimeCode,
     isOpen,
     onClose,
 }: Props) => {
@@ -79,14 +80,7 @@ const BookingModal = ({
                         </div>
                         <div className="flex gap-2">
                             <AccessTimeIcon />
-                            {new Date(selectedTime).toLocaleTimeString(
-                                'en-US',
-                                {
-                                    hour: '2-digit',
-                                    minute: '2-digit',
-                                    hour12: true,
-                                }
-                            )}
+                            {convertTimeCode(selectedTimeCode)}
                         </div>
                     </div>
 
