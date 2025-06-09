@@ -1,3 +1,5 @@
+'use client'
+
 import AccessTimeIcon from '@mui/icons-material/AccessTime'
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth'
 import { Modal } from '@mui/material'
@@ -9,6 +11,12 @@ import Input from '~/components/Input/Input'
 import UploadImage from '~/components/UploadImage/UploadImage'
 import { useStore } from '~/store/rootStoreProvider'
 import { Props } from './types'
+import { useNewBooking } from '~/api/booking/booking'
+import { useState } from 'react'
+import Selector from '~/components/Selector/Selector'
+import { durationList } from './constants'
+import { useSession } from 'next-auth/react'
+import { useToast } from '~/hooks/use-toast'
 
 const BookingModal = ({
     mentorId,
@@ -21,7 +29,48 @@ const BookingModal = ({
         bookingStore: { imageList, uploadImage, removeImage },
     } = useStore()
     const { data } = useGetMentorInfo(mentorId)
+    const { mutate: newBooking } = useNewBooking()
+    const { data: userData } = useSession()
+    const { toast } = useToast()
+
+    const [topic, setTopic] = useState('')
+    const [question, setQuestion] = useState('')
+    const [duration, setDuration] = useState('')
+
+    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
+
+    const formatSelectedDate = new Intl.DateTimeFormat('zh-TW', {
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric',
+        timeZone,
+    }).format(selectedDate)
+
     const confirmBooking = () => {
+        const formData = new FormData()
+        if (userData?.user?.id) {
+            formData.append('topic', topic)
+            formData.append('question', question)
+            formData.append('duration', duration)
+            formData.append('picture', imageList[0])
+            formData.append('picture', imageList[1] || '')
+            formData.append('picture', imageList[2] || '')
+            formData.append('bookingTime', formatSelectedDate)
+            formData.append('memberIds', userData.user.id)
+            newBooking(
+                { data: formData, mentorId },
+                {
+                    onSuccess(res) {
+                        if (res?.data?.message) {
+                            toast({
+                                title: 'Booking successful',
+                                variant: 'hint',
+                            })
+                        }
+                    },
+                }
+            )
+        }
         onClose()
     }
 
@@ -53,9 +102,16 @@ const BookingModal = ({
                     <div className="flex flex-col gap-2 font-bold">
                         <h2>Mentorship Session</h2>
                         <small className="text-zinc-400">
-                            Session duration
+                            Session duration (min)
                         </small>
-                        <p className="text-sm">30 minutes</p>
+                        <Selector
+                            label="Duration"
+                            value={String(duration)}
+                            dataList={durationList}
+                            onChange={(value) => {
+                                setDuration(value)
+                            }}
+                        />
                         <small className="text-zinc-400">About</small>
                         <p className="text-sm">Mentorship session</p>
                     </div>
@@ -94,13 +150,20 @@ const BookingModal = ({
                         <p className="mb-2 mt-4">
                             What is the topic you want to ask?
                         </p>
-                        <Input />
+                        <Input
+                            onChange={(e) => {
+                                setTopic(e.target.value)
+                            }}
+                        />
                         <p className="mb-2 mt-4">
                             What is the question you want to ask?
                         </p>
                         <textarea
                             className="w-full resize-none rounded-lg border border-zinc-300 p-2 outline-none focus:border-sky-600"
                             rows={5}
+                            onChange={(e) => {
+                                setQuestion(e.target.value)
+                            }}
                         />
                     </div>
                     <div className="mt-2">
