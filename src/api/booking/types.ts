@@ -35,3 +35,8 @@ export interface Member {
     created_at: string
     updated_at: string
 }
+
+export interface NewBookingParams {
+    data: FormData
+    mentorId: string
+}

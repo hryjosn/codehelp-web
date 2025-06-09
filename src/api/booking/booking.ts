@@ -1,6 +1,6 @@
-import { useInfiniteQuery, useQuery } from '@tanstack/react-query'
+import { useInfiniteQuery, useMutation, useQuery } from '@tanstack/react-query'
 import axios from 'axios'
-import { BookingRecordRes } from './types'
+import { BookingRecordRes, NewBookingParams } from './types'
 
 export const useGetBookingRecordList = () => {
     return useInfiniteQuery({
@@ -31,6 +31,16 @@ export const useGetBookingRecord = (bookingId: string) => {
         queryFn: async (): Promise<BookingRecordRes> => {
             const res = await axios.get(`/api/booking/record/${bookingId}`)
             return res.data.bookingRecord
+        },
+    })
+}
+
+export const useNewBooking = () => {
+    return useMutation({
+        mutationFn: async ({ data, mentorId }: NewBookingParams) => {
+            return await axios.post(`/api/booking/new/${mentorId}`, {
+                data,
+            })
         },
     })
 }
