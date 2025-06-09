@@ -11,7 +11,7 @@ const meta = {
     },
     args: {
         mentorId: '1',
-        selectedTime: '2024-07-16T07:00:00+02:00',
+        selectedTimeCode: 0,
         selectedDate: new Date(),
         isOpen: false,
         onClose: fn(),
@@ -34,7 +34,7 @@ export const Default: Story = {
                 </button>
                 <BookingModal
                     mentorId="1"
-                    selectedTime="2024-07-16T07:00:00+02:00"
+                    selectedTimeCode={0}
                     selectedDate={new Date()}
                     isOpen={isBookingModalOpen}
                     onClose={() => {

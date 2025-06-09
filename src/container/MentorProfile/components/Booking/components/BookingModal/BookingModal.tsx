@@ -17,11 +17,12 @@ import Selector from '~/components/Selector/Selector'
 import { durationList } from './constants'
 import { useSession } from 'next-auth/react'
 import { useToast } from '~/hooks/use-toast'
+import { convertTimeCode } from '~/container/MentorProfile/components/Booking/utils'
 
 const BookingModal = ({
     mentorId,
     selectedDate,
-    selectedTime,
+    selectedTimeCode,
     isOpen,
     onClose,
 }: Props) => {
@@ -135,14 +136,7 @@ const BookingModal = ({
                         </div>
                         <div className="flex gap-2">
                             <AccessTimeIcon />
-                            {new Date(selectedTime).toLocaleTimeString(
-                                'en-US',
-                                {
-                                    hour: '2-digit',
-                                    minute: '2-digit',
-                                    hour12: true,
-                                }
-                            )}
+                            {convertTimeCode(selectedTimeCode)}
                         </div>
                     </div>
 

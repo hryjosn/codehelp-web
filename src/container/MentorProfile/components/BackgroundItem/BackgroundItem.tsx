@@ -10,7 +10,7 @@ const BackgroundItem = ({ title, content }: Props) => {
         return data.length > 0
     })
     return (
-        <div className="flex items-stretch justify-between gap-4 border-b border-gray-200 py-5">
+        <div className="flex items-stretch justify-between gap-4 py-5">
             <span className="self-center font-bold text-gray-500">{title}</span>
             <div className="flex gap-3">
                 {itemList.map((data, index) => {

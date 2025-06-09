@@ -24,20 +24,14 @@ interface MentorInfoResT {
     status: string
 }
 export const getMentorInfo = async (mentorId: string) => {
-    const res = await apiHandler<MentorInfoResT>({
-        url: getMentorInfoURL(mentorId),
-        method: 'get',
-    })
+    const res = await axios.get<MentorInfoResT>(`/api/mentor/info/${mentorId}`)
     return res.data.mentor
 }
 export const useGetMentorInfo = (mentorId: string) => {
-    return useQuery({
+    return useQuery<MentorT>({
         queryKey: ['mentorInfo', mentorId],
         queryFn: async () => {
-            const res = await apiHandler<MentorInfoResT>({
-                url: getMentorInfoURL(mentorId),
-                method: 'get',
-            })
+            const res = await axios.get(`/api/mentor/info/${mentorId}`)
             return res.data.mentor
         },
     })
