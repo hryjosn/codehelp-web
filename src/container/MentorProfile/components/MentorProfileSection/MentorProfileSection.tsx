@@ -7,12 +7,19 @@ import Bio from '~/components/mentor/Bio'
 import Education from '~/components/mentor/Education'
 import Experience from '~/components/mentor/Experience'
 import CommunicationSection from '../CommunicationSection/CommunicationSection'
-import { BackgroundItem } from '../BackgroundItem/BackgroundItem'
+import BackgroundItem from '../BackgroundContent/components/BackgroundItem/BackgroundItem'
+import BackgroundContent from '../BackgroundContent/BackgroundContent'
 import Booking from '../Booking/Booking'
 import { Separator } from '~/components/ui/separator'
 
 const MentorProfileSection = ({ mentorId }: { mentorId: string }) => {
     const { data: mentorInfo } = useGetMentorInfo(mentorId)
+
+    const mentorExpertiseList = [
+        mentorInfo?.primaryExpertise,
+        mentorInfo?.secondaryExpertise,
+        mentorInfo?.tertiaryExpertise,
+    ]
 
     return (
         <>
@@ -24,6 +31,7 @@ const MentorProfileSection = ({ mentorId }: { mentorId: string }) => {
                         company={mentorInfo.company}
                         title={mentorInfo.title}
                         country={mentorInfo.country}
+                        phoneNumber={mentorInfo.phoneNumber}
                     />
                     <div className="flex justify-end gap-5">
                         <CommunicationSection mentorId={mentorId} />
@@ -47,18 +55,54 @@ const MentorProfileSection = ({ mentorId }: { mentorId: string }) => {
                             </div>
                             <p className="text-lg font-bold">Background</p>
                             <div className="rounded-xl border border-solid border-gray-200 px-5 py-2">
-                                <BackgroundItem
-                                    title={'Expertise'}
-                                    content={[
-                                        mentorInfo.primaryExpertise,
-                                        mentorInfo.secondaryExpertise,
-                                        mentorInfo.tertiaryExpertise,
-                                    ]}
+                                {mentorExpertiseList.length > 0 && (
+                                    <BackgroundContent
+                                        title={'Expertise'}
+                                        content={mentorExpertiseList.map(
+                                            (data, index) => (
+                                                <BackgroundItem
+                                                    key={index}
+                                                    data={data!}
+                                                />
+                                            )
+                                        )}
+                                    />
+                                )}
+                                <Separator />
+                                <BackgroundContent
+                                    title={'Disciplines'}
+                                    content={mentorInfo.mentorDisciplines.map(
+                                        (data) => (
+                                            <BackgroundItem
+                                                key={data.id}
+                                                data={data.discipline}
+                                            />
+                                        )
+                                    )}
                                 />
                                 <Separator />
-                                <BackgroundItem
-                                    title={'Disciplines'}
-                                    content={mentorInfo.mentorDisciplines}
+                                <BackgroundContent
+                                    title={'Skills'}
+                                    content={mentorInfo.mentorSkills.map(
+                                        (data) => (
+                                            <BackgroundItem
+                                                key={data.id}
+                                                data={data.skill}
+                                            />
+                                        )
+                                    )}
+                                />
+                                <Separator />
+                                <BackgroundContent
+                                    title={'Tools'}
+                                    content={mentorInfo.mentorTools.map(
+                                        (data) => (
+                                            <BackgroundItem
+                                                key={data.id}
+                                                data={data.tool}
+                                            />
+                                        )
+                                    )}
                                 />
                             </div>
                             {mentorInfo.experience.length > 0 && (
@@ -67,9 +111,11 @@ const MentorProfileSection = ({ mentorId }: { mentorId: string }) => {
                                 />
                             )}
 
-                            <Education educationProps={mentorInfo.education} />
+                            <Education
+                                education={Number(mentorInfo.education)}
+                            />
                         </div>
-                        <div className="px-6 lg:px-0">
+                        <div className="mt-6 px-6 lg:mt-0 lg:px-0">
                             <Booking
                                 mentorId={mentorId}
                                 mentorInfo={mentorInfo}
