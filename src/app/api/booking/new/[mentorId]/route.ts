@@ -23,7 +23,10 @@ export async function POST(
         const res = await apiHandler({
             url: getNewBookingURL(mentorId),
             method: 'POST',
-            headers: { Authorization: token },
+            headers: {
+                Authorization: token,
+                'Content-Type': 'multipart/form-data',
+            },
             data: formData,
         })
 

@@ -10,9 +10,11 @@ import BookingButton from './components/BookingButton/BookingButton'
 import { Days, Props } from './types'
 import { convertTimeCode } from './utils'
 import { cn } from '~/lib/utils'
+import { useSession } from 'next-auth/react'
 
 const Booking = ({ mentorId, mentorInfo }: Props) => {
     const [selectedDate, setSelectedDate] = useState<Date>(new Date())
+    const { data: userData } = useSession()
 
     const dayOfWeek = Days[selectedDate.getDay()]
 
@@ -170,13 +172,16 @@ const Booking = ({ mentorId, mentorInfo }: Props) => {
                     </p>
                 )}
             </ul>
-            <BookingButton
-                title="BOOK"
-                isDisable={!selectedTimeCode}
-                onClick={() => {
-                    setIsBookingModalOpen(true)
-                }}
-            />
+
+            {userData?.user.identity === 'member' && (
+                <BookingButton
+                    title="BOOK"
+                    isDisable={!selectedTimeCode}
+                    onClick={() => {
+                        setIsBookingModalOpen(true)
+                    }}
+                />
+            )}
         </div>
     )
 }

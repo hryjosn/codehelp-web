@@ -38,8 +38,8 @@ export const useGetBookingRecord = (bookingId: string) => {
 export const useNewBooking = () => {
     return useMutation({
         mutationFn: async ({ data, mentorId }: NewBookingParams) => {
-            return await axios.post(`/api/booking/new/${mentorId}`, {
-                data,
+            return await axios.post(`/api/booking/new/${mentorId}`, data, {
+                headers: { 'Content-Type': 'multipart/form-data' },
             })
         },
     })
