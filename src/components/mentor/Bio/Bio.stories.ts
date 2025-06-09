@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import  Bio  from './index'
+import Bio from './index'
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
 const meta = {
@@ -26,6 +26,7 @@ export const Primary: Story = {
         name: 'Olha Оnyshchenko',
         company: 'lululemon',
         title: 'Project Manager',
-        country:'TW'
+        country: 'TW',
+        phoneNumber: '+886944344954',
     },
 }
