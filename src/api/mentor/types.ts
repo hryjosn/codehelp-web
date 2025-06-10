@@ -25,9 +25,24 @@ export interface MentorT {
     secondaryExpertise: string
     tertiaryExpertise: string
     experience: Experience[]
-    mentorDisciplines: MENTOR_DISCIPLINES[]
-    mentorSkills: MENTOR_SKILLS[]
-    mentorTools: MENTOR_TOOLS[]
+    mentorDisciplines: {
+        id: string
+        mentorId: string
+        discipline: MENTOR_DISCIPLINES
+        created_at: string
+    }[]
+    mentorSkills: {
+        id: string
+        mentorId: string
+        skill: MENTOR_SKILLS
+        created_at: string
+    }[]
+    mentorTools: {
+        id: string
+        mentorId: string
+        tool: MENTOR_TOOLS
+        created_at: string
+    }[]
     education: string
     createdAt: string
     updatedAt: string

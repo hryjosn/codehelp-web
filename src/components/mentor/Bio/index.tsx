@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import { HiPhone } from 'react-icons/hi2'
 
 type Props = {
     avatar: string
@@ -6,9 +7,10 @@ type Props = {
     company: string
     title: string
     country: string
+    phoneNumber: string
 }
 
-const Bio = ({ avatar, name, company, title, country }: Props) => {
+const Bio = ({ avatar, name, company, title, country, phoneNumber }: Props) => {
     return (
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:gap-6">
             <div className="h-32 w-32 overflow-hidden rounded-full md:h-48 md:w-48">
@@ -33,6 +35,10 @@ const Bio = ({ avatar, name, company, title, country }: Props) => {
                     <span>{title}</span>
                     <span className="mx-1 text-gray-500">at</span>
                     <span>{company}</span>
+                </p>
+                <p className="mt-1 flex items-center text-sm">
+                    <HiPhone className="cursor-pointer" size={15} />
+                    {phoneNumber}
                 </p>
             </div>
         </div>

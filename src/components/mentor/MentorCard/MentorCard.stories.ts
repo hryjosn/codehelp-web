@@ -38,11 +38,41 @@ const MOCK_MENTOR_LIST: MentorT[] = [
         secondaryExpertise: '',
         tertiaryExpertise: '',
         mentorDisciplines: [
-            MENTOR_DISCIPLINES.BIOLOGY,
-            MENTOR_DISCIPLINES.BUSINESS_ADMINISTRATION,
+            {
+                id: '123',
+                mentorId: 'b261f991-128b-4433-9f38-dad8111ed032',
+                discipline: MENTOR_DISCIPLINES.BIOLOGY,
+                created_at: '2024-11-24T06:44:51.411Z',
+            },
+            {
+                id: '1234',
+                mentorId: 'b261f991-128b-4433-9f38-dad8111ed032',
+                discipline: MENTOR_DISCIPLINES.BUSINESS_ADMINISTRATION,
+                created_at: '2024-11-24T06:44:51.411Z',
+            },
         ],
-        mentorSkills: [MENTOR_SKILLS.ADOBE_PHOTOSHOP, MENTOR_SKILLS.ANGULAR],
-        mentorTools: [MENTOR_TOOLS.ADOBE_PHOTOSHOP],
+        mentorSkills: [
+            {
+                id: '1222',
+                mentorId: 'b261f991-128b-4433-9f38-dad8111ed032',
+                skill: MENTOR_SKILLS.ADOBE_PHOTOSHOP,
+                created_at: '2024-11-24T06:44:51.411Z',
+            },
+            {
+                id: '12343',
+                mentorId: 'b261f991-128b-4433-9f38-dad8111ed032',
+                skill: MENTOR_SKILLS.ANGULAR,
+                created_at: '2024-11-24T06:44:51.411Z',
+            },
+        ],
+        mentorTools: [
+            {
+                id: '123fds',
+                mentorId: 'b261f991-128b-4433-9f38-dad8111ed032',
+                tool: MENTOR_TOOLS.ADOBE_PHOTOSHOP,
+                created_at: '2024-11-24T06:44:51.411Z',
+            },
+        ],
         createdAt: '2024-11-24T06:44:51.411Z',
         updatedAt: '2024-11-24T06:44:51.411Z',
         education: "海事資訊科技系$%$高雄科技大學'",
