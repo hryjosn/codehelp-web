@@ -62,12 +62,12 @@ const Login = () => {
     }
 
     return (
-        <div className="flex h-screen">
-            <div className="flex flex-1 flex-col items-center justify-center">
+        <div className="flex h-screen md:bg-none bg-cover bg-center bg-[url('/Login/Login_Picture.jpg')]">
+            <div className="flex flex-1 flex-col items-center justify-center ">
                 <FormProvider {...methods}>
                     <form onSubmit={handleSubmit(onSubmit)}>
-                        <div className="flex w-full flex-col items-center justify-center gap-5">
-                            <div className="text-3xl font-bold">
+                        <div className="flex w-full flex-col items-center justify-center gap-5 bg-white pt-7 pl-4 pr-4 pb-2 md:bg-transparent md:p-0">
+                            <div className="text-2xl font-bold text-center mb-3 md:text-left md:m-0 md:text-3xl">
                                 <div>{t('welcome-title')}</div>
                                 <div>{t('login-subtitle')}</div>
                             </div>
@@ -96,8 +96,8 @@ const Login = () => {
                     </form>
                 </FormProvider>
             </div>
-            <div className="flex flex-1">
-                <Image
+            <div className="flex flex-1 hidden md:block">
+                <Image 
                     priority
                     alt="The beautiful picture"
                     src="/Login/Login_Picture.jpg"

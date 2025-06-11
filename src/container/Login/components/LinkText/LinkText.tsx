@@ -4,7 +4,7 @@ import { LinkTextT } from './types'
 
 const LinkText = ({ value, href }: LinkTextT) => {
     return (
-        <Link href={href} className="font-bold underline">
+        <Link href={href} className="font-bold underline text-sm md:text-base">
             <span>{value}</span>
         </Link>
     )
