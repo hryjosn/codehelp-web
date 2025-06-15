@@ -6,7 +6,7 @@ import {
     UpdateMentorToolsParams,
 } from '~/api/mentor/types'
 import apiHandler from '../api'
-import { getMentorInfoURL, saveAppointmentURL } from './route'
+import { saveAppointmentURL, getMentorListURL } from './route'
 import {
     AppointmentReq,
     AppointmentResWrapData,
@@ -27,6 +27,7 @@ export const getMentorInfo = async (mentorId: string) => {
     const res = await axios.get<MentorInfoResT>(`/api/mentor/info/${mentorId}`)
     return res.data.mentor
 }
+
 export const useGetMentorInfo = (mentorId: string) => {
     return useQuery<MentorT>({
         queryKey: ['mentorInfo', mentorId],
@@ -36,6 +37,7 @@ export const useGetMentorInfo = (mentorId: string) => {
         },
     })
 }
+
 export const getMentorList = async ({
     pageParam,
     pageSize,
@@ -43,11 +45,19 @@ export const getMentorList = async ({
     pageParam: number
     pageSize: number
 }) => {
-    const { data } = await apiHandler<MentorListResT>({
-        url: `/mentor/list`,
-        method: 'get',
-        params: { page: pageParam, count: pageSize },
-    })
+    const res = await fetch(
+        `${getMentorListURL}?page=${pageParam}&count=${pageSize}`,
+        {
+            method: 'GET',
+            next: { tags: ['mentorList'], revalidate: 300 },
+        }
+    )
+
+    if (!res.ok) {
+        throw new Error('Failed to fetch mentor list')
+    }
+
+    const data: MentorListResT = await res.json()
     return data
 }
 export const useGetMentorList = () => {
