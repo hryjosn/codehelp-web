@@ -26,7 +26,7 @@ const SignUp = () => {
 
     return (
         <div className="flex flex-col items-center justify-center ">
-            <div className="flex flex-col gap-5 bg-white pl-5 pr-5 pt-7 pb-7">
+            <div className="flex flex-col gap-5 bg-white pl-5 pr-5 pt-7 pb-7 rounded-md">
                 <div className="text-2xl text-center font-bold md:text-3xl md:text-left">
                     <div>Welcome to the Codehelp</div>
                     <div>Create a new account</div>
