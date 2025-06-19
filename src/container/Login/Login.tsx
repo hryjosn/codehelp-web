@@ -66,7 +66,7 @@ const Login = () => {
             <div className="flex flex-1 flex-col items-center justify-center ">
                 <FormProvider {...methods}>
                     <form onSubmit={handleSubmit(onSubmit)}>
-                        <div className="flex w-full flex-col items-center justify-center gap-5 bg-white pt-7 pl-4 pr-4 pb-2 md:bg-transparent md:p-0">
+                        <div className="flex w-full flex-col items-center justify-center gap-5 bg-white pt-7 pl-4 pr-4 pb-2 md:bg-transparent md:p-0 rounded-md">
                             <div className="text-2xl font-bold text-center mb-3 md:text-left md:m-0 md:text-3xl">
                                 <div>{t('welcome-title')}</div>
                                 <div>{t('login-subtitle')}</div>

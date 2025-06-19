@@ -22,7 +22,7 @@ interface LinkProps
 
 const LinkText = ({ href, variant, children }: LinkProps) => {
     return (
-        <Link href={href} className={cn(linkVariants({ variant }))}>
+        <Link href={href} className={cn(linkVariants({ variant }), 'text-sm text-center md:text-left md:text-base')}>
             {children}
         </Link>
     )
