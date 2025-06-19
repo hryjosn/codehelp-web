@@ -5,7 +5,7 @@ export default function SignUpLayout({
     children: React.ReactNode
 }) {
     return (
-        <div className="flex h-screen md:bg-none md:items-stretch bg-cover bg-center items-center bg-[url('/Login/Login_Picture.jpg')]">
+        <div className="flex min-h-screen md:bg-none md:items-stretch bg-cover bg-center  items-center bg-[url('/Login/Login_Picture.jpg')]">
             <div className="flex-1 mt-0 mb:mt-10">{children}</div>
 
             <Image
