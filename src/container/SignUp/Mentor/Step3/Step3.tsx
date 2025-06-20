@@ -11,7 +11,7 @@ const Step3 = () => {
     return (
         <div className="flex h-full items-center justify-center">
             <div className="flex flex-col items-center gap-10">
-                <div className="text-3xl font-bold">
+                <div className="text-lg font-bold md:text-3xl">
                     {"What's your super power like?"}
                 </div>
                 <div>

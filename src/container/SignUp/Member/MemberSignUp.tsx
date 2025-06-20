@@ -88,7 +88,7 @@ const MemberSignUp = () => {
 
     return (
         <div className="flex h-full items-center justify-center">
-            <div className="flex w-150 items-center justify-center rounded-xl p-10 pb-4 shadow-lg">
+            <div className="flex w-90 rounded-xl pd-2  pt-8 px-7 shadow-lg md:w-150 md:pb-4 md:p-10 bg-white">
                 <Form onSubmit={onSubmit} schema={memberSchema}>
                     {currentStep === 1 && <Step1 />}
                     {currentStep === 2 && <Step2 />}

@@ -36,7 +36,7 @@ const FormPhoneInput = ({ label, registerName }: FormPhoneInputProps) => {
                     defaultValue={''}
                     render={({ field: { onChange, onBlur } }) => (
                         <PhoneInput
-                            inputClass="!min-h-14 !w-80 !rounded-lg"
+                            inputClass="!min-h-14 !w-72 md:!w-80 !rounded-lg"
                             country={'tw'}
                             inputProps={{
                                 required: true,
