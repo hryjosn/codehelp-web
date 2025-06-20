@@ -37,7 +37,7 @@ const FormInput = ({ label, registerName, ...restProps }: FormInputProps) => {
                     defaultValue={''}
                     render={({ field }) => (
                         <TextField
-                            className="min-h-10 w-[300px] md:w-80 rounded-lg"
+                            className="min-h-10 w-72 md:w-80 rounded-lg"
                             {...field}
                             {...restProps}
                         />

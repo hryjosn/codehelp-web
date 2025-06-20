@@ -6,7 +6,7 @@ const Step4 = () => {
     return (
         <div className="flex h-full items-center justify-center">
             <div className="flex flex-col rounded-xl">
-                <div className="mb-10 text-3xl font-bold">
+                <div className="mb-10 text-xl font-bold md:text-3xl">
                     {"Lastly, what's your introduction?"}
                 </div>
                 <div className="flex flex-col items-center">
