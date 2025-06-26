@@ -12,7 +12,7 @@ const buttonVariants = cva('border rounded-lg border-black font-bold', {
                 'bg-gray-900 text-white transition duration-500 hover:bg-[#008080] hover:border-[#008080]',
         },
         size: {
-            default: 'px-5 py-2',
+            default: 'px-3  py-2  md:px-5 md:py-2',
         },
     },
     defaultVariants: {
