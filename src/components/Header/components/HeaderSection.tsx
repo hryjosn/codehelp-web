@@ -1,16 +1,14 @@
 'use client'
 import { FC, useState } from 'react'
 
-import axios from 'axios'
-import { useRouter } from '~/i18n/routing'
-import { NavButton } from '~/components/NavButton/NavButton'
-import { signOut } from 'next-auth/react'
-import { Link } from '~/i18n/routing'
-import { IoChatbubbleOutline } from 'react-icons/io5'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
+import axios from 'axios'
+import { signOut, useSession } from 'next-auth/react'
+import { IoChatbubbleOutline } from 'react-icons/io5'
 import Avatar from '~/components/Avatar/Avatar'
-import { useSession } from 'next-auth/react'
+import { NavButton } from '~/components/NavButton/NavButton'
+import { Link, useRouter } from '~/i18n/routing'
 
 const HeaderSection: FC = () => {
     const { data: userData, status } = useSession()

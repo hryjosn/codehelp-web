@@ -1,8 +1,9 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
 import axios from 'axios'
 import { LoginDataT } from '~/container/Login/types'
+import fetchApi from '~/utils/fetch'
 import apiHandler from '../api'
-import { bookingInfoURL, loginURL, memberSignUpURL } from './route'
+import { bookingInfoURL, loginURL } from './route'
 import { BookingInfoResT, LoginReqT, LoginResT } from './types'
 
 export const useMentorSignUp = () => {
@@ -70,4 +71,16 @@ export const useUpdateAvatar = () => {
             return res.data
         },
     })
+}
+export const callGetUserInfoHandler = async () => {
+    try {
+        const res = await fetchApi({
+            url: '/api/user/getUserInfo',
+            method: 'GET',
+        })
+        return res.data
+    } catch (error) {
+        console.error('Error fetching user info:', error)
+        throw error
+    }
 }

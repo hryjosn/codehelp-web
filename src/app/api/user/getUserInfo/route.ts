@@ -1,27 +1,14 @@
-import { cookies } from 'next/headers'
-import { NextResponse } from 'next/server'
-import apiHandler from '~/api/api'
+import { NextRequest, NextResponse } from 'next/server'
+
 import { userInfoURL } from '~/api/user/route'
+import fetchApi from '~/utils/fetch'
 
-export async function GET() {
-    const token = cookies().get('auth_token')?.value
+export async function GET(req: NextRequest) {
+    const res = await fetchApi({
+        url: userInfoURL,
+        method: 'GET',
+        req,
+    })
 
-    if (!token) {
-        return NextResponse.json(
-            { error: 'Not authenticated' },
-            { status: 401 }
-        )
-    }
-
-    try {
-        const res = await apiHandler({
-            url: userInfoURL,
-            method: 'GET',
-            headers: { Authorization: token },
-        })
-
-        return NextResponse.json(res.data)
-    } catch (error) {
-        console.log('error >>', error)
-    }
+    return NextResponse.json(res)
 }
