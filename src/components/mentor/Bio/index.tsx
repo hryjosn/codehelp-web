@@ -26,7 +26,7 @@ const Bio = ({ avatar, name, company, title, country, phoneNumber }: Props) => {
                     }}
                 />
             </div>
-            <div className='flex flex-col items-center md:block'>
+            <div className="flex flex-col items-center md:block">
                 <h2 className="mb-1 text-2xl font-bold text-slate-800 md:text-4xl">
                     {name}
                     <span className="ml-1 text-lg md:text-2xl">{country}</span>
