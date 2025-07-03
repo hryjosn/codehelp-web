@@ -32,7 +32,7 @@ const FormSelect = ({
     }, [registerName, setValue, getFormData])
     const errorMessage = errors[registerName]?.message as string
     return (
-        <div className="flex w-80 flex-col gap-1">
+        <div className="flex w-72 flex-col gap-1 md:w-80">
             <p className="font-bold">
                 {label}
                 <span className="text-red-500"> *</span>
