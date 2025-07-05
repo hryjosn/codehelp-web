@@ -1,5 +1,5 @@
-import { MentorProfileData } from '../../types'
+import { UserForMentor } from '~/api/user/types'
 
 export interface Props {
-    onSave: (data: MentorProfileData) => void
+    onSave: (data: UserForMentor) => void
 }

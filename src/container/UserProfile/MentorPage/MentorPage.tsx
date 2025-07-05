@@ -16,15 +16,9 @@ import {
     GraduationCap,
     Link,
 } from 'lucide-react'
-import {
-    Discipline,
-    EDUCATION,
-    MentorProfileData,
-    Props,
-    Skill,
-    Tool,
-    WEEK_DAYS,
-} from './types'
+import { EDUCATION, Props, WEEK_DAYS } from './types'
+import { MentorDiscipline, MentorSkill, MentorTool } from '~/api/mentor/types'
+import { UserForMentor } from '~/api/user/types'
 import Header from '~/components/Header/Header'
 import Card from '../components/Card/Card'
 import { GENDER_LIST, LEVEL_LIST } from '../types'
@@ -128,7 +122,7 @@ export default function MentorPage({ userData }: Props) {
         )
     }, [bookingRecordListData])
 
-    const profileUpdate = async (newMentorInfo: MentorProfileData) => {
+    const profileUpdate = async (newMentorInfo: UserForMentor) => {
         let newPhoneNumber = newMentorInfo.phoneNumber
         if (userData.avatar !== newMentorInfo.avatar && avatarFile) {
             const formData = new FormData()
@@ -436,7 +430,7 @@ export default function MentorPage({ userData }: Props) {
                     content={
                         <div className="flex flex-wrap gap-2">
                             {userData.mentorDisciplines.map(
-                                (discipline: Discipline) => (
+                                (discipline: MentorDiscipline) => (
                                     <Badge
                                         key={discipline.id}
                                         variant="outline"
@@ -462,11 +456,13 @@ export default function MentorPage({ userData }: Props) {
                         }}
                         content={
                             <div className="flex flex-wrap gap-2">
-                                {userData.mentorSkills.map((skill: Skill) => (
-                                    <Badge key={skill.id} variant="outline">
-                                        {skill.skill}
-                                    </Badge>
-                                ))}
+                                {userData.mentorSkills.map(
+                                    (skill: MentorSkill) => (
+                                        <Badge key={skill.id} variant="outline">
+                                            {skill.skill}
+                                        </Badge>
+                                    )
+                                )}
                             </div>
                         }
                     />
@@ -482,11 +478,13 @@ export default function MentorPage({ userData }: Props) {
                         }}
                         content={
                             <div className="flex flex-wrap gap-2">
-                                {userData.mentorTools.map((tool: Tool) => (
-                                    <Badge key={tool.id} variant="outline">
-                                        {tool.tool}
-                                    </Badge>
-                                ))}
+                                {userData.mentorTools.map(
+                                    (tool: MentorTool) => (
+                                        <Badge key={tool.id} variant="outline">
+                                            {tool.tool}
+                                        </Badge>
+                                    )
+                                )}
                             </div>
                         }
                     />

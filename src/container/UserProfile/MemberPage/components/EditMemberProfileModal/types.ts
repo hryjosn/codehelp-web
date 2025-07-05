@@ -1,5 +1,4 @@
-import { MemberProfileData } from '~/container/UserProfile/MemberPage/types'
-
+import { UserForMember } from '~/api/user/types'
 export interface Props {
-    onSave: (data: MemberProfileData) => void
+    onSave: (data: UserForMember) => void
 }

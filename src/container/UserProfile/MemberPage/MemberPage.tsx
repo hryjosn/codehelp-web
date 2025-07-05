@@ -6,7 +6,8 @@ import { Separator } from '~/components/ui/separator'
 import { User, Mail, Phone, MapPin, Building, Edit, Clock } from 'lucide-react'
 import Header from '~/components/Header/Header'
 import Card from '../components/Card/Card'
-import { MemberProfileData, Props } from './types'
+import { Props } from './types'
+import { UserForMember } from '~/api/user/types'
 import { GENDER_LIST, LEVEL_LIST } from '../types'
 import EditMemberProfileModal from './components/EditMemberProfileModal/EditMemberProfileModal'
 import { useEditMemberProfileModalStore } from './components/EditMemberProfileModal/store/EditMemberProfileModalStore'
@@ -29,7 +30,7 @@ export default function MemberPage({ userData }: Props) {
     const queryClient = useQueryClient()
     const { toast } = useToast()
 
-    const profileUpdate = async (newMemberInfo: MemberProfileData) => {
+    const profileUpdate = async (newMemberInfo: UserForMember) => {
         let newPhoneNumber = newMemberInfo.phoneNumber
         if (userData.avatar !== newMemberInfo.avatar && avatarFile) {
             const formData = new FormData()
