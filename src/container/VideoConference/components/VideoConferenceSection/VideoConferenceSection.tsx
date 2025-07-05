@@ -284,9 +284,10 @@ const VideoConferenceSection = ({ userData, roomId }: Props) => {
                             'h-14 w-14 cursor-pointer rounded-full bg-gray-200 p-3'
                         }
                         onClick={async () => {
-                            if (socket) {
+                            if (socket && localVideoRef.current) {
                                 await shareScreen({
-                                    localVideoRef,
+                                    localVideoRef:
+                                        localVideoRef as React.RefObject<HTMLVideoElement>,
                                     paramId: roomId,
                                     socket,
                                     localStreamRef,
@@ -300,9 +301,10 @@ const VideoConferenceSection = ({ userData, roomId }: Props) => {
                             'h-14 w-14 cursor-pointer rounded-full bg-red-500 p-3'
                         }
                         onClick={async () => {
-                            if (socket) {
+                            if (socket && localVideoRef.current) {
                                 await stopShareScreen({
-                                    localVideoRef,
+                                    localVideoRef:
+                                        localVideoRef as React.RefObject<HTMLVideoElement>,
                                     paramId: roomId,
                                     socket,
                                     localStreamRef,
@@ -328,7 +330,8 @@ const VideoConferenceSection = ({ userData, roomId }: Props) => {
                                     localStreamRef,
                                     remoteId: socket.id,
                                     socket,
-                                    localVideoRef,
+                                    localVideoRef:
+                                        localVideoRef as React.RefObject<HTMLVideoElement>,
                                 })
                                 localVideoRef.current.srcObject = null
                             }
