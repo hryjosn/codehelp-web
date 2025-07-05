@@ -11,11 +11,11 @@ import {
     useGetChatroomInfo,
 } from '~/api/chatroom/chatroom'
 import { useQueryClient } from '@tanstack/react-query'
-import { useGetUserInfo } from '~/api/user/user'
 import Avatar from '~/components/Avatar/Avatar'
 import { useTranslations } from 'next-intl'
+import ChattingAreaHeader from './components/ChattingAreaHeader'
 
-const ChattingArea = ({ chatroomId }: Props) => {
+const ChattingArea = ({ chatroomId, userData }: Props) => {
     const date = new Date()
     const queryClient = useQueryClient()
     const { mutate: createMessage } = useCreateMessage()
@@ -24,7 +24,7 @@ const ChattingArea = ({ chatroomId }: Props) => {
         hasNextPage,
         fetchNextPage,
     } = useGetMessageRecord(chatroomId)
-    const { data: userData } = useGetUserInfo()
+
     const { data: chatroomData } = useGetChatroomInfo(chatroomId)
 
     const t = useTranslations('Chat')
@@ -84,12 +84,20 @@ const ChattingArea = ({ chatroomId }: Props) => {
     return (
         <div className="flex h-screen min-w-[300px] flex-1 flex-col py-5">
             {chatroomData && (
-                <div className="flex items-center border-b px-3 pb-3">
-                    <Avatar src={chatroomData.chatroom.mentor.avatar} />
-                    <p className="ml-3 font-bold">
-                        {chatroomData.chatroom.mentor.userName}
-                    </p>
-                </div>
+                <>
+                    {userData.userName ===
+                    chatroomData.chatroom.mentor.userName ? (
+                        <ChattingAreaHeader
+                            avatar={chatroomData.chatroom.member.avatar}
+                            userName={chatroomData.chatroom.member.userName}
+                        />
+                    ) : (
+                        <ChattingAreaHeader
+                            avatar={chatroomData.chatroom.mentor.avatar}
+                            userName={chatroomData.chatroom.mentor.userName}
+                        />
+                    )}
+                </>
             )}
             <div className="custom-scrollbar mt-5 flex flex-1 flex-col-reverse overflow-x-hidden overflow-y-scroll px-5">
                 {!!messagesList?.length &&
@@ -99,7 +107,7 @@ const ChattingArea = ({ chatroomId }: Props) => {
                             key={data.id}
                             ref={index === messagesList.length - 1 ? ref : null}
                         >
-                            {userData.user.id === data.user.id ? (
+                            {userData.id === data.user.id ? (
                                 <div className="my-3 ml-20 flex justify-end">
                                     <MessageBox message={data.content} />
                                 </div>
@@ -135,10 +143,9 @@ const ChattingArea = ({ chatroomId }: Props) => {
                                         socket.emit('sendMessage', {
                                             id: date.getTime().toString(),
                                             user: {
-                                                id: userData.user.id,
-                                                userName:
-                                                    userData.user.userName,
-                                                avatar: userData.user.avatar,
+                                                id: userData.id,
+                                                userName: userData.userName,
+                                                avatar: userData.avatar,
                                             },
                                             roomId: chatroomId,
                                             content,

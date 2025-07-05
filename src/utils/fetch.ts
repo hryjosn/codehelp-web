@@ -17,14 +17,6 @@ export interface FetchRequestConfig {
         | (IncomingMessage & { cookies: Partial<Record<string, string>> })
 }
 
-export interface FetchResponse<T = unknown> {
-    code: number
-    data: T
-    message?: string
-    totalPage?: number
-    [key: string]: unknown
-}
-
 function resolveRequestHeaders(
     req: FetchRequestConfig['req']
 ): string | undefined {
@@ -56,7 +48,7 @@ function buildUrlWithParams(
 
 export default async function fetchApi<Req = unknown, Res = unknown>(
     config: FetchRequestConfig & { data?: Req }
-): Promise<FetchResponse<Res>> {
+): Promise<Res> {
     const {
         url: rawUrl,
         method = 'GET',
@@ -100,7 +92,7 @@ export default async function fetchApi<Req = unknown, Res = unknown>(
         throw new Error(`HTTP Error ${res.status} ${res.statusText} at ${url}`)
     }
 
-    const json = (await res.json()) as FetchResponse<Res>
+    const json = (await res.json()) as Res
 
     return json
 }

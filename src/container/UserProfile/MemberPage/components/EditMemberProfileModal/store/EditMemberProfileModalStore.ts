@@ -1,9 +1,9 @@
 import { create } from 'zustand'
-import { MemberProfileData } from '~/container/UserProfile/MemberPage/types'
+import { UserForMember } from '~/api/user/types'
 
 type State = {
     isOpen: boolean
-    newMemberInfo: MemberProfileData
+    newMemberInfo: UserForMember
     avatarFile: File | null
     countryCode: string
 }
@@ -11,9 +11,9 @@ type State = {
 type Action = {
     openModal: () => void
     closeModal: () => void
-    setNewMemberInfo: (newData: Partial<MemberProfileData>) => void
+    setNewMemberInfo: (newData: Partial<UserForMember>) => void
     setAvatarFile: (file: File) => void
-    setInitialInfo: (data: MemberProfileData) => void
+    setInitialInfo: (data: UserForMember) => void
     setPhoneNumber: (number: string) => void
     setCountryCode: (countryCode: string) => void
 }
@@ -21,7 +21,7 @@ type Action = {
 export const useEditMemberProfileModalStore = create<State & Action>()(
     (set) => ({
         isOpen: false,
-        newMemberInfo: {} as MemberProfileData,
+        newMemberInfo: {} as UserForMember,
         avatarFile: null,
         countryCode: '',
         openModal: () => set({ isOpen: true }),

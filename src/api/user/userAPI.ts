@@ -1,8 +1,9 @@
+import { UserMember, UserMentor } from '~/api/user/types'
 import fetchApi from '~/utils/fetch'
 
 export const callGetUserInfoHandler = async () => {
     try {
-        const res = await fetchApi({
+        const res = await fetchApi<unknown, UserMember | UserMentor>({
             url: '/api/user/getUserInfo',
             method: 'GET',
         })
