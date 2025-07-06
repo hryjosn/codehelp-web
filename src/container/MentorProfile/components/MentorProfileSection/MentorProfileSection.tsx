@@ -11,10 +11,9 @@ import BackgroundItem from '../BackgroundContent/components/BackgroundItem/Backg
 import BackgroundContent from '../BackgroundContent/BackgroundContent'
 import Booking from '../Booking/Booking'
 import { Separator } from '~/components/ui/separator'
+import { Props } from './types'
 
-const MentorProfileSection = ({ mentorId }: { mentorId: string }) => {
-    const { data: mentorInfo } = useGetMentorInfo(mentorId)
-
+const MentorProfileSection = ({ mentorId, mentorInfo }: Props) => {
     const mentorExpertiseList = [
         mentorInfo?.primaryExpertise,
         mentorInfo?.secondaryExpertise,

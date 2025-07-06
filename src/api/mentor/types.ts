@@ -57,9 +57,7 @@ export interface MentorSkill {
     created_at: string
 }
 
-export interface GetMentorInfoReqT {}
-
-export interface GetMentorInfoResT {
+export interface GetMentorInfoHandlerResT {
     status: string
     mentor: MentorT
 }
