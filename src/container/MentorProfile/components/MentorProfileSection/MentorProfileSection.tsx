@@ -2,7 +2,6 @@
 
 import { Link } from '~/i18n/routing'
 import { BsLinkedin } from 'react-icons/bs'
-import { useGetMentorInfo } from '~/api/mentor/mentor'
 import Bio from '~/components/mentor/Bio'
 import Education from '~/components/mentor/Education'
 import Experience from '~/components/mentor/Experience'

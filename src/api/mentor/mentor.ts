@@ -23,10 +23,6 @@ interface MentorInfoResT {
     mentor: MentorT
     status: string
 }
-export const getMentorInfo = async (mentorId: string) => {
-    const res = await axios.get<MentorInfoResT>(`/api/mentor/info/${mentorId}`)
-    return res.data.mentor
-}
 
 export const useGetMentorInfo = (mentorId: string) => {
     return useQuery<MentorT>({
