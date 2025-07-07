@@ -3,7 +3,7 @@ import { GetMentorInfoHandlerResT } from './types'
 
 export const callGetMentorInfoHandler = async (mentorId: string) => {
     try {
-        const res = await fetchApi<unknown, GetMentorInfoHandlerResT>({
+        const res = await fetchApi<never, GetMentorInfoHandlerResT>({
             url: `/api/mentor/info/${mentorId}`,
             method: 'GET',
         })

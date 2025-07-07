@@ -3,7 +3,7 @@ import fetchApi from '~/utils/fetch'
 
 export const callGetUserInfoHandler = async () => {
     try {
-        const res = await fetchApi<unknown, UserMember | UserMentor>({
+        const res = await fetchApi<never, UserMember | UserMentor>({
             url: '/api/user/getUserInfo',
             method: 'GET',
         })
