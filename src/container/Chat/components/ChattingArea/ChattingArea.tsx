@@ -41,6 +41,12 @@ const ChattingArea = ({ chatroomId, userData }: Props) => {
         return messageListData?.pages.flatMap((page) => page.messages)
     }, [messageListData])
 
+    const isIAmMentor =
+        userData.userName === chatroomData?.chatroom.mentor.userName
+    const myData = isIAmMentor
+        ? chatroomData?.chatroom.mentor
+        : chatroomData?.chatroom.member
+
     useEffect(() => {
         if (socket) {
             socket.emit('join', chatroomId)
@@ -83,21 +89,11 @@ const ChattingArea = ({ chatroomId, userData }: Props) => {
 
     return (
         <div className="flex h-screen min-w-[300px] flex-1 flex-col py-5">
-            {chatroomData && (
-                <>
-                    {userData.userName ===
-                    chatroomData.chatroom.mentor.userName ? (
-                        <ChattingAreaHeader
-                            avatar={chatroomData.chatroom.member.avatar}
-                            userName={chatroomData.chatroom.member.userName}
-                        />
-                    ) : (
-                        <ChattingAreaHeader
-                            avatar={chatroomData.chatroom.mentor.avatar}
-                            userName={chatroomData.chatroom.mentor.userName}
-                        />
-                    )}
-                </>
+            {myData && (
+                <ChattingAreaHeader
+                    avatar={myData.avatar}
+                    userName={myData.userName}
+                />
             )}
             <div className="custom-scrollbar mt-5 flex flex-1 flex-col-reverse overflow-x-hidden overflow-y-scroll px-5">
                 {!!messagesList?.length &&
