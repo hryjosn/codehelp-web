@@ -1,22 +1,12 @@
-import { cookies } from 'next/headers'
-import { NextResponse } from 'next/server'
-import apiHandler from '~/api/api'
+import { NextRequest, NextResponse } from 'next/server'
 import { getMentorInfoURL } from '~/api/mentor/route'
+import fetchApi from '~/utils/fetch'
 
 export async function GET(
-    request: Request,
+    req: NextRequest,
     context: { params: { mentorId: string } }
 ) {
     const { mentorId } = context.params
-
-    const token = cookies().get('auth_token')?.value
-
-    if (!token) {
-        return NextResponse.json(
-            { error: 'Not authenticated' },
-            { status: 401 }
-        )
-    }
 
     if (!mentorId) {
         return NextResponse.json(
@@ -25,15 +15,11 @@ export async function GET(
         )
     }
 
-    try {
-        const res = await apiHandler({
-            url: getMentorInfoURL(mentorId),
-            method: 'GET',
-            headers: { Authorization: token },
-        })
+    const res = await fetchApi({
+        url: getMentorInfoURL(mentorId),
+        method: 'GET',
+        req,
+    })
 
-        return NextResponse.json(res.data)
-    } catch (error) {
-        return NextResponse.json(error)
-    }
+    return NextResponse.json(res)
 }

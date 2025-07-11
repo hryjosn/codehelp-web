@@ -163,6 +163,7 @@ const MOCK_MENTOR_DATA: MentorT = {
             timeCode: [1, 2, 3],
         },
     ],
+    quickReply: false,
 }
 
 const meta = {

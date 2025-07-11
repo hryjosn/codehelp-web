@@ -1,9 +1,9 @@
 import { create } from 'zustand'
-import { MentorProfileData } from '../../../types'
+import { UserForMentor } from '~/api/user/types'
 
 type State = {
     isOpen: boolean
-    newMentorInfo: MentorProfileData
+    newMentorInfo: UserForMentor
     avatarFile: File | null
     countryCode: string
 }
@@ -11,16 +11,16 @@ type State = {
 type Action = {
     openModal: () => void
     closeModal: () => void
-    setNewMentorInfo: (newData: Partial<MentorProfileData>) => void
+    setNewMentorInfo: (newData: Partial<UserForMentor>) => void
     setAvatarFile: (file: File) => void
-    setInitialUserInfo: (data: MentorProfileData) => void
+    setInitialUserInfo: (data: UserForMentor) => void
     setPhoneNumber: (number: string) => void
     setCountryCode: (countryCode: string) => void
 }
 
 export const useEditProfileModalStore = create<State & Action>()((set) => ({
     isOpen: false,
-    newMentorInfo: {} as MentorProfileData,
+    newMentorInfo: {} as UserForMentor,
     avatarFile: null,
     countryCode: '',
     openModal: () => set({ isOpen: true }),

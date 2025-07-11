@@ -4,6 +4,15 @@ import {
     MENTOR_SKILLS,
     MENTOR_TOOLS,
 } from '~/container/SignUp/store/types'
+import {
+    MentorAvailableTimes,
+    MentorBookedTimes,
+    MentorDiscipline,
+    MentorSkill,
+    MentorTool,
+} from '../mentor/types'
+import { GenderCode } from '~/container/UserProfile/types'
+import { COUNTRY } from '~/container/UserProfile/MentorPage/types'
 
 export interface User {
     id: string
@@ -107,4 +116,67 @@ export interface BookingInfoResT {
     status: string
     msg: string
     bookingTime: BookingTime[]
+}
+
+export interface UserForMentor {
+    id: string
+    userName: string
+    email: string
+    avatar: string
+    gender: GenderCode
+    country: keyof typeof COUNTRY
+    title: string
+    company: string
+    phoneNumber: string
+    emailOtp: boolean
+    introduction: string
+    level: number
+    url: string
+    primaryExpertise: string
+    secondaryExpertise: string
+    tertiaryExpertise: string
+    experience: Experience[]
+    quickReply: boolean
+    education: string
+    created_at: string
+    updated_at: string
+    mentorDisciplines: MentorDiscipline[]
+    mentorSkills: MentorSkill[]
+    mentorTools: MentorTool[]
+    mentorAvailableTimes: MentorAvailableTimes[]
+}
+
+export interface UserForMember {
+    id: string
+    userName: string
+    email: string
+    avatar: string
+    gender: GenderCode
+    country: string
+    title: string
+    company: string
+    phoneNumber: string
+    emailOtp: boolean
+    introduction: string
+    level: number
+    fieldOfWork: string[]
+    created_at: string
+    updated_at: string
+}
+
+export interface UserMember {
+    status: string
+    identity: USER_IDENTITY.MEMBER
+    user: UserForMember
+}
+
+export interface UserMentor {
+    status: string
+    identity: USER_IDENTITY.MENTOR
+    user: UserForMentor
+}
+
+export enum USER_IDENTITY {
+    MENTOR = 'mentor',
+    MEMBER = 'member',
 }

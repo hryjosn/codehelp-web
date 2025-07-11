@@ -25,34 +25,39 @@ export interface MentorT {
     secondaryExpertise: string
     tertiaryExpertise: string
     experience: Experience[]
-    mentorDisciplines: {
-        id: string
-        mentorId: string
-        discipline: MENTOR_DISCIPLINES
-        created_at: string
-    }[]
-    mentorSkills: {
-        id: string
-        mentorId: string
-        skill: MENTOR_SKILLS
-        created_at: string
-    }[]
-    mentorTools: {
-        id: string
-        mentorId: string
-        tool: MENTOR_TOOLS
-        created_at: string
-    }[]
+    quickReply: boolean
     education: string
     createdAt: string
     updatedAt: string
+    mentorDisciplines: MentorDiscipline[]
+    mentorSkills: MentorSkill[]
+    mentorTools: MentorTool[]
     mentorAvailableTimes: MentorAvailableTimes[]
     mentorBookedTimes: MentorBookedTimes[]
 }
 
-export interface GetMentorInfoReqT {}
+export interface MentorDiscipline {
+    id: string
+    mentorId: string
+    discipline: MENTOR_DISCIPLINES
+    created_at: string
+}
 
-export interface GetMentorInfoResT {
+export interface MentorTool {
+    id: string
+    mentorId: string
+    tool: MENTOR_TOOLS
+    created_at: string
+}
+
+export interface MentorSkill {
+    id: string
+    mentorId: string
+    skill: MENTOR_SKILLS
+    created_at: string
+}
+
+export interface GetMentorInfoHandlerResT {
     status: string
     mentor: MentorT
 }
