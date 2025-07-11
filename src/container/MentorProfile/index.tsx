@@ -64,10 +64,14 @@ const MentorProfile = async ({
                                         title={'Expertise'}
                                         content={mentorExpertiseList.map(
                                             (data, index) => (
-                                                <BackgroundItem
-                                                    key={index}
-                                                    data={data!}
-                                                />
+                                                <>
+                                                    {data && (
+                                                        <BackgroundItem
+                                                            key={index}
+                                                            data={data!}
+                                                        />
+                                                    )}
+                                                </>
                                             )
                                         )}
                                     />
@@ -120,10 +124,10 @@ const MentorProfile = async ({
                             />
                         </div>
                         <div className="mt-6 px-6 lg:mt-0 lg:px-0">
-                            <Booking
+                            {/* <Booking
                                 mentorId={mentorId}
                                 mentorInfo={mentorInfo}
-                            />
+                            /> */}
                         </div>
                     </div>
                 </div>
