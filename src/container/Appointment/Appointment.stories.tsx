@@ -1,14 +1,18 @@
-import type { Meta, StoryFn, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react'
 import Appointment from './Appointment'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { Decorator } from '@storybook/react'
+import { SessionProvider } from 'next-auth/react'
 
 const queryClient = new QueryClient()
 
-const decorators = [
-    (Story: StoryFn) => (
-        <QueryClientProvider client={queryClient}>
-            <Story />
-        </QueryClientProvider>
+const decorators: Decorator[] = [
+    (Story) => (
+        <SessionProvider>
+            <QueryClientProvider client={queryClient}>
+                <Story />
+            </QueryClientProvider>
+        </SessionProvider>
     ),
 ]
 

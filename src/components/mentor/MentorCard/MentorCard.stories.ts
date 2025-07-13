@@ -164,6 +164,7 @@ const MOCK_MENTOR_LIST: MentorT[] = [
                 timeCode: [1, 2, 3],
             },
         ],
+        quickReply: false,
     },
 ]
 

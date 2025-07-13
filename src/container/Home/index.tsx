@@ -1,8 +1,8 @@
 import { getMentorList } from '~/api/mentor/mentor'
 import Header from '~/components/Header/Header'
 import { MentorCard } from '~/components/mentor/MentorCard/MentorCard'
-import Pagination from './components/Pagination'
 import { Link } from '~/i18n/routing'
+import Pagination from './components/Pagination'
 const PAGE_SIZE = 10
 const Home = async (props: {
     searchParams?: Promise<{

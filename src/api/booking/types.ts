@@ -1,3 +1,5 @@
+import { UserForMember } from '../user/types'
+
 export interface BookingRecordRes {
     id: string
     hostId: string
@@ -15,25 +17,7 @@ export interface MemberList {
     id: string
     bookingId: string
     memberId: string
-    member: Member
-}
-
-export interface Member {
-    id: string
-    userName: string
-    email: string
-    avatar: string
-    gender: string
-    country: string
-    title: string
-    company: string
-    phoneNumber: string
-    emailOtp: boolean
-    introduction: string
-    level: number
-    fieldOfWork: string[]
-    created_at: string
-    updated_at: string
+    member: UserForMember
 }
 
 export interface NewBookingParams {
