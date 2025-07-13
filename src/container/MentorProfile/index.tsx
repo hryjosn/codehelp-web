@@ -124,10 +124,7 @@ const MentorProfile = async ({
                             />
                         </div>
                         <div className="mt-6 px-6 lg:mt-0 lg:px-0">
-                            <Booking
-                                mentorId={mentorId}
-                                mentorInfo={mentorInfo}
-                            />
+                            <Booking mentorInfo={mentorInfo} />
                         </div>
                     </div>
                 </div>
