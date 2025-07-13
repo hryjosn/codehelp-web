@@ -178,5 +178,5 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
-    args: { mentorId: MOCK_MENTOR_DATA.id, mentorInfo: MOCK_MENTOR_DATA },
+    args: { mentorInfo: MOCK_MENTOR_DATA },
 }

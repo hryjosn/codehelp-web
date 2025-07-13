@@ -8,26 +8,28 @@ import BookingModal from './components/BookingModal/BookingModal'
 import TimeSlot from './components/TimeSlot/TimeSlot'
 import BookingButton from './components/BookingButton/BookingButton'
 import { Days, Props } from './types'
-import { convertTimeCode } from './utils'
+import { convertTimeCode, getTimeSlotVariant } from './utils'
 import { cn } from '~/lib/utils'
 import { useSession } from 'next-auth/react'
 
-const Booking = ({ mentorId, mentorInfo }: Props) => {
+const Booking = ({ mentorInfo }: Props) => {
     const [selectedDate, setSelectedDate] = useState<Date>(new Date())
     const { data: userData } = useSession()
 
     const dayOfWeek = Days[selectedDate.getDay()]
 
-    const timeCodeForAvailable = mentorInfo.mentorAvailableTimes.find(
+    const availableTimeCodeList = mentorInfo.mentorAvailableTimes.find(
         (item) => item.day === dayOfWeek
     )?.timeCode
 
-    const timeCodeForBooked = mentorInfo.mentorBookedTimes.find(
-        (item) => item.day === dayOfWeek
-    )?.timeCode
+    // const bookedTimeCodeList = mentorInfo.mentorBookedTimes.find(
+    //     (item) => item.day === dayOfWeek
+    // )?.timeCode
+
+    const bookedTimeCodeList: number[] = [] // Need to be refactored
 
     const [visibleTimes, setVisibleTimes] = useState<number[] | undefined>(
-        timeCodeForAvailable?.slice(0, 6)
+        availableTimeCodeList?.slice(0, 6)
     )
     const [isBookingModalOpen, setIsBookingModalOpen] = useState<boolean>(false)
     const [selectedTimeCode, setSelectedTimeCode] = useState<
@@ -40,38 +42,38 @@ const Booking = ({ mentorId, mentorInfo }: Props) => {
     )
 
     const onNextTimes = () => {
-        if (!timeCodeForAvailable || !visibleTimes) return
+        if (!availableTimeCodeList || !visibleTimes) return
 
-        const startIndex = timeCodeForAvailable.indexOf(visibleTimes[0]) + 6
-        if (startIndex < timeCodeForAvailable.length) {
+        const startIndex = availableTimeCodeList.indexOf(visibleTimes[0]) + 6
+        if (startIndex < availableTimeCodeList.length) {
             setVisibleTimes(
-                timeCodeForAvailable.slice(startIndex, startIndex + 6)
+                availableTimeCodeList.slice(startIndex, startIndex + 6)
             )
             setSelectedTimeCode(undefined)
         }
     }
 
     const onPrevTimes = () => {
-        if (!timeCodeForAvailable || !visibleTimes) return
+        if (!availableTimeCodeList || !visibleTimes) return
 
-        const startIndex = timeCodeForAvailable.indexOf(visibleTimes[0]) - 6
+        const startIndex = availableTimeCodeList.indexOf(visibleTimes[0]) - 6
         if (startIndex >= 0) {
             setVisibleTimes(
-                timeCodeForAvailable.slice(startIndex, startIndex + 6)
+                availableTimeCodeList.slice(startIndex, startIndex + 6)
             )
             setSelectedTimeCode(undefined)
         }
     }
 
     useEffect(() => {
-        setVisibleTimes(timeCodeForAvailable?.slice(0, 6))
-    }, [timeCodeForAvailable])
+        setVisibleTimes(availableTimeCodeList?.slice(0, 6))
+    }, [availableTimeCodeList])
 
     return (
         <div className="relative max-w-[480px] rounded-xl border border-solid border-gray-200 p-6">
             {selectedTimeCode && (
                 <BookingModal
-                    mentorId={mentorId}
+                    mentorId={mentorInfo.id}
                     selectedDate={selectedDate}
                     selectedTimeCode={selectedTimeCode}
                     isOpen={isBookingModalOpen}
@@ -147,19 +149,16 @@ const Booking = ({ mentorId, mentorInfo }: Props) => {
                         {visibleTimes.map((code) => (
                             <TimeSlot
                                 key={code}
-                                variant={
-                                    timeCodeForBooked?.find(
-                                        (timeCode) => timeCode === code
-                                    )
-                                        ? 'danger'
-                                        : 'primary'
-                                }
+                                variant={getTimeSlotVariant({
+                                    bookedTimeCodeList,
+                                    currentTimeCode: code,
+                                })} // Need to be refactored
                                 selected={selectedTimeCode === code}
-                                disabled={
-                                    !!timeCodeForBooked?.find(
-                                        (timeCode) => timeCode === code
-                                    )
-                                }
+                                // disabled={
+                                //     !!timeCodeForBooked?.find(
+                                //         (timeCode) => timeCode === code
+                                //     )
+                                // } // Need to be refactored
                                 onClick={() => setSelectedTimeCode(code)}
                             >
                                 <span>{convertTimeCode(code)}</span>

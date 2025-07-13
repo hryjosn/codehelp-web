@@ -2,7 +2,6 @@ import { MentorT } from '~/api/mentor/types'
 
 export interface Props {
     mentorInfo: MentorT
-    mentorId: string
 }
 
 export enum Days {
@@ -64,4 +63,9 @@ export enum TimeCode {
     '22:30:00' = 45,
     '23:00:00' = 46,
     '23:30:00' = 47,
+}
+
+export interface GetTimeSlotVariantProps {
+    bookedTimeCodeList: number[]
+    currentTimeCode: number
 }
