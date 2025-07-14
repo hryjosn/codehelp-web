@@ -9,9 +9,7 @@ export interface CreateChatroomResT {
     chatroomId: string
     status: string
 }
-
-export interface ChatroomInfoReqT {}
-export interface ChatroomInfoResT {
+export interface GetChatroomInfoHandler {
     chatroom: ChatroomInfoT
     status: string
 }
