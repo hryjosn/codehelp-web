@@ -3,10 +3,12 @@ import TitleSection from './components/TitleSection/TitleSection'
 import ChatroomSection from './components/ChatroomSection/ChatroomSection'
 import ChattingArea from './components/ChattingArea/ChattingArea'
 import DefaultChattingArea from './components/DefaultChattingArea/DefaultChattingArea'
+import { callGetChatroomInfoHandler } from '~/api/chatroom/chatroomAPI'
 
 const Chat = async ({ params }: { params: Promise<{ id: string }> }) => {
     const chatroomId = (await params).id
     const userData = await callGetUserInfoHandler()
+    const chatroomDataRes = await callGetChatroomInfoHandler(chatroomId)
 
     return (
         <div className="flex">
@@ -22,7 +24,7 @@ const Chat = async ({ params }: { params: Promise<{ id: string }> }) => {
             </div>
             {chatroomId ? (
                 <ChattingArea
-                    chatroomId={chatroomId}
+                    chatroomData={chatroomDataRes!.chatroom}
                     userData={userData.user}
                 />
             ) : (
