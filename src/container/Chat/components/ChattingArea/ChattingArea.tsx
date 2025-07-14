@@ -5,17 +5,13 @@ import { useEffect, useMemo, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { Props, QueryPagesParams, QueryParams } from './types'
 import ButtonInput from '~/components/ButtonInput/ButtonInput'
-import {
-    useCreateMessage,
-    useGetMessageRecord,
-    useGetChatroomInfo,
-} from '~/api/chatroom/chatroom'
+import { useCreateMessage, useGetMessageRecord } from '~/api/chatroom/chatroom'
 import { useQueryClient } from '@tanstack/react-query'
 import Avatar from '~/components/Avatar/Avatar'
 import { useTranslations } from 'next-intl'
 import ChattingAreaHeader from './components/ChattingAreaHeader'
 
-const ChattingArea = ({ chatroomId, userData }: Props) => {
+const ChattingArea = ({ chatroomData, userData }: Props) => {
     const date = new Date()
     const queryClient = useQueryClient()
     const { mutate: createMessage } = useCreateMessage()
@@ -23,9 +19,7 @@ const ChattingArea = ({ chatroomId, userData }: Props) => {
         data: messageListData,
         hasNextPage,
         fetchNextPage,
-    } = useGetMessageRecord(chatroomId)
-
-    const { data: chatroomData } = useGetChatroomInfo(chatroomId)
+    } = useGetMessageRecord(chatroomData.id)
 
     const t = useTranslations('Chat')
 
@@ -41,11 +35,12 @@ const ChattingArea = ({ chatroomId, userData }: Props) => {
         return messageListData?.pages.flatMap((page) => page.messages)
     }, [messageListData])
 
-    const isIAmMentor =
-        userData.userName === chatroomData?.chatroom.mentor.userName
-    const myData = isIAmMentor
-        ? chatroomData?.chatroom.mentor
-        : chatroomData?.chatroom.member
+    const isIAmMentor = userData.userName === chatroomData?.mentor.userName
+    const otherUserData = isIAmMentor
+        ? chatroomData?.member
+        : chatroomData?.mentor
+
+    const chatroomId = chatroomData.id
 
     useEffect(() => {
         if (socket) {
@@ -89,10 +84,10 @@ const ChattingArea = ({ chatroomId, userData }: Props) => {
 
     return (
         <div className="flex h-screen min-w-[300px] flex-1 flex-col py-5">
-            {myData && (
+            {otherUserData && (
                 <ChattingAreaHeader
-                    avatar={myData.avatar}
-                    userName={myData.userName}
+                    avatar={otherUserData.avatar}
+                    userName={otherUserData.userName}
                 />
             )}
             <div className="custom-scrollbar mt-5 flex flex-1 flex-col-reverse overflow-x-hidden overflow-y-scroll px-5">
@@ -109,7 +104,7 @@ const ChattingArea = ({ chatroomId, userData }: Props) => {
                                 </div>
                             ) : (
                                 <div className="my-3 flex items-center">
-                                    <Avatar src={data.user.avatar} />
+                                    <Avatar src={otherUserData.avatar} />
                                     <div className="ml-5 mr-3">
                                         <MessageBox message={data.content} />
                                     </div>

@@ -1,22 +1,14 @@
 import { cookies } from 'next/headers'
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import apiHandler from '~/api/api'
 import { getChatroomInfoURL } from '~/api/chatroom/route'
+import fetchApi from '~/utils/fetch'
 
 export async function GET(
-    request: Request,
+    req: NextRequest,
     context: { params: { chatroomId: string } }
 ) {
     const { chatroomId } = context.params
-
-    const token = cookies().get('auth_token')?.value
-
-    if (!token) {
-        return NextResponse.json(
-            { error: 'Not authenticated' },
-            { status: 401 }
-        )
-    }
 
     if (!chatroomId) {
         return NextResponse.json(
@@ -25,15 +17,11 @@ export async function GET(
         )
     }
 
-    try {
-        const res = await apiHandler({
-            url: getChatroomInfoURL(chatroomId),
-            method: 'GET',
-            headers: { Authorization: token },
-        })
+    const res = await fetchApi({
+        url: getChatroomInfoURL(chatroomId),
+        method: 'GET',
+        req,
+    })
 
-        return NextResponse.json(res.data)
-    } catch (error) {
-        return NextResponse.json(error)
-    }
+    return NextResponse.json(res)
 }

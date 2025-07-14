@@ -2,7 +2,6 @@ import { useInfiniteQuery, useMutation, useQuery } from '@tanstack/react-query'
 import {
     MessageListQueryResT,
     CreateMessageData,
-    ChatroomInfoResT,
     CreateChatroomData,
 } from './types'
 import axios from 'axios'
@@ -13,16 +12,6 @@ export const useCreateChatroom = () => {
             return await axios.post('/api/chatroom/chatroom', {
                 data,
             })
-        },
-    })
-}
-
-export const useGetChatroomInfo = (chatroomId: string) => {
-    return useQuery({
-        queryKey: ['chatroomInfo', chatroomId],
-        queryFn: async (): Promise<ChatroomInfoResT> => {
-            const res = await axios.get(`/api/chatroom/chatroom/${chatroomId}`)
-            return res.data
         },
     })
 }
