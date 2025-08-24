@@ -86,7 +86,7 @@ const Booking = ({ mentorId, mentorInfo }: Props) => {
             <small className="font-light tracking-wide text-slate-500">
                 Book 1:1 sessions from the options based on your needs
             </small>
-            <div className="my-6 grid grid-cols-5 items-center gap-4">
+            <div className="my-6 grid grid-cols-5 items-center gap-2 md:gap-4">
                 {currentFourDays.map((day, index) => (
                     <DateSlot
                         key={index}
@@ -98,7 +98,7 @@ const Booking = ({ mentorId, mentorInfo }: Props) => {
                                 weekday: 'short',
                             })}
                         </span>
-                        <span className="self-center text-sm font-bold uppercase text-cyan-900">
+                        <span className="self-center text-xs font-bold uppercase md:text-sm text-cyan-900">
                             {day.toLocaleDateString('en-US', {
                                 day: '2-digit',
                                 month: 'short',
