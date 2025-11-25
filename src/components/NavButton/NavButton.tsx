@@ -21,10 +21,10 @@ const buttonVariants = cva('border rounded-lg border-black font-bold', {
     },
 })
 
-interface ButtonProps
-    extends AnchorHTMLAttributes<HTMLAnchorElement>,
-        VariantProps<typeof buttonVariants> {
+interface ButtonProps extends VariantProps<typeof buttonVariants> {
     path: string
+    className?: string
+    children?: React.ReactNode
 }
 
 const NavButton: FC<ButtonProps> = ({
