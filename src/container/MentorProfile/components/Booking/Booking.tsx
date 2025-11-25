@@ -18,11 +18,11 @@ const Booking = ({ mentorId, mentorInfo }: Props) => {
 
     const dayOfWeek = Days[selectedDate.getDay()]
 
-    const timeCodeForAvailable = mentorInfo.mentorAvailableTimes.find(
+    const timeCodeForAvailable = mentorInfo?.mentorAvailableTimes?.find(
         (item) => item.day === dayOfWeek
     )?.timeCode
 
-    const timeCodeForBooked = mentorInfo.mentorBookedTimes.find(
+    const timeCodeForBooked = mentorInfo?.mentorBookedTimes?.find(
         (item) => item.day === dayOfWeek
     )?.timeCode
 
