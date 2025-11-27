@@ -1,6 +1,6 @@
 import { cva, VariantProps } from 'class-variance-authority'
 import { Link } from '~/i18n/routing'
-import { AnchorHTMLAttributes, FC } from 'react'
+import { FC } from 'react'
 import { cn } from '~/lib/utils'
 
 const buttonVariants = cva('border rounded-lg border-black font-bold', {
@@ -21,10 +21,13 @@ const buttonVariants = cva('border rounded-lg border-black font-bold', {
     },
 })
 
-interface ButtonProps
-    extends AnchorHTMLAttributes<HTMLAnchorElement>,
-        VariantProps<typeof buttonVariants> {
+interface ButtonProps extends VariantProps<typeof buttonVariants> {
     path: string
+    className?: string
+    children?: React.ReactNode
+    target?: string
+    rel?: string
+    // Add more props here if needed
 }
 
 const NavButton: FC<ButtonProps> = ({
@@ -32,12 +35,16 @@ const NavButton: FC<ButtonProps> = ({
     variant,
     size,
     path,
+    target,
+    rel,
     ...props
 }) => {
     return (
         <Link
             className={cn(buttonVariants({ size, className, variant }))}
             href={path}
+            target={target}
+            rel={rel}
             {...props}
         />
     )
