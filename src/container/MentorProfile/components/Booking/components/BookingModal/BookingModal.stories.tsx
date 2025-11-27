@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/nextjs'
 import BookingModal from './BookingModal'
-import { fn } from '@storybook/test'
+import { fn } from 'storybook/test'
 import { useState } from 'react'
 
 const meta = {

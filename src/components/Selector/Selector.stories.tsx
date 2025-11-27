@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/nextjs'
 import Selector from './Selector'
 import { useState } from 'react'
 import { durationList } from '~/container/MentorProfile/components/Booking/components/BookingModal/constants'

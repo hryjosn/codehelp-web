@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/nextjs'
 import ExpertiseDropDown from './ExpertiseDropDown'
-import { fn } from '@storybook/test'
+import { fn } from 'storybook/test'
 import React from 'react'
 import { useEditProfileModalStore } from '../../store/EditProfileModalStore'
 import { selectChange } from '~/container/UserProfile/MentorPage/utils'

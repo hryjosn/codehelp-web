@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/nextjs'
 import EditProfileModal from './EditProfileModal'
-import { fn } from '@storybook/test'
+import { fn } from 'storybook/test'
 import { useEditProfileModalStore } from './store/EditProfileModalStore'
 
 const meta = {

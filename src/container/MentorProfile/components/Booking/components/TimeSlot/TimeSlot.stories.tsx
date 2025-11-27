@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/nextjs'
 import TimeSlot from './TimeSlot'
-import { fn } from '@storybook/test'
+import { fn } from 'storybook/test'
 
 const meta = {
     title: 'MentorProfile/Components/Booking/Components/TimeSlot',
