@@ -6,7 +6,7 @@ type Props = {
 
 const BackgroundItem = ({ data }: Props) => {
     return (
-        <div className="rounded-md border px-5 py-1 text-center text-sm font-black">
+        <div className="flex items-center justify-center text-center rounded-md border px-5 py-1 text-xs md:text-sm font-black">
             {data}
         </div>
     )
