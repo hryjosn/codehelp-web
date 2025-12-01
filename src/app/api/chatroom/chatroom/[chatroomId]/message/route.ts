@@ -5,16 +5,16 @@ import { getMessageRecordURL } from '~/api/chatroom/route'
 
 export async function GET(
     req: Request,
-    context: { params: { chatroomId: string } }
+    context: { params: Promise<{ chatroomId: string }> }
 ) {
     const { searchParams } = new URL(req.url)
 
     const page = Number(searchParams.get('page')) || 1
     const count = Number(searchParams.get('count')) || 15
 
-    const { chatroomId } = context.params
+    const { chatroomId } = (await context.params)
 
-    const token = cookies().get('auth_token')?.value
+    const token = (await cookies()).get('auth_token')?.value
 
     if (!token) {
         return NextResponse.json(

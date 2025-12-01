@@ -11,7 +11,7 @@ export async function POST(req: Request) {
         )
     }
 
-    cookies().set({
+    (await cookies()).set({
         name: 'auth_token',
         value: token,
         httpOnly: true,
@@ -25,7 +25,7 @@ export async function POST(req: Request) {
 }
 
 export async function GET() {
-    const token = cookies().get('auth_token')?.value
+    const token = (await cookies()).get('auth_token')?.value
 
     if (!token) {
         return NextResponse.json({ error: 'Token not found' }, { status: 401 })
@@ -35,7 +35,7 @@ export async function GET() {
 }
 
 export async function DELETE() {
-    cookies().delete('auth_token')
+    (await cookies()).delete('auth_token')
 
     return NextResponse.json({ message: 'Token deleted' })
 }

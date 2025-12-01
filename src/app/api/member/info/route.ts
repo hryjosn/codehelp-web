@@ -5,7 +5,7 @@ import { updateMemberInfoURL } from '~/api/member/route'
 
 export async function PUT(req: Request) {
     const { data } = await req.json()
-    const token = cookies().get('auth_token')?.value
+    const token = (await cookies()).get('auth_token')?.value
 
     if (!token) {
         return NextResponse.json(

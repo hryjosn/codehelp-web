@@ -5,11 +5,11 @@ import { getBookingRecordURL } from '~/api/booking/route'
 
 export async function GET(
     request: Request,
-    context: { params: { recordId: string } }
+    context: { params: Promise<{ recordId: string }> }
 ) {
-    const { recordId } = context.params
+    const { recordId } = (await context.params)
 
-    const token = cookies().get('auth_token')?.value
+    const token = (await cookies()).get('auth_token')?.value
 
     if (!token) {
         return NextResponse.json(

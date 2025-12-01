@@ -9,7 +9,7 @@ export async function GET(req: NextRequest) {
     const page = Number(searchParams.get('page')) || 1
     const count = Number(searchParams.get('count')) || 15
 
-    const token = cookies().get('auth_token')?.value
+    const token = (await cookies()).get('auth_token')?.value
 
     if (!token) {
         return NextResponse.json(

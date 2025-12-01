@@ -5,12 +5,12 @@ import { getNewBookingURL } from '~/api/booking/route'
 
 export async function POST(
     request: Request,
-    context: { params: { mentorId: string } }
+    context: { params: Promise<{ mentorId: string }> }
 ) {
-    const { mentorId } = context.params
+    const { mentorId } = (await context.params)
     const formData = await request.formData()
 
-    const token = cookies().get('auth_token')?.value
+    const token = (await cookies()).get('auth_token')?.value
 
     if (!token) {
         return NextResponse.json(
