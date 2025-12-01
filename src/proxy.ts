@@ -69,13 +69,13 @@ function buildPublicPathRegex(
             )
             .join('|')})/?$`,
         'i'
-    )
+    );
 }
 
 // Memoize the publicPathnameRegex
 const publicPathnameRegex = buildPublicPathRegex(publicPages, [...locales])
 
-export default function middleware(req: NextRequest) {
+export default function proxy(req: NextRequest) {
     const isPublicPage = publicPathnameRegex.test(req.nextUrl.pathname)
     return isPublicPage ? handleI18nRouting(req) : (authMiddleware as any)(req)
 }

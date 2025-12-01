@@ -5,7 +5,7 @@ import { createChatroomURL } from '~/api/chatroom/route'
 
 export async function POST(req: Request) {
     const { data } = await req.json()
-    const token = cookies().get('auth_token')?.value
+    const token = (await cookies()).get('auth_token')?.value
 
     if (!token) {
         return NextResponse.json(

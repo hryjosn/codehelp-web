@@ -5,11 +5,11 @@ import { getChatroomInfoURL } from '~/api/chatroom/route'
 
 export async function GET(
     request: Request,
-    context: { params: { chatroomId: string } }
+    context: { params: Promise<{ chatroomId: string }> }
 ) {
-    const { chatroomId } = context.params
+    const { chatroomId } = (await context.params)
 
-    const token = cookies().get('auth_token')?.value
+    const token = (await cookies()).get('auth_token')?.value
 
     if (!token) {
         return NextResponse.json(

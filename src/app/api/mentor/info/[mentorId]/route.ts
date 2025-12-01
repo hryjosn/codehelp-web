@@ -4,9 +4,9 @@ import fetchApi from '~/utils/fetch'
 
 export async function GET(
     req: NextRequest,
-    context: { params: { mentorId: string } }
+    context: { params: Promise<{ mentorId: string }> }
 ) {
-    const { mentorId } = context.params
+    const { mentorId } = (await context.params)
 
     if (!mentorId) {
         return NextResponse.json(

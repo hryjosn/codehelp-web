@@ -1,1 +1,2 @@
-export { default } from '~/container/SignUp/Mentor/MentorSignUp'
+export { /* @next-codemod-error `default` export is re-exported. Check if this component uses `params` or `searchParams`*/
+default } from '~/container/SignUp/Mentor/MentorSignUp'

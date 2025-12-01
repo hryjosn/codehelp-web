@@ -1,8 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import EditMemberProfileModal from './EditMemberProfileModal'
-import { fn } from 'vitest'
-import type { UserForMember } from '~/types/yourUserTypeFile' // 請根據實際 UserForMember 型別路徑調整
+
+
 import { useEditMemberProfileModalStore } from './store/EditMemberProfileModalStore'
+import { UserForMember } from '~/api/user/types'
+import { fn } from '@storybook/test'
 
 const meta = {
     title: 'UserProfile/MemberPage/EditMemberProfileModal',

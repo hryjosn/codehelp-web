@@ -20,15 +20,24 @@ export const metadata: Metadata = {
     title: 'Home',
     description: 'Welcome to Next.js',
 }
-export default async function RootLayout({
-    // Layouts must accept a children prop.
-    // This will be populated with nested layouts or pages
-    children,
-    params: { locale },
-}: {
-    children: React.ReactNode
-    params: { locale: string }
-}) {
+export default async function RootLayout(
+    props: {
+        children: React.ReactNode
+        params: Promise<{ locale: string }>
+    }
+) {
+    const params = await props.params;
+
+    const {
+        locale
+    } = params;
+
+    const {
+        // Layouts must accept a children prop.
+        // This will be populated with nested layouts or pages
+        children
+    } = props;
+
     if (!routing.locales.includes(locale as any)) {
         notFound()
     }

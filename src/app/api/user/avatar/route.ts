@@ -5,7 +5,7 @@ import { updateAvatarURL } from '~/api/user/route'
 
 export async function PUT(req: Request) {
     const formData = await req.formData()
-    const token = cookies().get('auth_token')?.value
+    const token = (await cookies()).get('auth_token')?.value
 
     if (!token) {
         return NextResponse.json(
