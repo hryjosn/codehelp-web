@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import EditMemberProfileModal from './EditMemberProfileModal'
-import { fn } from '@storybook/test'
+import { fn } from 'vitest'
+import type { UserForMember } from '~/types/yourUserTypeFile' // 請根據實際 UserForMember 型別路徑調整
 import { useEditMemberProfileModalStore } from './store/EditMemberProfileModalStore'
 
 const meta = {
@@ -11,7 +12,7 @@ const meta = {
     },
     tags: ['autodocs'],
     args: {
-        onSave: fn(),
+        onSave: fn<(data: UserForMember) => void>(),
     },
     decorators: [
         (Story) => {
@@ -26,19 +27,19 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-const OpenModalButton = () => {
+const OpenModalButton = (args: { onSave: (data: UserForMember) => void }) => {
     const openModal = useEditMemberProfileModalStore((state) => state.openModal)
     return (
         <>
             <button onClick={openModal}>Open modal</button>
-            <EditMemberProfileModal onSave={fn} />
+            <EditMemberProfileModal onSave={args.onSave} />
         </>
     )
 }
 
 export const Default: Story = {
     args: {
-        onSave: fn(),
+        onSave: fn<(data: UserForMember) => void>(),
     },
     render: OpenModalButton,
 }
