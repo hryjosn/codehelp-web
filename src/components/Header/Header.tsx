@@ -14,7 +14,7 @@ const Header: FC = () => {
                     width={50}
                     height={50}
                 />
-                <p className="text-xl font-bold">Codehelp</p>
+                <p className="text-xl font-bold">Codehelp!</p>
             </Link>
             <HeaderSection />
         </div>
