@@ -12,7 +12,10 @@ import { Toaster } from '~/components/ui/toaster'
 import 'react-phone-input-2/lib/style.css'
 
 import '~/styles/globals.css'
+console.log('MOCK', process.env.MOCK)
 if (process.env.MOCK === 'true') {
+    console.log('server.listen')  
+
     server.listen()
 }
 
