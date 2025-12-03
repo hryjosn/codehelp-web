@@ -15,6 +15,13 @@ export interface MessageT {
     created_at: string
 }
 
+export interface MessageInChatroomInfo {
+    id: string
+    userId: string
+    content: string
+    created_at: string
+}
+
 export interface CreateChatroomT {
     chatroomId: string
     status: string
@@ -25,7 +32,7 @@ export interface ChatroomInfoT {
     created_at: string
     member: RoleInfoT
     mentor: RoleInfoT
-    messages: MessageT[]
+    messages: MessageInChatroomInfo[]
 }
 export interface ChatroomListT {
     id: string
