@@ -42,7 +42,7 @@ const ChattingArea = ({ chatroomId, userData }: Props) => {
     }, [messageListData])
 
     const isIAmMentor =
-        userData.userName === chatroomData?.chatroom.mentor.userName
+        userData.userName === chatroomData?.chatroom?.mentor.userName
     const myData = isIAmMentor
         ? chatroomData?.chatroom.mentor
         : chatroomData?.chatroom.member
@@ -103,15 +103,15 @@ const ChattingArea = ({ chatroomId, userData }: Props) => {
                             key={data.id}
                             ref={index === messagesList.length - 1 ? ref : null}
                         >
-                            {userData.id === data.user.id ? (
+                            {userData.id === data?.user?.id ? (
                                 <div className="my-3 ml-20 flex justify-end">
-                                    <MessageBox message={data.content} />
+                                    <MessageBox message={data?.content} />
                                 </div>
                             ) : (
                                 <div className="my-3 flex items-center">
-                                    <Avatar src={data.user.avatar} />
+                                    <Avatar src={data?.user?.avatar} />
                                     <div className="ml-5 mr-3">
-                                        <MessageBox message={data.content} />
+                                        <MessageBox message={data?.content} />
                                     </div>
                                 </div>
                             )}

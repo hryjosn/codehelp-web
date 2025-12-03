@@ -81,6 +81,7 @@ export const useGetChatroomList = () => {
             } = await axios.get(`/api/chatroom/list`, {
                 params: { page: pageParam, count: pageSize },
             })
+            console.log('chatroomList>', chatroomList)
 
             return { chatroomList, total, pageParam, pageSize }
         },

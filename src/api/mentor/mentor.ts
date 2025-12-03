@@ -48,12 +48,13 @@ export const getMentorList = async ({
             next: { tags: ['mentorList'], revalidate: 300 },
         }
     )
-
     if (!res.ok) {
         throw new Error('Failed to fetch mentor list')
     }
 
     const data: MentorListResT = await res.json()
+    console.log('data>', data)
+
     return data
 }
 export const useGetMentorList = () => {

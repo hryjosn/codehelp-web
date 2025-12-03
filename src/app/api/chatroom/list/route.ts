@@ -10,7 +10,7 @@ export async function GET(req: NextRequest) {
     const count = Number(searchParams.get('count')) || 15
 
     const token = cookies().get('auth_token')?.value
-
+    console.log('token>', token)
     if (!token) {
         return NextResponse.json(
             { error: 'Not authenticated' },

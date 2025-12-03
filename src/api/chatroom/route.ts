@@ -11,4 +11,4 @@ export const getMessageRecordURL = (chatroomId: string) =>
 
 export const createChatroomURL = `${baseURL}/chatroom/create`
 
-export const getChatroomListURL = `/chatroom/list`
+export const getChatroomListURL = `${baseURL}/chatroom/list`

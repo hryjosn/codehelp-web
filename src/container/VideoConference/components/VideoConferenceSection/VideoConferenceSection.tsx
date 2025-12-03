@@ -210,9 +210,9 @@ const VideoConferenceSection = ({ userData, roomId }: Props) => {
                                 chatList.map((data) => (
                                     <div className="mt-3" key={data.id}>
                                         <MessageBox
-                                            name={data.user.userName}
-                                            time={data.createdAt}
-                                            message={data.content}
+                                            name={data?.user.userName}
+                                            time={data?.createdAt}
+                                            message={data?.content}
                                         />
                                     </div>
                                 ))}
