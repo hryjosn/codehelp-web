@@ -4,7 +4,7 @@ import { Suspense, use } from 'react'
 import { handlers } from './handlers'
 
 const mockingEnabledPromise =
-    typeof window !== 'undefined'
+    typeof window !== 'undefined' && process.env.NEXT_PUBLIC_MOCK === 'true'
         ? import('./browser').then(async ({ worker }) => {
               await worker.start({
                   onUnhandledRequest(request, print) {

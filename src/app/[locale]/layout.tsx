@@ -12,7 +12,7 @@ import { Toaster } from '~/components/ui/toaster'
 import 'react-phone-input-2/lib/style.css'
 
 import '~/styles/globals.css'
-if (process.env.MOCK === 'true') {
+if (process.env.NEXT_PUBLIC_MOCK === 'true') {
     server.listen()
 }
 
@@ -40,11 +40,7 @@ export default async function RootLayout({
                     <ReactQueryClientProvider>
                         <Provider>
                             <RootStoreProvider>
-                                {process.env.MOCK === 'true' ? (
-                                    <MSWProvider>{children}</MSWProvider>
-                                ) : (
-                                    <>{children}</>
-                                )}
+                                <MSWProvider>{children}</MSWProvider>
                                 <Toaster />
                             </RootStoreProvider>
                         </Provider>
