@@ -1,7 +1,7 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/nextjs'
 import EditMemberProfileModal from './EditMemberProfileModal'
-import { fn } from 'vitest'
-import type { UserForMember } from '~/types/yourUserTypeFile' // 請根據實際 UserForMember 型別路徑調整
+import { fn } from 'storybook/test'
+import type { UserForMember } from '~/api/user/types'
 import { useEditMemberProfileModalStore } from './store/EditMemberProfileModalStore'
 
 const meta = {

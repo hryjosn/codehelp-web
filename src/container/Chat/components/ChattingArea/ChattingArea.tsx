@@ -42,10 +42,10 @@ const ChattingArea = ({ chatroomId, userData }: Props) => {
     }, [messageListData])
 
     const isIAmMentor =
-        userData.userName === chatroomData?.chatroom?.mentor.userName
+        userData.userName === chatroomData?.chatroom?.mentor?.userName
     const myData = isIAmMentor
-        ? chatroomData?.chatroom.mentor
-        : chatroomData?.chatroom.member
+        ? chatroomData?.chatroom?.mentor
+        : chatroomData?.chatroom?.member
 
     useEffect(() => {
         if (socket) {
@@ -100,7 +100,7 @@ const ChattingArea = ({ chatroomId, userData }: Props) => {
                     !!userData &&
                     messagesList.map((data, index) => (
                         <div
-                            key={data.id}
+                            key={data?.id}
                             ref={index === messagesList.length - 1 ? ref : null}
                         >
                             {userData.id === data?.user?.id ? (

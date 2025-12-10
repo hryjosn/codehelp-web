@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/nextjs'
 import UploadAvatar from './UploadAvatar'
-import { fn } from '@storybook/test'
+import { fn } from 'storybook/test'
 import { useEditProfileModalStore } from '../EditProfileModal/store/EditProfileModalStore'
 import { avatarChange } from '../../utils'
 

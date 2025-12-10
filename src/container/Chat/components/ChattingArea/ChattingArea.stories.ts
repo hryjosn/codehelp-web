@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/nextjs'
 import ChattingArea from './ChattingArea'
 import { UserForMember } from '~/api/user/types'
 const userData: UserForMember = {

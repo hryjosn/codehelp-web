@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/nextjs'
 import FormInput, { FormInputProps } from './FormInput'
 import { FormProvider, useForm } from 'react-hook-form'
 import { joiResolver } from '@hookform/resolvers/joi'
