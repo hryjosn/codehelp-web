@@ -1,4 +1,4 @@
-import type { Preview } from '@storybook/react'
+import type { Preview } from '@storybook/nextjs'
 import { NextIntlClientProvider } from 'next-intl';
 import { RootStoreProvider } from '../src/store/rootStoreProvider'
 import { ReactQueryClientProvider } from '../src/components/ReactQueryClientProvider/ReactQueryClientProvider'
@@ -28,9 +28,6 @@ const preview: Preview = {
           );
         },
     ],
-    globals: {
-      locale: 'zh',
-    },
     parameters: {
         controls: {
             matchers: {
@@ -38,6 +35,9 @@ const preview: Preview = {
                 date: /Date$/i,
             },
         },
+    },
+    initialGlobals: {
+      locale: 'zh',
     },
 }
 

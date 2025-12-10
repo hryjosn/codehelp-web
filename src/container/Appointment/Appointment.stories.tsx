@@ -1,7 +1,7 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/nextjs'
 import Appointment from './Appointment'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { Decorator } from '@storybook/react'
+import { Decorator } from '@storybook/nextjs'
 import { SessionProvider } from 'next-auth/react'
 
 const queryClient = new QueryClient()

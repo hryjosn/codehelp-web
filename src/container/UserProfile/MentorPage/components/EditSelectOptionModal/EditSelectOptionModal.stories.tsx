@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/nextjs'
 import EditSelectOptionModal from './EditSelectOptionModal'
 import disciplineList from '~/constant/data/disciplines.json'
 import { useEditSelectOptionModalStore } from './store/EditSelectOptionModalStore'

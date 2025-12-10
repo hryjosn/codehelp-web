@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/nextjs'
 import BackgroundContent from './BackgroundContent'
 import BackgroundItem from './components/BackgroundItem/BackgroundItem'
 

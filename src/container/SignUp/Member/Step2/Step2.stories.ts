@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/nextjs'
 import Step2 from './Step2'
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export

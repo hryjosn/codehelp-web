@@ -1,7 +1,8 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/nextjs'
 import EditProfileModal from './EditProfileModal'
-import { fn } from '@storybook/test'
+import { fn } from 'storybook/test'
 import { useEditProfileModalStore } from './store/EditProfileModalStore'
+import type { UserForMentor } from '~/api/user/types'
 
 const meta = {
     title: 'UserProfile/MentorPage/EditProfileModal',
@@ -11,7 +12,7 @@ const meta = {
     },
     tags: ['autodocs'],
     args: {
-        onSave: fn(),
+        onSave: fn<(data: UserForMentor) => void>(),
     },
     decorators: [
         (Story) => {
@@ -26,12 +27,12 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-const OpenModalButton = () => {
+const OpenModalButton = (args: { onSave: (data: UserForMentor) => void }) => {
     const openModal = useEditProfileModalStore((state) => state.openModal)
     return (
         <>
             <button onClick={openModal}>Open modal</button>
-            <EditProfileModal onSave={fn} />
+            <EditProfileModal onSave={args.onSave} />
         </>
     )
 }
