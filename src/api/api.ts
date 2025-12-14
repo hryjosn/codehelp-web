@@ -30,7 +30,7 @@ instance.interceptors.response.use(
     },
     (error) => {
         if (isAxiosError(error)) {
-            return Promise.reject(error.response?.data.code)
+            return Promise.reject(error.response?.data)
         }
         return Promise.reject(error)
     }

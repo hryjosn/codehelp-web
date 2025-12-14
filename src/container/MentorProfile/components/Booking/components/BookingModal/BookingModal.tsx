@@ -13,11 +13,12 @@ import { Props } from './types'
 import { useNewBooking } from '~/api/booking/booking'
 import { useState } from 'react'
 import Selector from '~/components/Selector/Selector'
-import { durationList } from './constants'
+import { durationList, bookingErrorCode } from './constants'
 import { useSession } from 'next-auth/react'
 import { useToast } from '~/hooks/use-toast'
 import { convertTimeCode } from '~/container/MentorProfile/components/Booking/utils'
 import BookingButton from '../BookingButton/BookingButton'
+import compressImage from '~/utils/compressImage'
 
 const BookingModal = ({
     mentorId,
@@ -56,15 +57,25 @@ const BookingModal = ({
             formData.append('topic', topic)
             formData.append('question', question)
             formData.append('duration', duration)
-            formData.append('picture', imageList[0])
-            formData.append('picture', imageList[1] || '')
-            formData.append('picture', imageList[2] || '')
             formData.append('bookingTime', bookingTime)
-            formData.append('memberIds', userData.user.id)
+            formData.append('memberIds[]', userData.user.id)
+
+            imageList.forEach((file) => {
+                if (file) formData.append('picture', file)
+            })
             newBooking(
                 { data: formData, mentorId },
                 {
                     onSuccess(res) {
+                        console.log('Booking response:', res)
+                        if (res?.data?.code) {
+                            toast({
+                                title: 'Booking failed',
+                                description: bookingErrorCode[res.data.code],
+                                variant: 'destructive',
+                            })
+                            return
+                        }
                         if (res?.data?.booking) {
                             toast({
                                 title: 'Booking successful',
@@ -148,6 +159,7 @@ const BookingModal = ({
                             What is the topic you want to ask?
                         </p>
                         <Input
+                            value={topic}
                             onChange={(e) => {
                                 setTopic(e.target.value)
                             }}
@@ -158,6 +170,7 @@ const BookingModal = ({
                         <textarea
                             className="w-full resize-none rounded-lg border border-zinc-300 p-2 outline-none focus:border-sky-600"
                             rows={5}
+                            value={question}
                             onChange={(e) => {
                                 setQuestion(e.target.value)
                             }}
@@ -167,15 +180,17 @@ const BookingModal = ({
                         {imageList.length < 3 && (
                             <div className="flex items-center">
                                 <UploadImage
-                                    onChange={(event) => {
+                                    onChange={async (event) => {
                                         const file = event.target.files![0]
                                         if (!file.type.startsWith('image/')) {
                                             alert('Only can upload image files')
                                             return
                                         }
-                                        const fileURL =
-                                            URL.createObjectURL(file)
-                                        uploadImage(fileURL)
+                                        const compressedImage =
+                                            await compressImage(event)
+                                        if (compressedImage) {
+                                            uploadImage(compressedImage)
+                                        }
                                     }}
                                 />
                                 <p className="ml-2">Press to add pictures</p>
@@ -191,7 +206,11 @@ const BookingModal = ({
                                         }}
                                     >
                                         <Image
-                                            src={image}
+                                            src={
+                                                image
+                                                    ? URL.createObjectURL(image)
+                                                    : ''
+                                            }
                                             alt=""
                                             width={100}
                                             height={100}
