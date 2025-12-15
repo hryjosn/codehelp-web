@@ -50,6 +50,7 @@ import { useEditSelectOptionModalStore } from './components/EditSelectOptionModa
 import { useUpdateAvatar } from '~/api/user/user'
 import { useSession } from 'next-auth/react'
 import { refactorPhoneNumber } from '~/lib/utils'
+import { useRouter } from '~/i18n/routing'
 
 // This would typically come from an API or database
 const mentorData = {
@@ -115,6 +116,8 @@ export default function MentorPage({ userData }: Props) {
     })
 
     const { toast } = useToast()
+
+    const route = useRouter()
 
     const bookingRecordList = useMemo(() => {
         return bookingRecordListData?.pages.flatMap(
@@ -315,6 +318,7 @@ export default function MentorPage({ userData }: Props) {
                     <Card
                         headerTitle="Availability"
                         isButtonVisible
+                        onClick={() => route.push('/appointment')}
                         content={
                             <div className="space-y-2">
                                 {userData.mentorAvailableTimes.map((data) => (

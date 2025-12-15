@@ -8,14 +8,14 @@ import HourGrid from './components/HourGrid/HourGrid'
 import Header from '~/components/Header/Header'
 import { AppointmentT, Days, SelectedItem } from './store/types'
 import { Button } from '~/components/Button/Button'
-import { useSaveAppointment } from '~/api/mentor/mentor'
+import { useUpdateAvailableTime } from '~/api/mentor/mentor'
 
 const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
 const TIMECODES = [...Array(48)]
 
 const Appointment = () => {
     const [selectedItems, setSelectedItems] = useState<SelectedItem>({})
-    const { mutate: saveAppointment } = useSaveAppointment()
+    const { mutate: saveAppointment } = useUpdateAvailableTime()
 
     const setting = (day: number, time: number) => {
         setSelectedItems((prevState) => {
@@ -56,7 +56,7 @@ const Appointment = () => {
             }
         })
         saveAppointment(
-            { data: appointment },
+            { availableTimeList: appointment },
             {
                 onSuccess(res) {
                     alert(res.message)
