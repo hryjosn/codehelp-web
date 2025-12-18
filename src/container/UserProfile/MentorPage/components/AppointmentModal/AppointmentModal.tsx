@@ -61,7 +61,7 @@ const AppointmentModal = ({ bookingId }: Props) => {
                                     className="flex-col"
                                     title="Pictures:"
                                     content={
-                                        <div className="flex space-x-2">
+                                        <div className="mt-2 flex justify-center gap-2">
                                             {bookingRecordData?.picture.map(
                                                 (src, index) => (
                                                     <ImageButton
