@@ -5,7 +5,7 @@ export const getMentorInfoURL = (mentorId: string) =>
 
 export const getMentorListURL = `${baseURL}/mentor/list`
 
-export const saveAppointmentURL = `${baseURL}/mentor/appointment`
+export const updateAvailableTimeURL = `${baseURL}/mentor/updateAvailableTime`
 
 export const updateMentorInfoURL = `${baseURL}/mentor/update/info`
 

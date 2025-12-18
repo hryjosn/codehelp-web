@@ -63,11 +63,11 @@ export interface GetMentorInfoHandlerResT {
 }
 export interface AppointmentParam {}
 
-export interface AppointmentReq {
-    data: AppointmentT[]
+export interface AvailableTimeReq {
+    availableTimeList: AppointmentT[]
 }
 
-export interface AppointmentRes {
+export interface AvailableTimeRes {
     message: string
     status: string
 }

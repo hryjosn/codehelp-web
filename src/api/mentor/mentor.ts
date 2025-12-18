@@ -6,12 +6,8 @@ import {
     UpdateMentorToolsParams,
 } from '~/api/mentor/types'
 import apiHandler from '../api'
-import { saveAppointmentURL, getMentorListURL } from './route'
-import {
-    AppointmentReq,
-    AppointmentResWrapData,
-    UpdateMentorInfoParams,
-} from './types'
+import { getMentorListURL } from './route'
+import { AvailableTimeReq, UpdateMentorInfoParams } from './types'
 import axios from 'axios'
 
 interface MentorListResT {
@@ -82,17 +78,10 @@ export const useGetMentorList = () => {
     })
 }
 
-export const useSaveAppointment = () => {
+export const useUpdateAvailableTime = () => {
     return useMutation({
-        mutationFn: async (data: AppointmentReq) => {
-            const res = await apiHandler<
-                AppointmentReq,
-                AppointmentResWrapData
-            >({
-                url: saveAppointmentURL,
-                method: 'post',
-                data,
-            })
+        mutationFn: async (data: AvailableTimeReq) => {
+            const res = await axios.put('/api/mentor/availableTime', { data })
             return res.data
         },
     })

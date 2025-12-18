@@ -1,9 +1,9 @@
 import { http, HttpResponse } from 'msw'
-import { saveAppointmentURL } from '~/api/mentor/route'
+import { updateAvailableTimeURL } from '~/api/mentor/route'
 import {
     AppointmentParam,
-    AppointmentReq,
-    AppointmentRes,
+    AvailableTimeReq,
+    AvailableTimeRes,
 } from '~/api/mentor/types'
 
 export const getMentorInfo = [
@@ -192,8 +192,8 @@ export const getMentorInfo = [
 ]
 
 export const saveAppointment = [
-    http.post<AppointmentParam, AppointmentReq, AppointmentRes>(
-        saveAppointmentURL,
+    http.post<AppointmentParam, AvailableTimeReq, AvailableTimeRes>(
+        updateAvailableTimeURL,
         () => {
             return HttpResponse.json({
                 message: 'Save successfully',
