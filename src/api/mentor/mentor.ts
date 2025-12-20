@@ -49,7 +49,6 @@ export const getMentorList = async ({
     }
 
     const data: MentorListResT = await res.json()
-    console.log('data>', data)
 
     return data
 }

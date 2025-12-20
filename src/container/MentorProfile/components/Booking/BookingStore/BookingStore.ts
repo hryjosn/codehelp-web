@@ -1,21 +1,21 @@
 import { create } from 'zustand'
 
 type State = {
-    imageList: string[]
+    imageList: File[]
 }
 type Actions = {
-    uploadImage: (imageURL: string) => void
-    removeImage: (imageURL: string) => void
+    uploadImage: (imageURL: File) => void
+    removeImage: (imageURL: File) => void
 }
 export type BookingStore = State & Actions
 
 export const useBookingStore = create<State & Actions>()((set) => ({
     imageList: [],
 
-    uploadImage: (imageURL: string) =>
+    uploadImage: (imageURL: File) =>
         set((state) => ({ imageList: [...state.imageList, imageURL] })),
 
-    removeImage: (imageURL: string) => {
+    removeImage: (imageURL: File) => {
         set((state) => ({
             imageList: state.imageList.filter((url) => url !== imageURL),
         }))
