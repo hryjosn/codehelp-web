@@ -11,7 +11,7 @@ const ImageButton = ({ className, src, onClick }: Props) => {
             onClick={onClick}
         >
             <Image
-                className="h-full w-full object-cover"
+                className="h-20 w-20 object-cover"
                 src={src}
                 alt=""
                 width={0}
