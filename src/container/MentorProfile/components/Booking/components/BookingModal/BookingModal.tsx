@@ -67,7 +67,6 @@ const BookingModal = ({
                 { data: formData, mentorId },
                 {
                     onSuccess(res) {
-                        console.log('Booking response:', res)
                         if (res?.data?.code) {
                             toast({
                                 title: 'Booking failed',
@@ -183,7 +182,9 @@ const BookingModal = ({
                                     onChange={async (event) => {
                                         const file = event.target.files![0]
                                         if (!file.type.startsWith('image/')) {
-                                            alert('Only can upload image files')
+                                            alert(
+                                                'Only image files can be uploaded'
+                                            )
                                             return
                                         }
                                         const compressedImage =
