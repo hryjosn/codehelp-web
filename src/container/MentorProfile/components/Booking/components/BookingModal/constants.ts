@@ -5,5 +5,5 @@ export const durationList = [
 
 export const bookingErrorCode: { [key: string]: string } = {
     '4001': 'Incomplete information',
-    '4003': 'The selected time already be booked',
+    '4003': 'The selected time has already been booked',
 }
