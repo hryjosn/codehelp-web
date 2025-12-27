@@ -1,5 +1,4 @@
 import { getMentorList } from '~/api/mentor/mentor'
-import Header from '~/components/Header/Header'
 import { MentorCard } from '~/components/mentor/MentorCard/MentorCard'
 import { Link } from '~/i18n/routing'
 import Pagination from './components/Pagination'
@@ -21,7 +20,6 @@ const Home = async (props: {
 
     return (
         <div className="flex h-full flex-col">
-            <Header />
             <div className="flex flex-1 flex-col justify-between">
                 <div className="grid gap-4 p-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
                     {mentorList?.map((mentor) => (

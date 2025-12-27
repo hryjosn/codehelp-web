@@ -3,8 +3,6 @@
 import { addDays, format } from 'date-fns'
 import React from 'react'
 import { useGetBookingInfo } from '~/api/user/user'
-
-import Header from '~/components/Header/Header'
 import BookingInfoCard from './components/BookingInfoCard'
 
 const upcoming7Days = Array.from({ length: 7 }, (_, i) => {
@@ -14,7 +12,6 @@ const BookingInfo = () => {
     const { data: BookingInfo } = useGetBookingInfo()
     return (
         <>
-            <Header />
             <div className="mx-10 mt-10 overflow-x-auto md:mx-20">
                 <table className="w-full table-auto border-collapse border border-gray-300">
                     <thead>

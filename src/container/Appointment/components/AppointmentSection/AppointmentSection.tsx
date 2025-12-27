@@ -5,7 +5,6 @@ import ButtonGrid from '../ButtonGrid/ButtonGrid'
 import TimeZoneGrid from '../TimeZoneGrid/TimeZoneGrid'
 import WeekGrid from '../WeekGrid/WeekGrid'
 import HourGrid from '../HourGrid/HourGrid'
-import Header from '~/components/Header/Header'
 import { Button } from '~/components/Button/Button'
 import { useUpdateAvailableTime } from '~/api/mentor/mentor'
 import { useAppointmentStore } from '~/container/Appointment/store/AppointmentStore'
@@ -55,7 +54,6 @@ const AppointmentSection = ({ mentorAvailableTimes }: Props) => {
 
     return (
         <>
-            <Header />
             <div className="flex flex-col items-center gap-10 py-4">
                 <div className="flex flex-col items-center gap-5 pt-4">
                     <p className="mb-5 text-3xl">
