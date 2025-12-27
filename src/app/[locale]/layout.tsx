@@ -10,6 +10,7 @@ import { routing } from '~/i18n/routing'
 import { RootStoreProvider } from '~/store/rootStoreProvider'
 import { Toaster } from '~/components/ui/toaster'
 import 'react-phone-input-2/lib/style.css'
+import Header from '~/components/Header/Header'
 
 import '~/styles/globals.css'
 if (process.env.NEXT_PUBLIC_MOCK === 'true') {
@@ -40,7 +41,10 @@ export default async function RootLayout({
                     <ReactQueryClientProvider>
                         <Provider>
                             <RootStoreProvider>
-                                <MSWProvider>{children}</MSWProvider>
+                                <MSWProvider>
+                                    <Header />
+                                    {children}
+                                </MSWProvider>
                                 <Toaster />
                             </RootStoreProvider>
                         </Provider>

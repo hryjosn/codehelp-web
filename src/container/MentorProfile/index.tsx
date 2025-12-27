@@ -1,4 +1,3 @@
-import Header from '~/components/Header/Header'
 import { callGetMentorInfoHandler } from '~/api/mentor/mentorAPI'
 import Bio from '~/components/mentor/Bio'
 import CommunicationSection from './components/CommunicationSection/CommunicationSection'
@@ -26,7 +25,6 @@ const MentorProfile = async ({
 
     return (
         <>
-            <Header />
             {mentorInfo && (
                 <div className="p-6 md:p-16">
                     <Bio

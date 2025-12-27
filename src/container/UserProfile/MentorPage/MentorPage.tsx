@@ -19,7 +19,6 @@ import {
 import { EDUCATION, Props, WEEK_DAYS } from './types'
 import { MentorDiscipline, MentorSkill, MentorTool } from '~/api/mentor/types'
 import { UserForMentor } from '~/api/user/types'
-import Header from '~/components/Header/Header'
 import Card from '../components/Card/Card'
 import { GENDER_LIST, LEVEL_LIST } from '../types'
 import { useGetBookingRecordList } from '~/api/booking/booking'
@@ -222,7 +221,6 @@ export default function MentorPage({ userData }: Props) {
 
     return (
         <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
-            <Header />
             <div className="container mx-auto px-4 py-8">
                 <div className="mb-6 flex flex-col items-start justify-between md:flex-row md:items-center">
                     <h1 className="text-2xl font-bold">My Profile</h1>
