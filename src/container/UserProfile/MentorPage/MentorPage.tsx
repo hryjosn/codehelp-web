@@ -334,6 +334,7 @@ export default function MentorPage({ userData }: Props) {
                                             <div className="mx-2 flex">
                                                 {timeCodeList.map((code) => (
                                                     <Square
+                                                        className="w-1 sm:w-4 lg:w-3 xl:w-4"
                                                         key={code}
                                                         isChecked={data.timeCode.includes(
                                                             code
