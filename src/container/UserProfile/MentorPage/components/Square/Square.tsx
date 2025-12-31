@@ -16,11 +16,12 @@ const squareVariants = cva('h-4 w-4 border', {
     },
 })
 
-const Square = ({ isChecked }: Props) => {
+const Square = ({ isChecked, className }: Props) => {
     return (
         <div
             className={cn(
-                squareVariants({ variant: isChecked ? 'checked' : 'default' })
+                squareVariants({ variant: isChecked ? 'checked' : 'default' }),
+                className
             )}
         />
     )

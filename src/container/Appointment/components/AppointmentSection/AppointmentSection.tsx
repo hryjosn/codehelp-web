@@ -56,16 +56,22 @@ const AppointmentSection = ({ mentorAvailableTimes }: Props) => {
     return (
         <>
             <Header />
-            <div className="flex flex-col items-center gap-10 py-4">
+            <div className="flex flex-col items-center gap-10 px-5 pb-10 pt-4">
                 <div className="flex flex-col items-center gap-5 pt-4">
                     <p className="mb-5 text-3xl">
                         Select your availability Times
                     </p>
                     <div className="flex gap-4">
-                        <Button className="min-w-40 max-w-80" onClick={onReset}>
+                        <Button
+                            className="max-w-50 min-w-28 sm:min-w-40 sm:max-w-80"
+                            onClick={onReset}
+                        >
                             Reset All
                         </Button>
-                        <Button className="min-w-40 max-w-80" onClick={save}>
+                        <Button
+                            className="max-w-50 min-w-28 sm:min-w-40 sm:max-w-80"
+                            onClick={save}
+                        >
                             Save
                         </Button>
                     </div>
