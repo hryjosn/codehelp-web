@@ -12,14 +12,14 @@ const AppointmentButton = forwardRef<HTMLButtonElement, Props>(
         return (
             <button
                 ref={ref}
-                className="flex items-center justify-between border-b-2 pb-2 text-sm hover:text-gray-500"
+                className="flex flex-col border-b-2 pb-2 text-sm hover:text-gray-500 sm:flex-row sm:items-center sm:justify-between"
                 onClick={onClick}
             >
-                <span className="text-muted-foreground flex space-x-3">
+                <span className="flex space-x-3 text-muted-foreground">
                     <p className="font-bold">At:</p>
                     <p>{adjustTimeZone(bookingAt)}</p>
                 </span>
-                <span className="text-muted-foreground flex space-x-3">
+                <span className="flex space-x-3 text-muted-foreground">
                     <p className="font-bold">Duration:</p>
                     <p>
                         {adjustMinuteToHour({
