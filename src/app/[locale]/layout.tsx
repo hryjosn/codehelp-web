@@ -17,8 +17,11 @@ if (process.env.NEXT_PUBLIC_MOCK === 'true') {
 }
 
 export const metadata: Metadata = {
-    title: 'Home',
-    description: 'Welcome to Next.js',
+    title: {
+        template: '%s - Codehelp',
+        default: 'Codehelp',
+    },
+    description: 'Welcome to Codehelp',
 }
 export default async function RootLayout({
     // Layouts must accept a children prop.
@@ -35,6 +38,10 @@ export default async function RootLayout({
     const messages = await getMessages()
     return (
         <html lang={locale}>
+            <head>
+                <link rel="icon" href="/Logo/codehelp_logo.png" />
+            </head>
+
             <body>
                 <NextIntlClientProvider messages={messages}>
                     <ReactQueryClientProvider>
